@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | 8EEN Productions</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --admin-bg: #000000;
+            --admin-card: #1a1a1a;
+            --admin-border: #333333;
+            --admin-text: #ffffff;
+            --admin-text-muted: #888888;
+            --admin-accent: #ffffff;
+            --admin-input-bg: #111111;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--admin-bg);
+            color: var(--admin-text);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a, #000000);
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background-color: var(--admin-card);
+            border: 1px solid var(--admin-border);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .login-logo span {
+            color: var(--admin-text-muted);
+            font-weight: 300;
+        }
+
+        .login-subtitle {
+            color: var(--admin-text-muted);
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--admin-text-muted);
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--admin-text-muted);
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.85rem 1rem 0.85rem 2.8rem;
+            background-color: var(--admin-input-bg);
+            border: 1px solid var(--admin-border);
+            border-radius: 6px;
+            color: var(--admin-text);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--admin-accent);
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-check input {
+            accent-color: var(--admin-accent);
+        }
+
+        .form-check label {
+            font-size: 0.85rem;
+            color: var(--admin-text-muted);
+            cursor: pointer;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 0.85rem;
+            background-color: var(--admin-accent);
+            color: var(--admin-bg);
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-login:hover {
+            opacity: 0.9;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .login-footer a {
+            color: var(--admin-text-muted);
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .login-footer a:hover {
+            color: var(--admin-text);
+        }
+
+        /* Alert Message Style */
+        .alert {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #EF4444;
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+            text-align: center;
+            display: none; /* Hidden by default */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">8EEN<span>ADMIN</span></div>
+                <p class="login-subtitle">Sign in to access your dashboard</p>
+            </div>
+
+            <!-- Alert for errors (Optional) -->
+            <div class="alert" id="error-alert">
+                Invalid username or password.
+            </div>
+
+            <form action="{{ url_for('admin.login') }}" method="POST">
+               
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required autofocus>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+                    </div>
+                </div>
+
+                <div class="form-check">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Keep me signed in</label>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    Sign In <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <a href="#">Forgot Password?</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simple script to show error if URL param exists (Example logic) -->
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('error')) {
+            document.getElementById('error-alert').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

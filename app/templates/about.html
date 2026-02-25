@@ -1,0 +1,454 @@
+{% extends "base.html" %}
+
+{% block title %}About Us{% endblock %}
+
+{% block meta_description %}Learn about 8een Productions - Nairobi-born film and creative studio dedicated to telling youth-driven, emotionally rich stories.{% endblock %}
+
+{% block nav_about %}active{% endblock %}
+
+{% block extra_styles %}
+<style>
+    /* ============================================
+       ABOUT PAGE SPECIFIC STYLES
+       ============================================ */
+    .about-intro {
+        background-color: var(--color-dark-grey);
+    }
+
+    .about-intro-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-lg);
+        align-items: center;
+    }
+
+    .about-intro-content p {
+        color: var(--color-light-grey);
+        margin-bottom: var(--spacing-md);
+        line-height: 1.8;
+        font-size: 1.05rem;
+    }
+
+    .about-intro-image {
+        aspect-ratio: 4/3;
+        background: linear-gradient(135deg, var(--color-charcoal), var(--color-medium-grey));
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        color: var(--color-grey);
+    }
+
+    /* Vision & Mission */
+    .vision-mission {
+        background-color: var(--color-black);
+    }
+
+    .vm-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+
+    .vm-card {
+        background-color: var(--color-dark-grey);
+        padding: var(--spacing-lg);
+        border-radius: var(--radius-md);
+        border-left: 4px solid var(--color-white);
+    }
+
+    .vm-card h3 {
+        font-family: var(--font-heading);
+        font-size: 2rem;
+        letter-spacing: 2px;
+        margin-bottom: var(--spacing-sm);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+    }
+
+    .vm-card h3 i {
+        color: var(--color-light-grey);
+    }
+
+    .vm-card p {
+        color: var(--color-light-grey);
+        line-height: 1.8;
+        font-size: 1.05rem;
+    }
+
+    /* Values Section */
+    .values-section {
+        background-color: var(--color-dark-grey);
+    }
+
+    .values-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--spacing-md);
+    }
+
+    .value-card {
+        text-align: center;
+        padding: var(--spacing-md);
+        background-color: var(--color-charcoal);
+        border-radius: var(--radius-md);
+        transition: all var(--transition-normal);
+    }
+
+    .value-card:hover {
+        transform: translateY(-5px);
+        background-color: var(--color-medium-grey);
+    }
+
+    .value-icon {
+        width: 80px;
+        height: 80px;
+        background-color: var(--color-dark-grey);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: var(--color-white);
+        margin: 0 auto var(--spacing-sm);
+    }
+
+    .value-card h3 {
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .value-card p {
+        color: var(--color-light-grey);
+        font-size: 0.95rem;
+    }
+
+    /* Founder Section */
+    .founder-section {
+        background-color: var(--color-black);
+    }
+
+    .founder-grid {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: var(--spacing-lg);
+        align-items: center;
+    }
+
+    .founder-image {
+        aspect-ratio: 3/4;
+        background: linear-gradient(135deg, var(--color-charcoal), var(--color-medium-grey));
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        color: var(--color-grey);
+    }
+
+    .founder-content h3 {
+        font-family: var(--font-heading);
+        font-size: 2.5rem;
+        letter-spacing: 2px;
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .founder-content .role {
+        color: var(--color-light-grey);
+        font-size: 1.1rem;
+        margin-bottom: var(--spacing-md);
+        font-style: italic;
+    }
+
+    .founder-content p {
+        color: var(--color-silver);
+        margin-bottom: var(--spacing-sm);
+        line-height: 1.8;
+    }
+
+    .founder-social {
+        display: flex;
+        gap: var(--spacing-xs);
+        margin-top: var(--spacing-md);
+    }
+
+    .founder-social a {
+        width: 45px;
+        height: 45px;
+        background-color: var(--color-charcoal);
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: var(--color-white);
+        transition: all var(--transition-normal);
+    }
+
+    .founder-social a:hover {
+        background-color: var(--color-white);
+        color: var(--color-black);
+    }
+
+    /* Stats */
+    .stats-section {
+        background-color: var(--color-charcoal);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--spacing-md);
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-family: var(--font-heading);
+        font-size: 4rem;
+        color: var(--color-white);
+        line-height: 1;
+    }
+
+    .stat-label {
+        color: var(--color-light-grey);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .about-intro-grid,
+        .founder-grid {
+            grid-template-columns: 1fr;
+            gap: var(--spacing-md);
+        }
+
+        .about-intro-image,
+        .founder-image {
+            order: -1;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .founder-content {
+            text-align: center;
+        }
+
+        .founder-social {
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .vm-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- ============================================
+     PAGE HEADER
+     ============================================ -->
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content">
+            <div class="gradient-line"></div>
+            <h1>About Us</h1>
+            <p>Where street stories meet cinematic excellence.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     ABOUT INTRO
+     ============================================ -->
+<section class="section about-intro">
+    <div class="container">
+        <div class="about-intro-grid">
+            <div class="about-intro-content">
+                <h2 class="section-title">Our Story</h2>
+                <p>
+                    8een Productions is a Nairobi-born film and creative studio dedicated to 
+                    telling youth-driven, emotionally rich, and visually powerful stories for 
+                    the modern world. Rooted in the streets, shaped by real conversations, and 
+                    polished for global screens, we create films, music visuals, and digital 
+                    content that reflect authentic African experiences with cinematic quality.
+                </p>
+                <p>
+                    We believe every story deserves more than just a camera — it deserves 
+                    intention, emotion, and craft. From raw dialogue scenes on a city bench 
+                    to high-energy music videos and branded content, our work blends street 
+                    realism with professional storytelling.
+                </p>
+                <p>
+                    At 8een Productions, we don't chase trends — we build moments that last. 
+                    Our commitment to authenticity and emotional depth sets us apart in an 
+                    industry often dominated by spectacle over substance.
+                </p>
+            </div>
+            <div class="about-intro-image">
+                <i class="fas fa-film"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     VISION & MISSION
+     ============================================ -->
+<section class="section vision-mission">
+    <div class="container">
+        <div class="vm-grid">
+            <div class="vm-card">
+                <h3><i class="fas fa-eye"></i> Vision</h3>
+                <p>
+                    To become a leading African creative studio known for producing emotionally 
+                    powerful, youth-centered stories that connect local culture to a global audience. 
+                    We envision a future where African narratives are told with authenticity, 
+                    cinematic excellence, and universal appeal.
+                </p>
+            </div>
+            <div class="vm-card">
+                <h3><i class="fas fa-bullseye"></i> Mission</h3>
+                <p>
+                    To create meaningful visual content that elevates African voices, empowers 
+                    young talent, and delivers high-quality storytelling for artists, brands, 
+                    and digital platforms. We are committed to nurturing the next generation 
+                    of visual storytellers while maintaining the highest standards of craft.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     VALUES
+     ============================================ -->
+<section class="section values-section">
+    <div class="container">
+        <div class="text-center">
+            <div class="gradient-line" style="margin: 0 auto var(--spacing-md);"></div>
+            <h2 class="section-title">Our Values</h2>
+            <p class="section-subtitle" style="margin: 0 auto var(--spacing-lg);">
+                The principles that guide everything we create.
+            </p>
+        </div>
+
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3>Authenticity</h3>
+                <p>Authenticity over imitation. We value real stories told in real ways.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-theater-masks"></i>
+                </div>
+                <h3>Emotion</h3>
+                <p>Emotion over excess. Every frame should make you feel something genuine.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h3>Story First</h3>
+                <p>Story before spectacle. Narrative is the foundation of everything we do.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Collaboration</h3>
+                <p>Growth through collaboration. We rise by lifting others in the creative community.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     FOUNDER SECTION
+     ============================================ -->
+<section class="section founder-section">
+    <div class="container">
+        <div class="text-center">
+            <div class="gradient-line" style="margin: 0 auto var(--spacing-md);"></div>
+            <h2 class="section-title">Meet the Founder</h2>
+        </div>
+
+        <div class="founder-grid">
+            <div class="founder-image">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="founder-content">
+                <h3>Marvin Marisin Kipruto</h3>
+                <p class="role">Founder & Creative Director</p>
+                <p>
+                    Marvin Marisin Kipruto is a Nairobi-based filmmaker, editor, and creative 
+                    director with a passion for youth storytelling and urban cinema. With a 
+                    background in film production and digital media, Marvin founded 8een 
+                    Productions to create a platform where authentic street stories meet 
+                    professional filmmaking standards.
+                </p>
+                <p>
+                    His work focuses on emotional dialogue, youth culture, music visuals, 
+                    and cinematic storytelling that reflects modern African identity. Through 
+                    8een Productions, he continues to develop short films, web series, and 
+                    creative collaborations aimed at building a new generation of African 
+                    visual storytelling.
+                </p>
+                <div class="founder-social">
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     STATS
+     ============================================ -->
+<section class="section stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Projects Completed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">30+</div>
+                <div class="stat-label">Happy Clients</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">5+</div>
+                <div class="stat-label">Years Experience</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">Team Members</div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

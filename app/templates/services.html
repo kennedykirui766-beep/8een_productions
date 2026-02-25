@@ -1,0 +1,441 @@
+{% extends "base.html" %}
+
+{% block title %}Services{% endblock %}
+
+{% block meta_description %}Explore 8een Productions services - Film Production, Music Videos, Video Editing, Photography, Scriptwriting, and Social Media Content.{% endblock %}
+
+{% block nav_services %}active{% endblock %}
+
+{% block extra_styles %}
+<style>
+    /* ============================================
+       SERVICES PAGE SPECIFIC STYLES
+       ============================================ */
+    .services-intro {
+        background-color: var(--color-dark-grey);
+        text-align: center;
+    }
+
+    .services-intro p {
+        color: var(--color-light-grey);
+        max-width: 800px;
+        margin: 0 auto;
+        font-size: 1.1rem;
+        line-height: 1.8;
+    }
+
+    /* Services List */
+    .services-list {
+        background-color: var(--color-black);
+    }
+
+    .service-item {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: var(--spacing-lg);
+        padding: var(--spacing-lg) 0;
+        border-bottom: 1px solid var(--color-charcoal);
+        align-items: center;
+    }
+
+    .service-item:last-child {
+        border-bottom: none;
+    }
+
+    .service-item:nth-child(even) {
+        direction: rtl;
+    }
+
+    .service-item:nth-child(even) > * {
+        direction: ltr;
+    }
+
+    .service-icon-box {
+        aspect-ratio: 1;
+        background: linear-gradient(135deg, var(--color-charcoal), var(--color-medium-grey));
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        color: var(--color-white);
+    }
+
+    .service-info h3 {
+        font-family: var(--font-heading);
+        font-size: 2.5rem;
+        letter-spacing: 2px;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .service-info p {
+        color: var(--color-light-grey);
+        margin-bottom: var(--spacing-md);
+        line-height: 1.8;
+        font-size: 1.05rem;
+    }
+
+    .service-features {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-xs);
+    }
+
+    .service-features span {
+        background-color: var(--color-charcoal);
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.85rem;
+        color: var(--color-silver);
+    }
+
+    /* Process Section */
+    .process-section {
+        background-color: var(--color-dark-grey);
+    }
+
+    .process-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--spacing-md);
+    }
+
+    .process-step {
+        text-align: center;
+        position: relative;
+    }
+
+    .process-step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 40px;
+        right: -50%;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--color-white), var(--color-charcoal));
+    }
+
+    .process-number {
+        width: 80px;
+        height: 80px;
+        background-color: var(--color-charcoal);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-heading);
+        font-size: 2rem;
+        color: var(--color-white);
+        margin: 0 auto var(--spacing-sm);
+        position: relative;
+        z-index: 1;
+    }
+
+    .process-step h3 {
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .process-step p {
+        color: var(--color-light-grey);
+        font-size: 0.95rem;
+    }
+
+    /* CTA */
+    .cta-section {
+        background-color: var(--color-black);
+        text-align: center;
+    }
+
+    .cta-section h2 {
+        font-family: var(--font-heading);
+        font-size: clamp(2rem, 6vw, 4rem);
+        letter-spacing: 2px;
+        margin-bottom: var(--spacing-md);
+    }
+
+    .cta-section p {
+        color: var(--color-light-grey);
+        max-width: 600px;
+        margin: 0 auto var(--spacing-lg);
+        font-size: 1.1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .process-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .process-step:nth-child(2)::after {
+            display: none;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .service-item,
+        .service-item:nth-child(even) {
+            grid-template-columns: 1fr;
+            direction: ltr;
+        }
+
+        .service-icon-box {
+            max-width: 200px;
+            margin: 0 auto;
+        }
+
+        .service-info {
+            text-align: center;
+        }
+
+        .service-features {
+            justify-content: center;
+        }
+
+        .process-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .process-step::after {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- ============================================
+     PAGE HEADER
+     ============================================ -->
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content">
+            <div class="gradient-line"></div>
+            <h1>Our Services</h1>
+            <p>Comprehensive creative services from concept to final delivery.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SERVICES INTRO
+     ============================================ -->
+<section class="section services-intro">
+    <div class="container">
+        <p>
+            At 8een Productions, we offer a full spectrum of creative services designed to 
+            bring your vision to life. From initial concept development to final delivery, 
+            our team is equipped to handle every aspect of visual storytelling with 
+            professionalism, creativity, and cinematic excellence.
+        </p>
+    </div>
+</section>
+
+<!-- ============================================
+     SERVICES LIST
+     ============================================ -->
+<section class="section services-list">
+    <div class="container">
+        <!-- Service 1 -->
+        <div class="service-item">
+            <div class="service-icon-box">
+                <i class="fas fa-film"></i>
+            </div>
+            <div class="service-info">
+                <h3>Film Production</h3>
+                <p>
+                    We develop and produce short films, web series, and narrative projects 
+                    from concept to final delivery. Our comprehensive approach includes 
+                    script development, casting, directing, shooting, and post-production. 
+                    Every project is handled with the attention to detail and creative 
+                    vision it deserves, ensuring stories resonate with audiences.
+                </p>
+                <div class="service-features">
+                    <span>Script Development</span>
+                    <span>Casting</span>
+                    <span>Directing</span>
+                    <span>Cinematography</span>
+                    <span>Post-Production</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 2 -->
+        <div class="service-item">
+            <div class="service-icon-box">
+                <i class="fas fa-music"></i>
+            </div>
+            <div class="service-info">
+                <h3>Music Video Direction</h3>
+                <p>
+                    We create visually compelling music videos that translate sound into 
+                    story. Our approach helps artists build strong visual identities that 
+                    resonate with their audience. From concept development to final edit, 
+                    we work closely with musicians to create videos that amplify their 
+                    artistic vision and connect with fans on a deeper level.
+                </p>
+                <div class="service-features">
+                    <span>Concept Development</span>
+                    <span>Story Boards</span>
+                    <span>Location Scouting</span>
+                    <span>Performance Direction</span>
+                    <span>Visual Effects</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 3 -->
+        <div class="service-item">
+            <div class="service-icon-box">
+                <i class="fas fa-cut"></i>
+            </div>
+            <div class="service-info">
+                <h3>Video Editing & Post-Production</h3>
+                <p>
+                    Professional editing, color grading, sound design, subtitles, and 
+                    optimized exports for digital platforms. We ensure your content looks 
+                    its best everywhere, from cinema screens to mobile devices. Our 
+                    post-production team brings technical expertise and creative flair 
+                    to every project, polishing raw footage into compelling narratives.
+                </p>
+                <div class="service-features">
+                    <span>Video Editing</span>
+                    <span>Color Grading</span>
+                    <span>Sound Design</span>
+                    <span>Subtitles</span>
+                    <span>Multi-Platform Export</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 4 -->
+        <div class="service-item">
+            <div class="service-icon-box">
+                <i class="fas fa-camera"></i>
+            </div>
+            <div class="service-info">
+                <h3>Photography & Visual Branding</h3>
+                <p>
+                    Creative photography for artists, brands, and digital campaigns. 
+                    We capture authentic moments through promotional shoots and 
+                    behind-the-scenes visuals that tell your story. Our photography 
+                    services extend beyond simple documentation to create powerful 
+                    visual narratives that strengthen brand identity.
+                </p>
+                <div class="service-features">
+                    <span>Artist Portraits</span>
+                    <span>Brand Photography</span>
+                    <span>Event Coverage</span>
+                    <span>Product Shoots</span>
+                    <span>BTS Documentation</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 5 -->
+        <div class="service-item">
+            <div class="service-icon-box">
+                <i class="fas fa-pen-fancy"></i>
+            </div>
+            <div class="service-info">
+                <h3>Scriptwriting & Creative Development</h3>
+                <p>
+                    Story development for films, series, skits, and branded content. 
+                    We turn ideas into emotionally engaging screenplays that connect 
+                    with audiences. Our creative development process involves deep 
+                    collaboration with clients to understand their vision and translate 
+                    it into compelling narrative structures.
+                </p>
+                <div class="service-features">
+                    <span>Screenwriting</span>
+                    <span>Story Consulting</span>
+                    <span>Script Doctoring</span>
+                    <span>Concept Development</span>
+                    <span>Adaptation</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 6 -->
+        <div class="service-item">
+            <div class="service-icon-box">
+                <i class="fas fa-share-alt"></i>
+            </div>
+            <div class="service-info">
+                <h3>Social Media Content Production</h3>
+                <p>
+                    Short-form video content designed for online engagement, including 
+                    reels, TikTok videos, and promotional skits optimized for maximum 
+                    social impact. We understand the unique demands of each platform 
+                    and create content that captures attention in the first seconds 
+                    and holds it through compelling storytelling.
+                </p>
+                <div class="service-features">
+                    <span>Reels & Shorts</span>
+                    <span>TikTok Content</span>
+                    <span>Promotional Skits</span>
+                    <span>Social Campaigns</span>
+                    <span>Platform Optimization</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     PROCESS SECTION
+     ============================================ -->
+<section class="section process-section">
+    <div class="container">
+        <div class="text-center">
+            <div class="gradient-line" style="margin: 0 auto var(--spacing-md);"></div>
+            <h2 class="section-title">Our Process</h2>
+            <p class="section-subtitle" style="margin: 0 auto var(--spacing-lg);">
+                How we bring your vision to life.
+            </p>
+        </div>
+
+        <div class="process-grid">
+            <div class="process-step">
+                <div class="process-number">01</div>
+                <h3>Discovery</h3>
+                <p>We learn about your vision, goals, and the story you want to tell.</p>
+            </div>
+            <div class="process-step">
+                <div class="process-number">02</div>
+                <h3>Planning</h3>
+                <p>Script development, storyboarding, and pre-production logistics.</p>
+            </div>
+            <div class="process-step">
+                <div class="process-number">03</div>
+                <h3>Production</h3>
+                <p>Shooting your project with professional equipment and expertise.</p>
+            </div>
+            <div class="process-step">
+                <div class="process-number">04</div>
+                <h3>Delivery</h3>
+                <p>Editing, color grading, and final delivery in your preferred format.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     CTA SECTION
+     ============================================ -->
+<section class="section cta-section">
+    <div class="container">
+        <h2>Ready to Start Your Project?</h2>
+        <p>
+            Let's discuss your vision and create something extraordinary together.
+            Get in touch for a free consultation.
+        </p>
+        <a href="contact.html" class="btn btn-primary">
+            <i class="fas fa-envelope"></i>
+            Contact Us
+        </a>
+    </div>
+</section>
+{% endblock %}

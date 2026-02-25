@@ -1,0 +1,559 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block nav_home %}active{% endblock %}
+
+{% block extra_styles %}
+<style>
+    /* ============================================
+       INDEX PAGE SPECIFIC STYLES
+       ============================================ */
+    .about-section {
+        background-color: var(--color-dark-grey);
+    }
+
+    .about-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-lg);
+        align-items: center;
+    }
+
+    .about-content h3 {
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+        margin-bottom: var(--spacing-sm);
+        color: var(--color-silver);
+    }
+
+    .about-content p {
+        color: var(--color-light-grey);
+        margin-bottom: var(--spacing-md);
+        line-height: 1.8;
+    }
+
+    .about-image-placeholder {
+        aspect-ratio: 4/3;
+        background: linear-gradient(135deg, var(--color-charcoal), var(--color-medium-grey));
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: var(--color-grey);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--spacing-md);
+        margin-top: var(--spacing-md);
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: var(--spacing-sm);
+        background-color: var(--color-charcoal);
+        border-radius: var(--radius-sm);
+    }
+
+    .stat-number {
+        font-family: var(--font-heading);
+        font-size: 2.5rem;
+        color: var(--color-white);
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        color: var(--color-light-grey);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Services Section */
+    .services-section {
+        background-color: var(--color-black);
+    }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--spacing-md);
+    }
+
+    .service-card {
+        background-color: var(--color-dark-grey);
+        padding: var(--spacing-md);
+        border-radius: var(--radius-md);
+        transition: all var(--transition-normal);
+        border: 1px solid transparent;
+    }
+
+    .service-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--color-charcoal);
+        background-color: var(--color-charcoal);
+    }
+
+    .service-icon {
+        width: 60px;
+        height: 60px;
+        background-color: var(--color-charcoal);
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--color-white);
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .service-card:hover .service-icon {
+        background-color: var(--color-white);
+        color: var(--color-black);
+    }
+
+    .service-card h3 {
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .service-card p {
+        color: var(--color-light-grey);
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    /* Portfolio Preview */
+    .portfolio-section {
+        background-color: var(--color-dark-grey);
+    }
+
+    .portfolio-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: var(--spacing-md);
+    }
+
+    .portfolio-item {
+        position: relative;
+        aspect-ratio: 16/10;
+        overflow: hidden;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+    }
+
+    .portfolio-placeholder {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, var(--color-charcoal), var(--color-medium-grey));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: var(--color-grey);
+        transition: transform var(--transition-slow);
+    }
+
+    .portfolio-item:hover .portfolio-placeholder {
+        transform: scale(1.05);
+    }
+
+    .portfolio-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 100%);
+        opacity: 0;
+        transition: opacity var(--transition-normal);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: var(--spacing-md);
+    }
+
+    .portfolio-item:hover .portfolio-overlay {
+        opacity: 1;
+    }
+
+    .portfolio-overlay h3 {
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+    }
+
+    .portfolio-overlay p {
+        color: var(--color-light-grey);
+        font-size: 0.9rem;
+    }
+
+    .portfolio-overlay .view-btn {
+        position: absolute;
+        top: var(--spacing-sm);
+        right: var(--spacing-sm);
+        width: 50px;
+        height: 50px;
+        background-color: var(--color-white);
+        color: var(--color-black);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        transform: translateY(-20px);
+        opacity: 0;
+        transition: all var(--transition-normal);
+    }
+
+    .portfolio-item:hover .portfolio-overlay .view-btn {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background-color: var(--color-black);
+        text-align: center;
+    }
+
+    .cta-section h2 {
+        font-family: var(--font-heading);
+        font-size: clamp(2rem, 6vw, 4rem);
+        letter-spacing: 2px;
+        margin-bottom: var(--spacing-md);
+    }
+
+    .cta-section p {
+        color: var(--color-light-grey);
+        max-width: 600px;
+        margin: 0 auto var(--spacing-lg);
+        font-size: 1.1rem;
+    }
+
+    .cta-buttons {
+        display: flex;
+        justify-content: center;
+        gap: var(--spacing-sm);
+        flex-wrap: wrap;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .about-grid {
+            grid-template-columns: 1fr;
+            gap: var(--spacing-md);
+        }
+
+        .about-image-placeholder {
+            order: -1;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .portfolio-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .cta-buttons {
+            flex-direction: column;
+        }
+
+        .cta-buttons .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- ============================================
+     HERO SECTION
+     ============================================ -->
+<section class="hero" id="home">
+    <div class="container">
+        <div class="hero-content">
+            <span class="hero-label">Film & Creative Studio</span>
+            <h1 class="hero-title">
+                8EEN
+                <span>PRODUCTIONS</span>
+            </h1>
+            <p class="hero-tagline">From the Streets to the Screen</p>
+            <p class="hero-description">
+                Nairobi-born film and creative studio dedicated to telling youth-driven, 
+                emotionally rich, and visually powerful stories for the modern world.
+            </p>
+            <div class="hero-buttons">
+                <a href="{{ url_for('projects.all_projects') }}" class="btn btn-primary">
+                    <i class="fas fa-play"></i>
+                    View Our Work
+                </a>
+                <a href="{{ url_for('main.contact') }}" class="btn btn-outline">
+                    <i class="fas fa-envelope"></i>
+                    Get in Touch
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="scroll-indicator">
+        <span>Scroll</span>
+        <i class="fas fa-chevron-down"></i>
+    </div>
+</section>
+
+<!-- ============================================
+     ABOUT SECTION
+     ============================================ -->
+<section class="section about-section" id="about">
+    <div class="container">
+        <div class="about-grid">
+            <div class="about-content">
+                <div class="gradient-line"></div>
+                <h2 class="section-title">About Us</h2>
+                <h3>Where Street Stories Meet Cinematic Excellence</h3>
+                <p>
+                    8een Productions is a Nairobi-born film and creative studio dedicated to 
+                    telling youth-driven, emotionally rich, and visually powerful stories for 
+                    the modern world. Rooted in the streets, shaped by real conversations, and 
+                    polished for global screens.
+                </p>
+                <p>
+                    We believe every story deserves more than just a camera — it deserves 
+                    intention, emotion, and craft. From raw dialogue scenes on a city bench 
+                    to high-energy music videos and branded content, our work blends street 
+                    realism with professional storytelling.
+                </p>
+                <a href="{{ url_for('main.about') }}" class="btn btn-grey">
+                    <i class="fas fa-arrow-right"></i>
+                    Learn More
+                </a>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">Projects</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">30+</span>
+                        <span class="stat-label">Clients</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">5+</span>
+                        <span class="stat-label">Years</span>
+                    </div>
+                </div>
+            </div>
+            <div class="about-image">
+                <div class="about-image-placeholder">
+                    <i class="fas fa-film"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     SERVICES SECTION
+     ============================================ -->
+<section class="section services-section" id="services">
+    <div class="container">
+        <div class="text-center">
+            <div class="gradient-line" style="margin: 0 auto var(--spacing-md);"></div>
+            <h2 class="section-title">Our Services</h2>
+            <p class="section-subtitle" style="margin: 0 auto var(--spacing-lg);">
+                We offer comprehensive creative services from concept to final delivery.
+            </p>
+        </div>
+
+        <div class="services-grid">
+            <!-- Service 1 -->
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-film"></i>
+                </div>
+                <h3>Film Production</h3>
+                <p>
+                    We develop and produce short films, web series, and narrative projects 
+                    from concept to final delivery, including script development, casting, 
+                    directing, shooting, and post-production.
+                </p>
+            </div>
+
+            <!-- Service 2 -->
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-music"></i>
+                </div>
+                <h3>Music Video Direction</h3>
+                <p>
+                    We create visually compelling music videos that translate sound into 
+                    story, helping artists build strong visual identities that resonate 
+                    with their audience.
+                </p>
+            </div>
+
+            <!-- Service 3 -->
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-cut"></i>
+                </div>
+                <h3>Video Editing & Post-Production</h3>
+                <p>
+                    Professional editing, color grading, sound design, subtitles, and 
+                    optimized exports for digital platforms ensuring your content looks 
+                    its best everywhere.
+                </p>
+            </div>
+
+            <!-- Service 4 -->
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <h3>Photography & Visual Branding</h3>
+                <p>
+                    Creative photography for artists, brands, and digital campaigns, 
+                    including promotional shoots and behind-the-scenes visuals that 
+                    capture authentic moments.
+                </p>
+            </div>
+
+            <!-- Service 5 -->
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-pen-fancy"></i>
+                </div>
+                <h3>Scriptwriting & Creative Development</h3>
+                <p>
+                    Story development for films, series, skits, and branded content, 
+                    turning ideas into emotionally engaging screenplays that connect 
+                    with audiences.
+                </p>
+            </div>
+
+            <!-- Service 6 -->
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-share-alt"></i>
+                </div>
+                <h3>Social Media Content Production</h3>
+                <p>
+                    Short-form video content designed for online engagement, including 
+                    reels, TikTok videos, and promotional skits optimized for maximum 
+                    social impact.
+                </p>
+            </div>
+        </div>
+
+        <div class="text-center" style="margin-top: var(--spacing-lg);">
+            <a href="{{ url_for('main.services') }}" class="btn btn-primary">
+                <i class="fas fa-arrow-right"></i>
+                View All Services
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     PORTFOLIO PREVIEW SECTION
+     ============================================ -->
+<section class="section portfolio-section" id="portfolio">
+    <div class="container">
+        <div class="text-center">
+            <div class="gradient-line" style="margin: 0 auto var(--spacing-md);"></div>
+            <h2 class="section-title">Our Work</h2>
+            <p class="section-subtitle" style="margin: 0 auto var(--spacing-lg);">
+                A selection of our recent projects across film, music videos, and branded content.
+            </p>
+        </div>
+
+        <div class="portfolio-grid">
+            <!-- Portfolio Item 1 -->
+            <div class="portfolio-item">
+                <div class="portfolio-placeholder">
+                    <i class="fas fa-video"></i>
+                </div>
+                <div class="portfolio-overlay">
+                    <a href="portfolio.html" class="view-btn"><i class="fas fa-arrow-right"></i></a>
+                    <h3>Short Film Title</h3>
+                    <p>Film Production</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Item 2 -->
+            <div class="portfolio-item">
+                <div class="portfolio-placeholder">
+                    <i class="fas fa-music"></i>
+                </div>
+                <div class="portfolio-overlay">
+                    <a href="portfolio.html" class="view-btn"><i class="fas fa-arrow-right"></i></a>
+                    <h3>Artist Name - Track</h3>
+                    <p>Music Video</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Item 3 -->
+            <div class="portfolio-item">
+                <div class="portfolio-placeholder">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="portfolio-overlay">
+                    <a href="portfolio.html" class="view-btn"><i class="fas fa-arrow-right"></i></a>
+                    <h3>Brand Campaign</h3>
+                    <p>Commercial</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center" style="margin-top: var(--spacing-lg);">
+            <a href="{{ url_for('projects.all_projects') }}" class="btn btn-outline">
+                <i class="fas fa-th-large"></i>
+                View Full Portfolio
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+     CTA SECTION
+     ============================================ -->
+<section class="section cta-section">
+    <div class="container">
+        <h2>Ready to Tell Your Story?</h2>
+        <p>
+            Whether you're an artist, brand, or creative visionary, we're here to bring 
+            your ideas to life with cinematic excellence and authentic storytelling.
+        </p>
+        <div class="cta-buttons">
+            <a href="{{ url_for('main.contact') }}" class="btn btn-primary">
+                <i class="fas fa-envelope"></i>
+                Start a Project
+            </a>
+            <a href="{{ url_for('main.about') }}" class="btn btn-outline">
+                <i class="fas fa-info-circle"></i>
+                Learn About Us
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Index page specific scripts
+    console.log('Index page loaded');
+</script>
+{% endblock %}

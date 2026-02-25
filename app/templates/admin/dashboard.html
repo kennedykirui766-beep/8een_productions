@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | 8EEN Productions</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --admin-bg: #000000;
+            --admin-sidebar: #111111;
+            --admin-card: #1a1a1a;
+            --admin-hover: #2d2d2d;
+            --admin-border: #333333;
+            --admin-text: #ffffff;
+            --admin-text-muted: #888888;
+            --admin-accent: #ffffff;
+            --admin-success: #10B981;
+            --admin-warning: #F59E0B;
+            --admin-danger: #EF4444;
+            --admin-info: #3B82F6;
+            --font-body: 'Inter', sans-serif;
+            --sidebar-width: 260px;
+            --header-height: 70px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--admin-bg);
+            color: var(--admin-text);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ============================================
+           SIDEBAR
+           ============================================ */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--admin-sidebar);
+            height: 100vh;
+            position: fixed;
+            top: 0; left: 0;
+            border-right: 1px solid var(--admin-border);
+            display: flex; flex-direction: column;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid var(--admin-border); }
+        .sidebar-logo { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; color: var(--admin-text); }
+        .sidebar-logo span { color: var(--admin-text-muted); font-weight: 300; }
+
+        .sidebar-nav { flex: 1; overflow-y: auto; padding: 1rem 0; }
+        .nav-section { padding: 0.5rem 1.5rem; margin-top: 1rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--admin-text-muted); }
+        
+        .nav-link {
+            display: flex; align-items: center; padding: 0.8rem 1.5rem;
+            color: var(--admin-text-muted); text-decoration: none;
+            transition: all 0.2s; border-left: 3px solid transparent; cursor: pointer;
+        }
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--admin-hover);
+            color: var(--admin-text); border-left-color: var(--admin-text);
+        }
+        .nav-link i { width: 20px; margin-right: 15px; font-size: 1rem; }
+
+        /* ============================================
+           MAIN CONTENT AREA
+           ============================================ */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+            width: 100%;
+        }
+
+        .sidebar-overlay {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); z-index: 999;
+            opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+        /* Top Header */
+        .admin-header {
+            height: var(--header-height);
+            background-color: rgba(17, 17, 17, 0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--admin-border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 2rem;
+            position: sticky; top: 0; z-index: 900;
+        }
+
+        .header-left { display: flex; align-items: center; gap: 1rem; }
+        .header-left h2 { font-size: 1.2rem; font-weight: 600; }
+        .header-right { display: flex; align-items: center; gap: 1.5rem; }
+        .user-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .user-avatar { width: 36px; height: 36px; background: var(--admin-hover); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        .content-container { padding: 2rem; flex: 1; width: 100%; }
+
+        /* ============================================
+           DASHBOARD COMPONENTS
+           ============================================ */
+        
+        /* Stats Cards */
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 1.5rem; 
+            margin-bottom: 2rem; 
+        }
+
+        .stat-card {
+            background: var(--admin-card); border: 1px solid var(--admin-border);
+            border-radius: 12px; padding: 1.5rem;
+            display: flex; align-items: center; gap: 1rem;
+            transition: transform 0.2s;
+        }
+        .stat-card:hover { transform: translateY(-3px); }
+
+        .stat-icon { width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .stat-info h3 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+        .stat-info p { font-size: 0.85rem; color: var(--admin-text-muted); }
+
+        /* Utility Colors */
+        .bg-blue { background: rgba(59, 130, 246, 0.1); color: var(--admin-info); }
+        .bg-green { background: rgba(16, 185, 129, 0.1); color: var(--admin-success); }
+        .bg-yellow { background: rgba(245, 158, 11, 0.1); color: var(--admin-warning); }
+        .bg-red { background: rgba(239, 68, 68, 0.1); color: var(--admin-danger); }
+        .bg-grey { background: rgba(255, 255, 255, 0.05); color: var(--admin-text-muted); }
+
+        /* Charts & Tables Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr; 
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--admin-card);
+            border: 1px solid var(--admin-border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--admin-border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .card-title { font-size: 1.1rem; font-weight: 600; }
+        .card-body { padding: 1.5rem; }
+
+        /* Tables */
+        .table-container { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        thead { background: rgba(0,0,0,0.2); }
+        th, td { padding: 1rem 1.5rem; text-align: left; font-size: 0.9rem; white-space: nowrap; }
+        th { color: var(--admin-text-muted); font-weight: 500; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
+        tr { border-bottom: 1px solid var(--admin-border); }
+        tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: var(--admin-hover); }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center; 
+            padding: 3rem 1rem; 
+            color: var(--admin-text-muted);
+        }
+        .empty-state i { font-size: 2rem; margin-bottom: 1rem; opacity: 0.5; }
+
+        /* Badges */
+        .badge { padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; text-transform: capitalize; }
+        .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--admin-success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.15); color: var(--admin-warning); }
+        .badge-danger { background: rgba(239, 68, 68, 0.15); color: var(--admin-danger); }
+
+        /* Buttons */
+        .btn {
+            padding: 0.5rem 1rem; border-radius: 6px; border: none;
+            cursor: pointer; font-size: 0.85rem; font-weight: 500;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
+            text-decoration: none;
+        }
+        .btn-primary { background: var(--admin-text); color: var(--admin-bg); }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-outline { background: transparent; border: 1px solid var(--admin-border); color: var(--admin-text); }
+        .btn-outline:hover { background: var(--admin-hover); }
+        .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+
+        /* Hamburger Menu */
+        .menu-toggle {
+            display: none; 
+            width: 30px; height: 24px;
+            position: relative; cursor: pointer;
+            background: none; border: none;
+            z-index: 1001;
+        }
+
+        .menu-toggle span {
+            display: block; position: absolute; height: 3px; width: 100%;
+            background: var(--admin-text); border-radius: 3px; opacity: 1; left: 0;
+            transform: rotate(0deg); transition: 0.25s ease-in-out;
+        }
+
+        .menu-toggle span:nth-child(1) { top: 0px; transform-origin: left center; }
+        .menu-toggle span:nth-child(2) { top: 10px; transform-origin: left center; }
+        .menu-toggle span:nth-child(3) { top: 20px; transform-origin: left center; }
+
+        .menu-toggle.active span:nth-child(1) { transform: rotate(45deg); top: -2px; left: 3px; }
+        .menu-toggle.active span:nth-child(2) { width: 0%; opacity: 0; }
+        .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg); top: 22px; left: 3px; }
+
+        /* ============================================
+           RESPONSIVE QUERIES
+           ============================================ */
+        @media (max-width: 1200px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            
+            .main-content { margin-left: 0; }
+            .menu-toggle { display: block; }
+            
+            .content-container { padding: 1.5rem; }
+            .header-right .user-name { display: none; }
+            .admin-header { padding: 0 1.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .content-container { padding: 1rem; }
+            .card-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">8EEN<span>ADMIN</span></div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">Main</div>
+            <a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}" href="{{ url_for('admin.dashboard') }}">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+
+            <div class="nav-section">Management</div>
+            <a class="nav-link" href="{{ url_for('admin.projects') }}">
+                <i class="fas fa-film"></i> Projects
+            </a>
+            <a class="nav-link" href="{{ url_for('admin.payments') }}">
+                <i class="fas fa-credit-card"></i> Payments
+            </a>
+            <a class="nav-link" href="{{ url_for('admin.users') }}">
+                <i class="fas fa-users"></i> Users
+            </a>
+
+            <div class="nav-section">Insights</div>
+            <a class="nav-link" href="{{ url_for('admin.analytics') }}">
+                <i class="fas fa-chart-line"></i> Analytics
+            </a>
+
+            <div class="nav-section">System</div>
+            <a class="nav-link" href="{{ url_for('admin.settings') }}">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+        </nav>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menu-toggle">
+                    <span></span><span></span><span></span>
+                </button>
+                <h2>Dashboard Overview</h2>
+            </div>
+            <div class="header-right">
+                <a href="{{ url_for('admin.add_project') }}">
+                    <button class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i> New Project
+                    </button>
+                </a>
+                <div class="user-profile">
+                    <div class="user-avatar"><i class="fas fa-user"></i></div>
+                    <span class="user-name">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-container">
+            
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}" style="padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; background: {% if category == 'success' %}rgba(16, 185, 129, 0.1); border: 1px solid var(--admin-success); color: var(--admin-success);{% else %}rgba(239, 68, 68, 0.1); border: 1px solid var(--admin-danger); color: var(--admin-danger);{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- 1. STATS GRID -->
+            <div class="stats-grid">
+                <!-- Total Revenue -->
+                <div class="stat-card">
+                    <div class="stat-icon bg-green"><i class="fas fa-shilling-sign"></i></div>
+                    <div class="stat-info">
+                        <h3>KES {{ "{:,.2f}".format(total_revenue) }}</h3>
+                        <p>Total Revenue</p>
+                    </div>
+                </div>
+                <!-- Paid Payments -->
+                <div class="stat-card">
+                    <div class="stat-icon bg-blue"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-info">
+                        <h3>{{ total_paid }}</h3>
+                        <p>Paid Payments</p>
+                    </div>
+                </div>
+                <!-- Pending Payments -->
+                <div class="stat-card">
+                    <div class="stat-icon bg-yellow"><i class="fas fa-clock"></i></div>
+                    <div class="stat-info">
+                        <h3>{{ total_pending }}</h3>
+                        <p>Pending Payments</p>
+                    </div>
+                </div>
+                <!-- Failed Payments -->
+                <div class="stat-card">
+                    <div class="stat-icon bg-red"><i class="fas fa-times-circle"></i></div>
+                    <div class="stat-info">
+                        <h3>{{ total_failed }}</h3>
+                        <p>Failed Payments</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. CHARTS GRID -->
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Transactions</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="revenueChart" height="100"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Payment Status</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="statusChart" height="180"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. RECENT ORDERS TABLE -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Recent Transactions</h3>
+                    <a href="{{ url_for('admin.payments') }}" class="btn btn-outline btn-sm">View All</a>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Phone</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if payments %}
+                                {% for payment in payments[:10] %}
+                                <tr>
+                                    <td>{{ payment.phone_number }}</td>
+                                    <td>{{ payment.item_type|capitalize }}</td>
+                                    <td>KES {{ payment.amount }}</td>
+                                    <td>{{ payment.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>
+                                        {% if payment.status == 'paid' %}
+                                            <span class="badge badge-success">{{ payment.status }}</span>
+                                        {% elif payment.status == 'pending' %}
+                                            <span class="badge badge-warning">{{ payment.status }}</span>
+                                        {% else %}
+                                            <span class="badge badge-danger">{{ payment.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5">
+                                        <div class="empty-state">
+                                            <i class="fas fa-receipt"></i>
+                                            <p>No transactions found.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // ============================================
+        // SIDEBAR LOGIC
+        // ============================================
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menu-toggle');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        function openSidebar() {
+            sidebar.classList.add('active');
+            overlay.classList.add('active');
+            menuToggle.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            menuToggle.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.contains('active') ? closeSidebar() : openSidebar();
+        });
+
+        overlay.addEventListener('click', closeSidebar);
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768 && sidebar.classList.contains('active')) closeSidebar();
+        });
+
+        // ============================================
+        // CHARTS.JS INITIALIZATION
+        // ============================================
+        
+        Chart.defaults.color = '#888';
+        Chart.defaults.borderColor = '#333';
+
+        // 1. Revenue/Transactions Line Chart (Placeholder logic)
+        // Note: Real revenue over time requires grouping data in Python.
+        // This shows a static representation or "Transactions" volume concept.
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        
+        new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], // Placeholder
+                datasets: [{
+                    label: 'Transactions',
+                    data: [0, 0, 0, 0, 0, 0], // Placeholder
+                    borderColor: '#ffffff',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#222' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // 2. Payment Status Doughnut Chart
+        const statusCtx = document.getElementById('statusChart').getContext('2d');
+        
+        // Data passed from Flask
+        const paidCount = {{ total_paid }};
+        const pendingCount = {{ total_pending }};
+        const failedCount = {{ total_failed }};
+
+        new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Paid', 'Pending', 'Failed'],
+                datasets: [{
+                    data: [paidCount, pendingCount, failedCount],
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.8)', // Green
+                        'rgba(245, 158, 11, 0.8)', // Yellow
+                        'rgba(239, 68, 68, 0.8)'  // Red
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                cutout: '70%',
+                plugins: {
+                    legend: { position: 'bottom', labels: { padding: 20 } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

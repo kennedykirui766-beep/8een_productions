@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management | 8EEN Productions</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --admin-bg: #000000;
+            --admin-sidebar: #111111;
+            --admin-card: #1a1a1a;
+            --admin-hover: #2d2d2d;
+            --admin-border: #333333;
+            --admin-text: #ffffff;
+            --admin-text-muted: #888888;
+            --admin-accent: #ffffff;
+            --admin-success: #10B981;
+            --admin-warning: #F59E0B;
+            --admin-danger: #EF4444;
+            --admin-info: #3B82F6;
+            --font-body: 'Inter', sans-serif;
+            --sidebar-width: 260px;
+            --header-height: 70px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--admin-bg);
+            color: var(--admin-text);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- Layout Components --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--admin-sidebar);
+            height: 100vh;
+            position: fixed;
+            top: 0; left: 0;
+            border-right: 1px solid var(--admin-border);
+            display: flex; flex-direction: column;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid var(--admin-border); }
+        .sidebar-logo { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; }
+        .sidebar-logo span { color: var(--admin-text-muted); font-weight: 300; }
+
+        .sidebar-nav { flex: 1; overflow-y: auto; padding: 1rem 0; }
+        .nav-section { padding: 0.5rem 1.5rem; margin-top: 1rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--admin-text-muted); }
+        
+        .nav-link {
+            display: flex; align-items: center; padding: 0.8rem 1.5rem;
+            color: var(--admin-text-muted); text-decoration: none;
+            transition: all 0.2s; border-left: 3px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active { background-color: var(--admin-hover); color: var(--admin-text); border-left-color: var(--admin-text); }
+        .nav-link i { width: 20px; margin-right: 15px; font-size: 1rem; }
+
+        .main-content { margin-left: var(--sidebar-width); flex: 1; display: flex; flex-direction: column; min-height: 100vh; width: 100%; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+        /* --- Header --- */
+        .admin-header {
+            height: var(--header-height); background-color: rgba(17, 17, 17, 0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; justify-content: space-between;
+            padding: 0 2rem; position: sticky; top: 0; z-index: 900;
+        }
+        .header-left { display: flex; align-items: center; gap: 1rem; }
+        .header-left h2 { font-size: 1.2rem; font-weight: 600; }
+        .header-right { display: flex; align-items: center; gap: 1.5rem; }
+        .user-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .user-avatar { width: 36px; height: 36px; background: var(--admin-hover); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .content-container { padding: 2rem; flex: 1; width: 100%; }
+
+        /* --- Cards & Grid --- */
+        .card {
+            background: var(--admin-card); border: 1px solid var(--admin-border);
+            border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem;
+        }
+        .card-header { padding: 1.5rem; border-bottom: 1px solid var(--admin-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .card-title { font-size: 1.1rem; font-weight: 600; }
+        
+        /* Search Bar */
+        .search-bar { position: relative; width: 300px; max-width: 100%; }
+        .search-bar input { width: 100%; background: var(--admin-bg); border: 1px solid var(--admin-border); padding: 0.6rem 1rem 0.6rem 2.5rem; border-radius: 6px; color: var(--admin-text); }
+        .search-bar i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--admin-text-muted); }
+
+        /* --- Tables --- */
+        .table-responsive { overflow-x: auto; width: 100%; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th, td { padding: 1rem 1.5rem; text-align: left; font-size: 0.9rem; }
+        th { color: var(--admin-text-muted); font-weight: 500; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; background: rgba(0,0,0,0.2); }
+        tr { border-bottom: 1px solid var(--admin-border); }
+        tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: var(--admin-hover); }
+
+        /* User Cell Custom */
+        .user-cell { display: flex; align-items: center; gap: 12px; }
+        .user-avatar-sm { width: 36px; height: 36px; border-radius: 50%; background: var(--admin-border); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+
+        /* --- Buttons --- */
+        .btn {
+            padding: 0.5rem 1rem; border-radius: 6px; border: none;
+            cursor: pointer; font-size: 0.85rem; font-weight: 500;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
+            text-decoration: none;
+        }
+        .btn-primary { background: var(--admin-text); color: var(--admin-bg); }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-danger { background: rgba(239, 68, 68, 0.15); color: var(--admin-danger); }
+        .btn-danger:hover { background: var(--admin-danger); color: white; }
+        .btn-success { background: rgba(16, 185, 129, 0.15); color: var(--admin-success); }
+        .btn-outline { background: transparent; border: 1px solid var(--admin-border); color: var(--admin-text-muted); }
+        .btn-outline:hover { background: var(--admin-hover); color: var(--admin-text); }
+        .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+
+        /* --- Badges --- */
+        .badge { padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+        .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--admin-success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.15); color: var(--admin-warning); }
+
+        /* --- Modal --- */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal { background: var(--admin-card); border: 1px solid var(--admin-border); width: 100%; max-width: 500px; border-radius: 12px; transform: translateY(-20px); transition: transform 0.3s; padding: 2rem; position: relative; }
+        .modal-overlay.active .modal { transform: translateY(0); }
+        .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--admin-text-muted); font-size: 1.2rem; cursor: pointer; }
+        .modal h3 { margin-bottom: 1.5rem; font-size: 1.25rem; }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--admin-text-muted); }
+        .form-control { width: 100%; background: var(--admin-bg); border: 1px solid var(--admin-border); padding: 0.75rem; border-radius: 6px; color: var(--admin-text); }
+
+        /* --- Empty State --- */
+        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--admin-text-muted); }
+        .empty-state i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; }
+
+        /* --- Hamburger Menu --- */
+        .menu-toggle { display: none; width: 30px; height: 24px; position: relative; cursor: pointer; background: none; border: none; z-index: 1001; }
+        .menu-toggle span { display: block; position: absolute; height: 3px; width: 100%; background: var(--admin-text); border-radius: 3px; opacity: 1; left: 0; transform: rotate(0deg); transition: 0.25s ease-in-out; }
+        .menu-toggle span:nth-child(1) { top: 0px; }
+        .menu-toggle span:nth-child(2) { top: 10px; }
+        .menu-toggle span:nth-child(3) { top: 20px; }
+        .menu-toggle.active span:nth-child(1) { transform: rotate(45deg); top: -2px; left: 3px; }
+        .menu-toggle.active span:nth-child(2) { width: 0%; opacity: 0; }
+        .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg); top: 22px; left: 3px; }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .menu-toggle { display: block; }
+            .header-right .user-name { display: none; }
+            .content-container { padding: 1.5rem; }
+            .card-header { flex-direction: column; align-items: stretch; }
+            .search-bar { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">8EEN<span>ADMIN</span></div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">Main</div>
+            <a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}"
+            href="{{ url_for('admin.dashboard') }}">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+
+            
+            <div class="nav-section">Management</div>
+            <a class="nav-link" href="projects.html"><i class="fas fa-film"></i> Projects</a>
+            <a class="nav-link" href="payments.html"><i class="fas fa-credit-card"></i> Payments</a>
+            <a class="nav-link active" href="users.html"><i class="fas fa-users"></i> Users</a>
+
+            <div class="nav-section">System</div>
+            <a class="nav-link" href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+        </nav>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menu-toggle">
+                    <span></span><span></span><span></span>
+                </button>
+                <h2>User Management</h2>
+            </div>
+            <div class="header-right">
+                <div class="user-profile">
+                    <div class="user-avatar"><i class="fas fa-user"></i></div>
+                    <span class="user-name">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-container">
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Registered Users</h3>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <div class="search-bar">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="Search by name or email..." onkeyup="filterUsers()">
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="openModal()">
+                            <i class="fas fa-plus"></i> Add User
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Role</th>
+                                <th>Total Spent</th>
+                                <th>Joined</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody">
+                            <!-- Dynamic content here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ADD USER MODAL -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            <h3>Add New User</h3>
+            <form id="addUserForm" onsubmit="handleAddUser(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="newName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="newEmail" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="newRole" class="form-control">
+                        <option value="User">User</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-outline" style="flex:1" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex:1">Create User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // DATA INITIALIZATION
+        // ============================================
+        
+        if (!localStorage.getItem('users')) localStorage.setItem('users', JSON.stringify([]));
+        if (!localStorage.getItem('orders')) localStorage.setItem('orders', JSON.stringify([]));
+
+        let users = JSON.parse(localStorage.getItem('users'));
+        let orders = JSON.parse(localStorage.getItem('orders'));
+
+        // ============================================
+        // DOM ELEMENTS
+        // ============================================
+        const tableBody = document.getElementById('userTableBody');
+        const userModal = document.getElementById('userModal');
+        const searchInput = document.getElementById('searchInput');
+
+        // ============================================
+        // CORE FUNCTIONS
+        // ============================================
+
+        function calculateSpend(userEmail) {
+            return orders
+                .filter(o => o.user === userEmail && o.status === 'Completed')
+                .reduce((sum, o) => sum + parseFloat(o.amount), 0);
+        }
+
+        function renderUsers(data) {
+            tableBody.innerHTML = '';
+
+            if (data.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="fas fa-users-slash"></i>
+                                <p>No users found. Click "Add User" to get started.</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            data.forEach((user, index) => {
+                const spent = calculateSpend(user.email);
+                const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                const statusBadge = user.status === 'Active' 
+                    ? '<span class="badge badge-success">Active</span>' 
+                    : '<span class="badge badge-warning">Banned</span>';
+
+                const actionBtns = user.status === 'Active'
+                    ? `<button class="btn btn-sm btn-danger" onclick="toggleBan(${index})"><i class="fas fa-ban"></i> Ban</button>`
+                    : `<button class="btn btn-sm btn-success" onclick="toggleBan(${index})"><i class="fas fa-check"></i> Unban</button>`;
+
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar-sm">${initials}</div>
+                                <div>
+                                    <div style="font-weight:500">${user.name}</div>
+                                    <div style="font-size:0.8rem; color:var(--admin-text-muted)">${user.email}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${user.role}</td>
+                        <td>KES ${spent.toLocaleString()}</td>
+                        <td>${user.joined}</td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <div style="display:flex; gap:0.5rem;">
+                                ${actionBtns}
+                                <button class="btn btn-sm btn-outline" onclick="deleteUser(${index})"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filterUsers() {
+            const term = searchInput.value.toLowerCase();
+            const filtered = users.filter(u => 
+                u.name.toLowerCase().includes(term) || 
+                u.email.toLowerCase().includes(term)
+            );
+            renderUsers(filtered);
+        }
+
+        // ============================================
+        // ACTIONS
+        // ============================================
+
+        function handleAddUser(e) {
+            e.preventDefault();
+            const name = document.getElementById('newName').value;
+            const email = document.getElementById('newEmail').value;
+            const role = document.getElementById('newRole').value;
+
+            // Check duplicate
+            if (users.some(u => u.email === email)) {
+                alert("A user with this email already exists.");
+                return;
+            }
+
+            const newUser = {
+                name: name,
+                email: email,
+                role: role,
+                status: "Active",
+                joined: new Date().toISOString().split('T')[0] // YYYY-MM-DD
+            };
+
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            renderUsers(users);
+            closeModal();
+            document.getElementById('addUserForm').reset();
+        }
+
+        function toggleBan(index) {
+            const user = users[index];
+            user.status = user.status === 'Active' ? 'Banned' : 'Active';
+            users[index] = user;
+            localStorage.setItem('users', JSON.stringify(users));
+            renderUsers(users);
+        }
+
+        function deleteUser(index) {
+            if(confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+                users.splice(index, 1);
+                localStorage.setItem('users', JSON.stringify(users));
+                renderUsers(users);
+            }
+        }
+
+        // ============================================
+        // MODAL CONTROLS
+        // ============================================
+
+        function openModal() {
+            userModal.classList.add('active');
+        }
+
+        function closeModal() {
+            userModal.classList.remove('active');
+        }
+
+        // ============================================
+        // SIDEBAR LOGIC
+        // ============================================
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menu-toggle');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        function openSidebar() { sidebar.classList.add('active'); overlay.classList.add('active'); menuToggle.classList.add('active'); }
+        function closeSidebar() { sidebar.classList.remove('active'); overlay.classList.remove('active'); menuToggle.classList.remove('active'); }
+
+        menuToggle.addEventListener('click', () => sidebar.classList.contains('active') ? closeSidebar() : openSidebar());
+        overlay.addEventListener('click', closeSidebar);
+        window.addEventListener('resize', () => { if (window.innerWidth > 768 && sidebar.classList.contains('active')) closeSidebar(); });
+
+        // ============================================
+        // INIT
+        // ============================================
+        renderUsers(users);
+
+    </script>
+</body>
+</html>

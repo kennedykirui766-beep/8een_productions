@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments & Transactions | 8EEN Productions</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --admin-bg: #000000;
+            --admin-sidebar: #111111;
+            --admin-card: #1a1a1a;
+            --admin-hover: #2d2d2d;
+            --admin-border: #333333;
+            --admin-text: #ffffff;
+            --admin-text-muted: #888888;
+            --admin-success: #10B981;
+            --admin-warning: #F59E0B;
+            --admin-danger: #EF4444;
+            --admin-info: #3B82F6;
+            --font-body: 'Inter', sans-serif;
+            --sidebar-width: 260px;
+            --header-height: 70px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--admin-bg);
+            color: var(--admin-text);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--admin-sidebar);
+            height: 100vh;
+            position: fixed;
+            top: 0; left: 0;
+            border-right: 1px solid var(--admin-border);
+            display: flex; flex-direction: column;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid var(--admin-border); }
+        .sidebar-logo { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; }
+        .sidebar-logo span { color: var(--admin-text-muted); font-weight: 300; }
+
+        .sidebar-nav { flex: 1; overflow-y: auto; padding: 1rem 0; }
+        .nav-section { padding: 0.5rem 1.5rem; margin-top: 1rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--admin-text-muted); }
+        
+        .nav-link {
+            display: flex; align-items: center; padding: 0.8rem 1.5rem;
+            color: var(--admin-text-muted); text-decoration: none;
+            transition: all 0.2s; border-left: 3px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active { background-color: var(--admin-hover); color: var(--admin-text); border-left-color: var(--admin-text); }
+        .nav-link i { width: 20px; margin-right: 15px; font-size: 1rem; }
+
+        /* --- Main Content --- */
+        .main-content { margin-left: var(--sidebar-width); flex: 1; display: flex; flex-direction: column; min-height: 100vh; width: 100%; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+        /* --- Header --- */
+        .admin-header {
+            height: var(--header-height); background-color: rgba(17, 17, 17, 0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; justify-content: space-between;
+            padding: 0 2rem; position: sticky; top: 0; z-index: 900;
+        }
+        .header-left { display: flex; align-items: center; gap: 1rem; }
+        .header-left h2 { font-size: 1.2rem; font-weight: 600; }
+        .header-right { display: flex; align-items: center; gap: 1.5rem; }
+        .user-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .user-avatar { width: 36px; height: 36px; background: var(--admin-hover); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .content-container { padding: 2rem; flex: 1; width: 100%; }
+
+        /* --- Stats Grid --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+        
+        .stat-card {
+            background: var(--admin-card); border: 1px solid var(--admin-border);
+            border-radius: 12px; padding: 1.5rem; position: relative; overflow: hidden;
+        }
+        .stat-icon {
+            position: absolute; right: 1rem; bottom: 0.5rem; font-size: 4rem;
+            opacity: 0.05; transform: rotate(-15deg);
+        }
+        .stat-title { font-size: 0.85rem; color: var(--admin-text-muted); margin-bottom: 0.5rem; }
+        .stat-value { font-size: 1.5rem; font-weight: 700; }
+        .stat-sub { font-size: 0.8rem; margin-top: 0.5rem; }
+        .text-success { color: var(--admin-success); }
+        .text-warning { color: var(--admin-warning); }
+        .text-danger { color: var(--admin-danger); }
+
+        /* --- Card & Controls --- */
+        .card {
+            background: var(--admin-card); border: 1px solid var(--admin-border);
+            border-radius: 12px; overflow: hidden;
+        }
+        .card-header { padding: 1.5rem; border-bottom: 1px solid var(--admin-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .card-title { font-size: 1.1rem; font-weight: 600; }
+
+        .controls { display: flex; gap: 1rem; align-items: center; }
+        .filter-group { display: flex; gap: 0.5rem; }
+        .filter-btn {
+            background: transparent; border: 1px solid var(--admin-border); color: var(--admin-text-muted);
+            padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: all 0.2s;
+            text-decoration: none;
+        }
+        .filter-btn.active { background: var(--admin-text); color: var(--admin-bg); border-color: var(--admin-text); }
+        .search-bar { position: relative; width: 200px; }
+        .search-bar input { width: 100%; background: var(--admin-bg); border: 1px solid var(--admin-border); padding: 0.4rem 1rem 0.4rem 2rem; border-radius: 6px; color: var(--admin-text); font-size: 0.85rem; }
+        .search-bar i { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: var(--admin-text-muted); font-size: 0.8rem; }
+
+        /* --- Table --- */
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th, td { padding: 1rem 1.5rem; text-align: left; font-size: 0.9rem; }
+        th { color: var(--admin-text-muted); font-weight: 500; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; background: rgba(0,0,0,0.2); }
+        tr { border-bottom: 1px solid var(--admin-border); }
+        tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: var(--admin-hover); }
+
+        /* --- Badges --- */
+        .badge { padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; display: inline-block; text-align: center; min-width: 80px; text-transform: capitalize; }
+        .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--admin-success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.15); color: var(--admin-warning); }
+        .badge-danger { background: rgba(239, 68, 68, 0.15); color: var(--admin-danger); }
+
+        /* --- Buttons --- */
+        .btn {
+            padding: 0.5rem 1rem; border-radius: 6px; border: none;
+            cursor: pointer; font-size: 0.85rem; font-weight: 500;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
+            text-decoration: none;
+        }
+        .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.75rem; }
+        .btn-primary { background: var(--admin-text); color: var(--admin-bg); }
+        .btn-outline { background: transparent; border: 1px solid var(--admin-border); color: var(--admin-text-muted); }
+        .btn-success { background: var(--admin-success); color: white; }
+        .btn-success:hover { filter: brightness(1.1); }
+
+        /* --- Empty State --- */
+        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--admin-text-muted); }
+        .empty-state i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; }
+
+        /* --- Hamburger Menu --- */
+        .menu-toggle { display: none; width: 30px; height: 24px; position: relative; cursor: pointer; background: none; border: none; z-index: 1001; }
+        .menu-toggle span { display: block; position: absolute; height: 3px; width: 100%; background: var(--admin-text); border-radius: 3px; opacity: 1; left: 0; transform: rotate(0deg); transition: 0.25s ease-in-out; }
+        .menu-toggle span:nth-child(1) { top: 0px; }
+        .menu-toggle span:nth-child(2) { top: 10px; }
+        .menu-toggle span:nth-child(3) { top: 20px; }
+        .menu-toggle.active span:nth-child(1) { transform: rotate(45deg); top: -2px; left: 3px; }
+        .menu-toggle.active span:nth-child(2) { width: 0%; opacity: 0; }
+        .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg); top: 22px; left: 3px; }
+
+        /* --- Responsive --- */
+        @media (max-width: 1200px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .menu-toggle { display: block; }
+            .header-right .user-name { display: none; }
+            .content-container { padding: 1.5rem; }
+            .card-header { flex-direction: column; align-items: flex-start; }
+            .controls { width: 100%; justify-content: space-between; }
+            .search-bar { width: 100%; }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">8EEN<span>ADMIN</span></div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">Main</div>
+            <a class="nav-link" href="{{ url_for('admin.dashboard') }}"><i class="fas fa-home"></i> Dashboard</a>
+            
+            <div class="nav-section">Management</div>
+            <a class="nav-link" href="{{ url_for('admin.projects') }}"><i class="fas fa-film"></i> Projects</a>
+            <a class="nav-link active" href="{{ url_for('admin.payments') }}"><i class="fas fa-credit-card"></i> Payments</a>
+            <a class="nav-link" href="{{ url_for('admin.users') }}"><i class="fas fa-users"></i> Users</a>
+
+            <div class="nav-section">Insights</div>
+            <a class="nav-link" href="{{ url_for('admin.analytics') }}"><i class="fas fa-chart-line"></i> Analytics</a>
+
+            <div class="nav-section">System</div>
+            <a class="nav-link" href="{{ url_for('admin.settings') }}"><i class="fas fa-cog"></i> Settings</a>
+        </nav>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menu-toggle">
+                    <span></span><span></span><span></span>
+                </button>
+                <h2>Payments & Transactions</h2>
+            </div>
+            <div class="header-right">
+                <div class="user-profile">
+                    <div class="user-avatar"><i class="fas fa-user"></i></div>
+                    <span class="user-name">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-container">
+            
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}" style="padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; background: {% if category == 'success' %}rgba(16, 185, 129, 0.1); border: 1px solid var(--admin-success); color: var(--admin-success);{% else %}rgba(239, 68, 68, 0.1); border: 1px solid var(--admin-danger); color: var(--admin-danger);{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-title">Total Revenue</div>
+                    <div class="stat-value">KES {{ "{:,.2f}".format(total_revenue) }}</div>
+                    <div class="stat-sub text-success"><i class="fas fa-check-circle"></i> Paid Transactions</div>
+                    <i class="fas fa-coins stat-icon"></i>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Pending Clearance</div>
+                    <div class="stat-value">{{ total_pending }}</div>
+                    <div class="stat-sub text-warning"><i class="fas fa-clock"></i> Awaiting Confirmation</div>
+                    <i class="fas fa-hourglass-half stat-icon"></i>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Failed Transactions</div>
+                    <div class="stat-value">{{ total_failed }}</div>
+                    <div class="stat-sub text-danger"><i class="fas fa-times-circle"></i> Cancelled/Error</div>
+                    <i class="fas fa-exclamation-triangle stat-icon"></i>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Total Transactions</div>
+                    <div class="stat-value">{{ total_payments }}</div>
+                    <div class="stat-sub"><i class="fas fa-receipt"></i> All time records</div>
+                    <i class="fas fa-shopping-bag stat-icon"></i>
+                </div>
+            </div>
+
+            <!-- Transactions Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Transaction History</h3>
+                    <div class="controls">
+                        <div class="filter-group">
+                            <!-- Server-side filtering links -->
+                            <a href="{{ url_for('admin.payments') }}" class="filter-btn {% if not current_filter %}active{% endif %}">All</a>
+                            <a href="?status=paid" class="filter-btn {% if current_filter == 'paid' %}active{% endif %}">Paid</a>
+                            <a href="?status=pending" class="filter-btn {% if current_filter == 'pending' %}active{% endif %}">Pending</a>
+                            <a href="?status=failed" class="filter-btn {% if current_filter == 'failed' %}active{% endif %}">Failed</a>
+                        </div>
+                        <div class="search-bar">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="Search Phone/ID...">
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Phone Number</th>
+                                <th>Item</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            {% if payments %}
+                                {% for payment in payments %}
+                                <tr>
+                                    <td style="font-family: monospace; font-size: 0.8rem;" title="{{ payment.checkout_request_id }}">
+                                        {{ payment.checkout_request_id[:12] }}...
+                                    </td>
+                                    <td>{{ payment.phone_number }}</td>
+                                    <td>
+                                        <span class="badge badge-info" style="background: rgba(59, 130, 246, 0.15); color: var(--admin-info);">{{ payment.item_type }}</span>
+                                        ID: {{ payment.item_id }}
+                                    </td>
+                                    <td><strong>KES {{ payment.amount }}</strong></td>
+                                    <td>
+                                        {% if payment.status == 'paid' %}
+                                            <span class="badge badge-success">{{ payment.status }}</span>
+                                        {% elif payment.status == 'pending' %}
+                                            <span class="badge badge-warning">{{ payment.status }}</span>
+                                        {% else %}
+                                            <span class="badge badge-danger">{{ payment.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ payment.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6">
+                                        <div class="empty-state">
+                                            <i class="fas fa-receipt"></i>
+                                            <h3>No Transactions Found</h3>
+                                            <p style="margin-top: 0.5rem; font-size: 0.9rem;">No payment records match the current criteria.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // ============================================
+        // CLIENT-SIDE SEARCH (Filters rendered rows)
+        // ============================================
+        const searchInput = document.getElementById('searchInput');
+        const tableBody = document.getElementById('ordersTableBody');
+
+        searchInput.addEventListener('keyup', (e) => {
+            const term = e.target.value.toLowerCase();
+            const rows = tableBody.querySelectorAll('tr');
+
+            rows.forEach(row => {
+                // Skip the empty state row
+                if (row.querySelector('.empty-state')) return;
+
+                // Get text content (Phone, ID, Amount, etc)
+                const text = row.textContent.toLowerCase();
+                
+                if (text.includes(term)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // ============================================
+        // SIDEBAR LOGIC
+        // ============================================
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menu-toggle');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        function openSidebar() { sidebar.classList.add('active'); overlay.classList.add('active'); menuToggle.classList.add('active'); }
+        function closeSidebar() { sidebar.classList.remove('active'); overlay.classList.remove('active'); menuToggle.classList.remove('active'); }
+
+        menuToggle.addEventListener('click', () => sidebar.classList.contains('active') ? closeSidebar() : openSidebar());
+        overlay.addEventListener('click', closeSidebar);
+        window.addEventListener('resize', () => { if (window.innerWidth > 768 && sidebar.classList.contains('active')) closeSidebar(); });
+
+    </script>
+</body>
+</html>

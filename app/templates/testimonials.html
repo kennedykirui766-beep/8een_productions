@@ -1,0 +1,635 @@
+{% extends "base.html" %}
+
+{% block title %}Testimonials | 8een Productions{% endblock %}
+
+{% block content %}
+
+<!-- Page Specific Styles -->
+<style>
+    /* ============================================
+       TESTIMONIALS PAGE STYLES
+       ============================================ */
+
+    /* Featured Slider Section */
+    .testimonial-slider-section {
+        padding: var(--spacing-xl) 0;
+        background: linear-gradient(180deg, var(--color-black) 0%, var(--color-dark-grey) 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .slider-container {
+        position: relative;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 var(--spacing-md);
+    }
+
+    .slider-wrapper {
+        overflow: hidden;
+        border-radius: var(--radius-lg);
+    }
+
+    .slider-track {
+        display: flex;
+        transition: transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+    }
+
+    .slide {
+        min-width: 100%;
+        padding: var(--spacing-lg);
+        background: var(--color-charcoal);
+        border-radius: var(--radius-lg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        position: relative;
+    }
+
+    .slide::before {
+        content: '”';
+        font-family: var(--font-heading);
+        font-size: 15rem;
+        position: absolute;
+        top: -20px;
+        left: 0;
+        color: var(--color-medium-grey);
+        opacity: 0.1;
+        line-height: 1;
+        pointer-events: none;
+    }
+
+    .slide-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: var(--spacing-md);
+        border: 3px solid var(--color-white);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .slide-quote {
+        font-size: 1.4rem;
+        line-height: 1.8;
+        color: var(--color-silver);
+        margin-bottom: var(--spacing-md);
+        font-style: italic;
+        max-width: 700px;
+    }
+
+    .slide-author {
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+        color: var(--color-white);
+    }
+
+    .slide-role {
+        font-size: 0.9rem;
+        color: var(--color-light-grey);
+        margin-top: 0.25rem;
+    }
+
+    /* Slider Navigation */
+    .slider-nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: var(--spacing-md);
+        margin-top: var(--spacing-lg);
+    }
+
+    .slider-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--color-charcoal);
+        border: 1px solid var(--color-medium-grey);
+        color: var(--color-white);
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all var(--transition-normal);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .slider-btn:hover {
+        background: var(--color-white);
+        color: var(--color-black);
+        border-color: var(--color-white);
+        transform: scale(1.1);
+    }
+
+    .slider-dots {
+        display: flex;
+        gap: 8px;
+    }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--color-medium-grey);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+    }
+
+    .dot.active {
+        background: var(--color-white);
+        transform: scale(1.2);
+    }
+
+    /* Wall of Love (Grid) */
+    .wall-section {
+        padding: var(--spacing-xl) 0;
+        background-color: var(--color-black);
+    }
+
+    .wall-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--spacing-md);
+    }
+
+    .wall-card {
+        background: var(--color-dark-grey);
+        padding: var(--spacing-md);
+        border-radius: var(--radius-md);
+        transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+        border: 1px solid transparent;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .wall-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--color-charcoal);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    }
+
+    .wall-card-header {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .wall-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--color-charcoal);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: var(--color-white);
+        font-size: 1.2rem;
+    }
+
+    .wall-info h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--color-white);
+    }
+
+    .wall-info span {
+        font-size: 0.85rem;
+        color: var(--color-light-grey);
+    }
+
+    .wall-stars {
+        color: #FFD700; /* Gold */
+        margin-bottom: var(--spacing-sm);
+        font-size: 0.9rem;
+    }
+
+    .wall-text {
+        color: var(--color-silver);
+        font-size: 0.95rem;
+        line-height: 1.7;
+        flex-grow: 1;
+    }
+
+    .wall-footer {
+        margin-top: var(--spacing-sm);
+        padding-top: var(--spacing-sm);
+        border-top: 1px solid var(--color-charcoal);
+        font-size: 0.8rem;
+        color: var(--color-grey);
+        display: flex;
+        justify-content: space-between;
+    }
+
+    /* Video Testimonials Section */
+    .video-section {
+        padding: var(--spacing-xl) 0;
+        background-color: var(--color-dark-grey);
+    }
+
+    .video-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: var(--spacing-md);
+    }
+
+    .video-card {
+        position: relative;
+        aspect-ratio: 16/9;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        cursor: pointer;
+        background: var(--color-black);
+    }
+
+    .video-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.7;
+        transition: all var(--transition-slow);
+    }
+
+    .video-card:hover img {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+
+    .play-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 70px;
+        height: 70px;
+        background: rgba(255,255,255,0.9);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-black);
+        font-size: 1.8rem;
+        transition: all var(--transition-normal);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .video-card:hover .play-btn {
+        transform: translate(-50%, -50%) scale(1.1);
+        background: var(--color-white);
+    }
+
+    .video-caption {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: var(--spacing-sm);
+        background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        color: var(--color-white);
+        font-weight: 600;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .slide-quote { font-size: 1.1rem; }
+        .slider-nav { gap: var(--spacing-sm); }
+        .wall-grid { grid-template-columns: 1fr; }
+    }
+</style>
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content">
+            <div class="gradient-line"></div>
+            <h1>Client Stories</h1>
+            <p>Don't just take our word for it. Here is what our collaborators and clients have to say about working with 8een Productions.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Testimonials Slider -->
+<section class="testimonial-slider-section">
+    <div class="container">
+        <div class="text-center">
+            <div class="gradient-line" style="margin: 0 auto var(--spacing-md);"></div>
+            <h2 class="section-title">Featured Reviews</h2>
+        </div>
+
+        <div class="slider-container">
+            <div class="slider-wrapper">
+                <div class="slider-track" id="slider-track">
+                    <!-- Slides will be injected by JS or can be static HTML -->
+                    {% if featured_testimonials %}
+                        {% for t in featured_testimonials %}
+                        <div class="slide">
+                            <img src="{{ t.avatar_url if t.avatar_url else 'https://placehold.co/200x200/2d2d2d/fff?text=' ~ t.name[:1] }}" alt="{{ t.name }}" class="slide-avatar">
+                            <p class="slide-quote">"{{ t.quote }}"</p>
+                            <h4 class="slide-author">{{ t.name }}</h4>
+                            <span class="slide-role">{{ t.role }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <!-- Fallback Static Content -->
+                        <div class="slide">
+                            <img src="https://placehold.co/200x200/2d2d2d/fff?text=A" alt="Alex" class="slide-avatar">
+                            <p class="slide-quote">"8een Productions brought our vision to life in ways we never imagined. Their attention to detail and creative direction transformed our music video into a cinematic masterpiece."</p>
+                            <h4 class="slide-author">Alex Otieno</h4>
+                            <span class="slide-role">Music Artist</span>
+                        </div>
+                        <div class="slide">
+                            <img src="https://placehold.co/200x200/4a4a4a/fff?text=B" alt="Beatrice" class="slide-avatar">
+                            <p class="slide-quote">"Working with Marvin and the 8een team was an incredible experience. They understood our brand and delivered content that truly connects with our audience."</p>
+                            <h4 class="slide-author">Beatrice Mwangi</h4>
+                            <span class="slide-role">Brand Manager, Tech Startup</span>
+                        </div>
+                        <div class="slide">
+                            <img src="https://placehold.co/200x200/6b6b6b/fff?text=C" alt="Chris" class="slide-avatar">
+                            <p class="slide-quote">"The quality of work from 8een Productions is unmatched. They bring authenticity and professionalism to every project. Highly recommended for any creative work."</p>
+                            <h4 class="slide-author">Chris Juma</h4>
+                            <span class="slide-role">Filmmaker</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="slider-nav">
+                <button class="slider-btn" id="prev-btn" aria-label="Previous">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="slider-dots" id="slider-dots">
+                    <!-- Dots generated by JS -->
+                </div>
+                <button class="slider-btn" id="next-btn" aria-label="Next">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Video Testimonials -->
+<section class="video-section">
+    <div class="container">
+        <div class="text-center">
+            <div class="gradient-line" style="margin: 0 auto var(--spacing-md);"></div>
+            <h2 class="section-title">Video Stories</h2>
+            <p class="section-subtitle" style="margin: 0 auto var(--spacing-lg);">Hear directly from our partners in their own words.</p>
+        </div>
+
+        <div class="video-grid">
+            <div class="video-card" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+                <img src="https://placehold.co/600x340/1a1a1a/fff?text=Client+Interview+1" alt="Video Interview">
+                <div class="play-btn"><i class="fas fa-play"></i></div>
+                <div class="video-caption">Safaricom Campaign Behind the Scenes</div>
+            </div>
+            <div class="video-card" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
+                <img src="https://placehold.co/600x340/2d2d2d/fff?text=Client+Interview+2" alt="Video Interview">
+                <div class="play-btn"><i class="fas fa-play"></i></div>
+                <div class="video-caption">Artist Feature: Recording Experience</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Wall of Love (Grid) -->
+<section class="wall-section">
+    <div class="container">
+        <div class="text-center">
+            <div class="gradient-line" style="margin: 0 auto var(--spacing-md);"></div>
+            <h2 class="section-title">Wall of Love</h2>
+        </div>
+
+        <div class="wall-grid">
+            {% if testimonials %}
+                {% for t in testimonials %}
+                <div class="wall-card">
+                    <div class="wall-card-header">
+                        <div class="wall-avatar">{{ t.name[:1] }}</div>
+                        <div class="wall-info">
+                            <h4>{{ t.name }}</h4>
+                            <span>{{ t.role }}</span>
+                        </div>
+                    </div>
+                    <div class="wall-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="wall-text">"{{ t.quote }}"</p>
+                    <div class="wall-footer">
+                        <span><i class="fas fa-check-circle"></i> Verified Client</span>
+                        <span>{{ t.date if t.date else 'Recent' }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <!-- Fallback Static Cards -->
+                <div class="wall-card">
+                    <div class="wall-card-header">
+                        <div class="wall-avatar">J</div>
+                        <div class="wall-info">
+                            <h4>John Doe</h4>
+                            <span>Independent Filmmaker</span>
+                        </div>
+                    </div>
+                    <div class="wall-stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="wall-text">"Professional, creative, and incredibly easy to work with. They delivered our promotional video ahead of schedule and it looked fantastic."</p>
+                    <div class="wall-footer">
+                        <span><i class="fas fa-check-circle"></i> Verified Client</span>
+                        <span>2 Weeks Ago</span>
+                    </div>
+                </div>
+                
+                <div class="wall-card">
+                    <div class="wall-card-header">
+                        <div class="wall-avatar">S</div>
+                        <div class="wall-info">
+                            <h4>Sarah W.</h4>
+                            <span>Marketing Director</span>
+                        </div>
+                    </div>
+                    <div class="wall-stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="wall-text">"The team at 8een understands visual storytelling deeply. Our social media engagement jumped 40% after posting the content they created."</p>
+                    <div class="wall-footer">
+                        <span><i class="fas fa-check-circle"></i> Verified Client</span>
+                        <span>1 Month Ago</span>
+                    </div>
+                </div>
+
+                <div class="wall-card">
+                    <div class="wall-card-header">
+                        <div class="wall-avatar">M</div>
+                        <div class="wall-info">
+                            <h4>Mike K.</h4>
+                            <span>Musician</span>
+                        </div>
+                    </div>
+                    <div class="wall-stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="wall-text">"Finally a production house that gets the vibe right. The lighting and color grading in my latest video were top tier."</p>
+                    <div class="wall-footer">
+                        <span><i class="fas fa-check-circle"></i> Verified Client</span>
+                        <span>2 Months Ago</span>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Reusing Modal from Portfolio but tailored for Video -->
+<div class="modal-overlay" id="video-modal">
+    <div class="modal-content" style="max-width: 900px;">
+        <button class="modal-close" onclick="closeVideoModal()">&times;</button>
+        <div class="modal-media" id="video-modal-container" style="aspect-ratio: 16/9;">
+            <!-- Iframe injected here -->
+        </div>
+    </div>
+</div>
+
+<!-- Page Specific Scripts -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // ============================================
+        // TESTIMONIALS SLIDER LOGIC
+        // ============================================
+        const track = document.getElementById('slider-track');
+        const slides = document.querySelectorAll('.slide');
+        const dotsContainer = document.getElementById('slider-dots');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        
+        let currentIndex = 0;
+        const slideCount = slides.length;
+        let autoSlideInterval;
+
+        if (slideCount > 0) {
+            // Create Dots
+            slides.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => {
+                    goToSlide(i);
+                    resetAutoSlide();
+                });
+                dotsContainer.appendChild(dot);
+            });
+
+            function updateSlider() {
+                track.style.transform = `translateX(-${currentIndex * 100}%)`;
+                
+                // Update Dots
+                document.querySelectorAll('.dot').forEach((dot, i) => {
+                    dot.classList.toggle('active', i === currentIndex);
+                });
+            }
+
+            function nextSlide() {
+                currentIndex = (currentIndex + 1) % slideCount;
+                updateSlider();
+            }
+
+            function prevSlide() {
+                currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+                updateSlider();
+            }
+
+            function goToSlide(index) {
+                currentIndex = index;
+                updateSlider();
+            }
+
+            function resetAutoSlide() {
+                clearInterval(autoSlideInterval);
+                autoSlideInterval = setInterval(nextSlide, 6000);
+            }
+
+            // Event Listeners
+            nextBtn.addEventListener('click', () => { nextSlide(); resetAutoSlide(); });
+            prevBtn.addEventListener('click', () => { prevSlide(); resetAutoSlide(); });
+
+            // Swipe Support (Touch)
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            track.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);
+            track.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+
+            function handleSwipe() {
+                if (touchEndX < touchStartX - 50) nextSlide();
+                if (touchEndX > touchStartX + 50) prevSlide();
+                resetAutoSlide();
+            }
+
+            // Start Auto-slide
+            autoSlideInterval = setInterval(nextSlide, 6000);
+        }
+
+        // ============================================
+        // VIDEO MODAL LOGIC
+        // ============================================
+        window.openVideoModal = function(url) {
+            const modal = document.getElementById('video-modal');
+            const container = document.getElementById('video-modal-container');
+            container.innerHTML = `<iframe src="${url}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        window.closeVideoModal = function() {
+            const modal = document.getElementById('video-modal');
+            const container = document.getElementById('video-modal-container');
+            modal.classList.remove('active');
+            container.innerHTML = ''; // Stop video
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on overlay click
+        document.getElementById('video-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'video-modal') {
+                closeVideoModal();
+            }
+        });
+
+        // Intersection Observer for Wall Cards Animation
+        const cards = document.querySelectorAll('.wall-card');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 100);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.5s ease';
+            observer.observe(card);
+        });
+
+    });
+</script>
+
+{% endblock %}

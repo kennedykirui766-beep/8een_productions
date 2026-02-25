@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Control | 8EEN Productions</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --admin-bg: #000000;
+            --admin-sidebar: #111111;
+            --admin-card: #1a1a1a;
+            --admin-hover: #2d2d2d;
+            --admin-border: #333333;
+            --admin-text: #ffffff;
+            --admin-text-muted: #888888;
+            --admin-accent: #ffffff;
+            --admin-success: #10B981;
+            --admin-warning: #F59E0B;
+            --admin-danger: #EF4444;
+            --admin-info: #3B82F6;
+            --font-body: 'Inter', sans-serif;
+            --sidebar-width: 260px;
+            --header-height: 70px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--admin-bg);
+            color: var(--admin-text);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- Layout Components --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--admin-sidebar);
+            height: 100vh;
+            position: fixed;
+            top: 0; left: 0;
+            border-right: 1px solid var(--admin-border);
+            display: flex; flex-direction: column;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid var(--admin-border); }
+        .sidebar-logo { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; }
+        .sidebar-logo span { color: var(--admin-text-muted); font-weight: 300; }
+
+        .sidebar-nav { flex: 1; overflow-y: auto; padding: 1rem 0; }
+        .nav-section { padding: 0.5rem 1.5rem; margin-top: 1rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--admin-text-muted); }
+        
+        .nav-link {
+            display: flex; align-items: center; padding: 0.8rem 1.5rem;
+            color: var(--admin-text-muted); text-decoration: none;
+            transition: all 0.2s; border-left: 3px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active { background-color: var(--admin-hover); color: var(--admin-text); border-left-color: var(--admin-text); }
+        .nav-link i { width: 20px; margin-right: 15px; font-size: 1rem; }
+
+        .main-content { margin-left: var(--sidebar-width); flex: 1; display: flex; flex-direction: column; min-height: 100vh; width: 100%; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+        /* --- Header --- */
+        .admin-header {
+            height: var(--header-height); background-color: rgba(17, 17, 17, 0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; justify-content: space-between;
+            padding: 0 2rem; position: sticky; top: 0; z-index: 900;
+        }
+        .header-left { display: flex; align-items: center; gap: 1rem; }
+        .header-left h2 { font-size: 1.2rem; font-weight: 600; }
+        .header-right { display: flex; align-items: center; gap: 1.5rem; }
+        .user-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .user-avatar { width: 36px; height: 36px; background: var(--admin-hover); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .content-container { padding: 2rem; flex: 1; width: 100%; }
+
+        /* --- Cards & Grid --- */
+        .access-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        
+        .card {
+            background: var(--admin-card); border: 1px solid var(--admin-border);
+            border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem;
+        }
+        .card-header { padding: 1.5rem; border-bottom: 1px solid var(--admin-border); display: flex; justify-content: space-between; align-items: center; }
+        .card-title { font-size: 1.1rem; font-weight: 600; }
+        .card-body { padding: 1.5rem; }
+
+        /* --- Forms --- */
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 500; color: var(--admin-text-muted); }
+        .form-control {
+            width: 100%; background: var(--admin-bg); border: 1px solid var(--admin-border);
+            padding: 0.75rem 1rem; border-radius: 6px; color: var(--admin-text);
+            font-family: inherit; transition: border-color 0.2s;
+        }
+        .form-control:focus { outline: none; border-color: var(--admin-accent); }
+
+        /* --- Buttons --- */
+        .btn {
+            padding: 0.6rem 1.2rem; border-radius: 6px; border: none;
+            cursor: pointer; font-size: 0.9rem; font-weight: 500;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
+            text-decoration: none;
+        }
+        .btn-primary { background: var(--admin-text); color: var(--admin-bg); }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-danger { background: var(--admin-danger); color: white; }
+        .btn-danger:hover { opacity: 0.9; }
+        .btn-outline { background: transparent; border: 1px solid var(--admin-border); color: var(--admin-text); }
+        .btn-outline:hover { background: var(--admin-hover); }
+        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+
+        /* --- Tables --- */
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 400px; }
+        th, td { padding: 0.8rem 1rem; text-align: left; border-bottom: 1px solid var(--admin-border); }
+        th { color: var(--admin-text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { font-size: 0.9rem; }
+        
+        /* --- Badges --- */
+        .badge { padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+        .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--admin-success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.15); color: var(--admin-warning); }
+
+        /* --- Empty State --- */
+        .empty-state { text-align: center; padding: 2rem 1rem; color: var(--admin-text-muted); }
+        .empty-state i { font-size: 2rem; margin-bottom: 1rem; opacity: 0.3; }
+
+        /* --- Hamburger Menu --- */
+        .menu-toggle { display: none; width: 30px; height: 24px; position: relative; cursor: pointer; background: none; border: none; z-index: 1001; }
+        .menu-toggle span { display: block; position: absolute; height: 3px; width: 100%; background: var(--admin-text); border-radius: 3px; opacity: 1; left: 0; transform: rotate(0deg); transition: 0.25s ease-in-out; }
+        .menu-toggle span:nth-child(1) { top: 0px; transform-origin: left center; }
+        .menu-toggle span:nth-child(2) { top: 10px; transform-origin: left center; }
+        .menu-toggle span:nth-child(3) { top: 20px; transform-origin: left center; }
+        .menu-toggle.active span:nth-child(1) { transform: rotate(45deg); top: -2px; left: 3px; }
+        .menu-toggle.active span:nth-child(2) { width: 0%; opacity: 0; }
+        .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg); top: 22px; left: 3px; }
+
+        /* --- Responsive --- */
+        @media (max-width: 1024px) {
+            .access-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .menu-toggle { display: block; }
+            .header-right .user-name { display: none; }
+            .content-container { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">8EEN<span>ADMIN</span></div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">Main</div>
+            <a class="nav-link" href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+            
+            <div class="nav-section">Management</div>
+            <a class="nav-link" href="projects.html"><i class="fas fa-film"></i> Projects</a>
+            <a class="nav-link" href="payments.html"><i class="fas fa-credit-card"></i> Payments</a>
+            <a class="nav-link active" href="access.html"><i class="fas fa-key"></i> Access Control</a>
+            <a class="nav-link" href="users.html"><i class="fas fa-users"></i> Users</a>
+
+            <div class="nav-section">System</div>
+            <a class="nav-link" href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+        </nav>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menu-toggle">
+                    <span></span><span></span><span></span>
+                </button>
+                <h2>Access Control</h2>
+            </div>
+            <div class="header-right">
+                <div class="user-profile">
+                    <div class="user-avatar"><i class="fas fa-user"></i></div>
+                    <span class="user-name">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-container">
+            
+            <div class="access-grid">
+                <!-- 1. Manual Access Grant -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Grant Manual Access</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="grantAccessForm">
+                            <div class="form-group">
+                                <label>User Email</label>
+                                <input type="email" id="userEmail" class="form-control" placeholder="client@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Select Project</label>
+                                <select id="projectSelect" class="form-control" required>
+                                    <option value="" disabled selected>Loading projects...</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                <i class="fas fa-unlock"></i> Grant Access
+                            </button>
+                        </form>
+
+                        <!-- List of Granted Access -->
+                        <div style="margin-top: 2rem;">
+                            <h4 style="font-size: 0.9rem; color: var(--admin-text-muted); margin-bottom: 1rem; border-bottom: 1px solid var(--admin-border); padding-bottom: 0.5rem;">Currently Granted</h4>
+                            <div class="table-responsive">
+                                <table id="grantedTable">
+                                    <thead>
+                                        <tr><th>User</th><th>Project</th><th>Action</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Dynamic Content -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Temporary Free Access -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Temporary Free Access</h3>
+                    </div>
+                    <div class="card-body">
+                        <p style="font-size: 0.85rem; color: var(--admin-text-muted); margin-bottom: 1.5rem;">
+                            Set a time window during which a paid project becomes free for all users.
+                        </p>
+                        <form id="freeAccessForm">
+                            <div class="form-group">
+                                <label>Select Paid Project</label>
+                                <select id="freeProjectSelect" class="form-control" required>
+                                    <option value="" disabled selected>Loading projects...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Duration</label>
+                                <select id="durationSelect" class="form-control">
+                                    <option value="24">24 Hours</option>
+                                    <option value="48">48 Hours</option>
+                                    <option value="72">72 Hours</option>
+                                    <option value="168">7 Days</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                <i class="fas fa-clock"></i> Activate Free Access
+                            </button>
+                        </form>
+
+                        <!-- List of Active Free Access -->
+                         <div style="margin-top: 2rem;">
+                            <h4 style="font-size: 0.9rem; color: var(--admin-text-muted); margin-bottom: 1rem; border-bottom: 1px solid var(--admin-border); padding-bottom: 0.5rem;">Active Free Windows</h4>
+                            <div id="freeAccessList">
+                                <!-- Dynamic Content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // ============================================
+        // DATA INITIALIZATION
+        // ============================================
+        
+        // Initialize LocalStorage Keys if they don't exist
+        if (!localStorage.getItem('projects')) localStorage.setItem('projects', JSON.stringify([]));
+        if (!localStorage.getItem('access_grants')) localStorage.setItem('access_grants', JSON.stringify([]));
+        if (!localStorage.getItem('free_access')) localStorage.setItem('free_access', JSON.stringify([]));
+
+        let projects = JSON.parse(localStorage.getItem('projects'));
+        let grants = JSON.parse(localStorage.getItem('access_grants'));
+        let freeAccess = JSON.parse(localStorage.getItem('free_access'));
+
+        // ============================================
+        // DOM ELEMENTS
+        // ============================================
+        const projectSelect = document.getElementById('projectSelect');
+        const freeProjectSelect = document.getElementById('freeProjectSelect');
+        const grantForm = document.getElementById('grantAccessForm');
+        const freeForm = document.getElementById('freeAccessForm');
+        const grantedTableBody = document.querySelector('#grantedTable tbody');
+        const freeAccessList = document.getElementById('freeAccessList');
+
+        // ============================================
+        // POPULATE DROPDOWNS
+        // ============================================
+        function populateDropdowns() {
+            // Clear existing options
+            projectSelect.innerHTML = '<option value="" disabled selected>Select a project</option>';
+            freeProjectSelect.innerHTML = '<option value="" disabled selected>Select a project</option>';
+
+            if (projects.length === 0) {
+                const option = document.createElement('option');
+                option.disabled = true;
+                option.textContent = "No projects added yet";
+                projectSelect.appendChild(option);
+                freeProjectSelect.appendChild(option.cloneNode(true));
+                return;
+            }
+
+            projects.forEach(project => {
+                // Manual Access Dropdown
+                const opt1 = document.createElement('option');
+                opt1.value = project.id; // Assuming project has unique ID
+                opt1.textContent = project.title;
+                projectSelect.appendChild(opt1);
+
+                // Free Access Dropdown (Only show paid projects ideally, but we'll show all for now)
+                const opt2 = document.createElement('option');
+                opt2.value = project.id;
+                opt2.textContent = project.title;
+                freeProjectSelect.appendChild(opt2);
+            });
+        }
+
+        // ============================================
+        // RENDER FUNCTIONS
+        // ============================================
+        
+        function renderGrantedAccess() {
+            grantedTableBody.innerHTML = '';
+            
+            if (grants.length === 0) {
+                grantedTableBody.innerHTML = `
+                    <tr><td colspan="3" style="text-align: center; color: var(--admin-text-muted);">No manual access granted.</td></tr>
+                `;
+                return;
+            }
+
+            grants.forEach((grant, index) => {
+                const projectName = projects.find(p => p.id == grant.projectId)?.title || 'Unknown Project';
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${grant.email}</td>
+                    <td>${projectName}</td>
+                    <td><button class="btn btn-sm btn-danger" onclick="revokeAccess(${index})"><i class="fas fa-times"></i> Revoke</button></td>
+                `;
+                grantedTableBody.appendChild(tr);
+            });
+        }
+
+        function renderFreeAccess() {
+            freeAccessList.innerHTML = '';
+            
+            // Filter out expired entries
+            const now = new Date().getTime();
+            const activeFreeAccess = freeAccess.filter(f => f.expires > now);
+            
+            // Update LocalStorage if we removed expired items
+            if (activeFreeAccess.length !== freeAccess.length) {
+                freeAccess = activeFreeAccess;
+                localStorage.setItem('free_access', JSON.stringify(freeAccess));
+            }
+
+            if (freeAccess.length === 0) {
+                freeAccessList.innerHTML = `
+                    <div style="text-align: center; color: var(--admin-text-muted); padding: 1rem;">
+                        No active free access windows.
+                    </div>
+                `;
+                return;
+            }
+
+            freeAccess.forEach((item, index) => {
+                const projectName = projects.find(p => p.id == item.projectId)?.title || 'Unknown Project';
+                const expiryDate = new Date(item.expires);
+                
+                const div = document.createElement('div');
+                div.style.display = 'flex';
+                div.style.justifyContent = 'space-between';
+                div.style.alignItems = 'center';
+                div.style.padding = '0.8rem';
+                div.style.borderBottom = '1px solid var(--admin-border)';
+                div.style.fontSize = '0.9rem';
+                
+                div.innerHTML = `
+                    <div>
+                        <strong style="display:block; color:white;">${projectName}</strong>
+                        <span style="font-size:0.8rem; color:var(--admin-warning);">Expires: ${expiryDate.toLocaleString()}</span>
+                    </div>
+                    <button class="btn btn-sm btn-outline" onclick="cancelFreeAccess(${index})">Cancel</button>
+                `;
+                freeAccessList.appendChild(div);
+            });
+        }
+
+        // ============================================
+        // EVENT HANDLERS
+        // ============================================
+
+        // 1. Grant Manual Access
+        grantForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('userEmail').value;
+            const projectId = projectSelect.value;
+
+            if (!email || !projectId) return;
+
+            // Check if already granted
+            const exists = grants.find(g => g.email === email && g.projectId == projectId);
+            if (exists) {
+                alert('This user already has access to this project.');
+                return;
+            }
+
+            grants.push({
+                email: email,
+                projectId: projectId,
+                grantedAt: new Date().toISOString()
+            });
+
+            localStorage.setItem('access_grants', JSON.stringify(grants));
+            renderGrantedAccess();
+            grantForm.reset();
+        });
+
+        // 2. Activate Free Access
+        freeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const projectId = freeProjectSelect.value;
+            const hours = document.getElementById('durationSelect').value;
+            
+            if (!projectId) return;
+
+            // Remove any existing free access for this project to avoid duplicates
+            freeAccess = freeAccess.filter(f => f.projectId != projectId);
+
+            const expires = new Date().getTime() + (parseInt(hours) * 60 * 60 * 1000);
+
+            freeAccess.push({
+                projectId: projectId,
+                expires: expires
+            });
+
+            localStorage.setItem('free_access', JSON.stringify(freeAccess));
+            renderFreeAccess();
+            alert('Free access activated!');
+        });
+
+        // 3. Revoke Access
+        window.revokeAccess = function(index) {
+            if(confirm('Are you sure you want to revoke this access?')) {
+                grants.splice(index, 1);
+                localStorage.setItem('access_grants', JSON.stringify(grants));
+                renderGrantedAccess();
+            }
+        }
+
+        // 4. Cancel Free Access
+        window.cancelFreeAccess = function(index) {
+            freeAccess.splice(index, 1);
+            localStorage.setItem('free_access', JSON.stringify(freeAccess));
+            renderFreeAccess();
+        }
+
+        // ============================================
+        // SIDEBAR & MENU LOGIC
+        // ============================================
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menu-toggle');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        function openSidebar() { sidebar.classList.add('active'); overlay.classList.add('active'); menuToggle.classList.add('active'); }
+        function closeSidebar() { sidebar.classList.remove('active'); overlay.classList.remove('active'); menuToggle.classList.remove('active'); }
+
+        menuToggle.addEventListener('click', () => sidebar.classList.contains('active') ? closeSidebar() : openSidebar());
+        overlay.addEventListener('click', closeSidebar);
+        window.addEventListener('resize', () => { if (window.innerWidth > 768 && sidebar.classList.contains('active')) closeSidebar(); });
+
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        populateDropdowns();
+        renderGrantedAccess();
+        renderFreeAccess();
+
+    </script>
+</body>
+</html>
