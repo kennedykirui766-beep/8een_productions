@@ -83,7 +83,7 @@ def add_movie():
             poster_filename = secure_filename(poster_file.filename)
             trailer_filename = secure_filename(trailer_file.filename) if trailer_file else None
 
-            mmovie_file.save(os.path.join(get_upload_path("movies"), movie_filename))
+            movie_file.save(os.path.join(get_upload_path("movies"), movie_filename))
             poster_file.save(os.path.join(get_upload_path("posters"), poster_filename))
 
             if trailer_file:
