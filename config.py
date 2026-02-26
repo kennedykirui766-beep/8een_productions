@@ -1,14 +1,15 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class Config:
-    SECRET_KEY = "supersecretkey"
-    SQLALCHEMY_DATABASE_URI = "sqlite:///database.db"
+    SECRET_KEY = os.getenv("SECRET_KEY")
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    MPESA_CONSUMER_KEY = "0x6mfH2Buh4phYmChotKxOmuISKHNsoCPHGaJp9xtJ73kUzw"
-    MPESA_CONSUMER_SECRET = "ICGbJnwdbEAJP6Ke6jSMuBDGGLTIkUStcZeDnNlMoOxISsl5w9tOeqAIUgaP3LiD"
-    MPESA_SHORTCODE = "174379"
-    MPESA_PASSKEY = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919"
-    MPESA_CALLBACK_URL = "https://ethel-tillable-debera.ngrok-free.dev/mpesa/callback"
 
-
-
+    MPESA_CONSUMER_KEY = os.getenv("MPESA_CONSUMER_KEY")
+    MPESA_CONSUMER_SECRET = os.getenv("MPESA_CONSUMER_SECRET")
+    MPESA_SHORTCODE = os.getenv("MPESA_SHORTCODE")
+    MPESA_PASSKEY = os.getenv("MPESA_PASSKEY")
+    MPESA_CALLBACK_URL = os.getenv("MPESA_CALLBACK_URL")
