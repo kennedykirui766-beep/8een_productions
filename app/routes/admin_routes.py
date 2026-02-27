@@ -22,6 +22,7 @@ def login():
 
 # app/routes/admin_routes.py
 import os
+import cloudinary.uploader
 from flask import Blueprint, request, redirect, url_for, flash, render_template
 from werkzeug.utils import secure_filename
 from app import db
@@ -83,11 +84,29 @@ def add_movie():
             poster_filename = secure_filename(poster_file.filename)
             trailer_filename = secure_filename(trailer_file.filename) if trailer_file else None
 
-            movie_file.save(os.path.join(get_upload_path("movies"), movie_filename))
-            poster_file.save(os.path.join(get_upload_path("posters"), poster_filename))
+            # Upload movie to Cloudinary
+            movie_upload = cloudinary.uploader.upload(
+                movie_file,
+                resource_type="video",
+                folder="movies"
+            )
+            movie_filename = movie_upload["secure_url"]
 
+            # Upload poster to Cloudinary
+            poster_upload = cloudinary.uploader.upload(
+                poster_file,
+                folder="posters"
+            )
+            poster_filename = poster_upload["secure_url"]
+
+            # Upload trailer if exists
             if trailer_file:
-                trailer_file.save(os.path.join(get_upload_path("trailers"), trailer_filename))
+                trailer_upload = cloudinary.uploader.upload(
+                    trailer_file,
+                    resource_type="video",
+                    folder="trailers"
+                )
+                trailer_filename = trailer_upload["secure_url"]
 
 
             movie = Movie(
@@ -141,8 +160,11 @@ def add_gallery():
             for img in image_files:
                 if img and allowed_file(img.filename, ALLOWED_IMAGE_EXTENSIONS):
                     filename = secure_filename(img.filename)
-                    img.save(os.path.join(get_upload_path("galleries"), filename))
-                    saved_files.append(filename)
+                    upload_result = cloudinary.uploader.upload(
+                    img,
+                    folder="galleries"
+                )
+                saved_files.append(upload_result["secure_url"])
 
             gallery = Gallery(
                 title=title,
@@ -192,8 +214,20 @@ def add_trailer():
             trailer_filename = secure_filename(trailer_file.filename)
             thumbnail_filename = secure_filename(thumbnail_file.filename)
 
-            trailer_file.save(os.path.join(get_upload_path("trailers"), trailer_filename))
-            thumbnail_file.save(os.path.join(get_upload_path("thumbnails"), thumbnail_filename))
+            # Upload trailer video
+            trailer_upload = cloudinary.uploader.upload(
+                trailer_file,
+                resource_type="video",
+                folder="trailers"
+            )
+            trailer_filename = trailer_upload["secure_url"]
+
+            # Upload thumbnail image
+            thumbnail_upload = cloudinary.uploader.upload(
+                thumbnail_file,
+                folder="thumbnails"
+            )
+            thumbnail_filename = thumbnail_upload["secure_url"]
 
 
             trailer = Trailer(
