@@ -615,22 +615,22 @@
             {% if movies %}
                 {% for movie in movies %}
                 <div class="portfolio-item" 
-                     data-category="movie" 
-                     data-title="{{ movie.title }}"
-                     data-desc="{{ movie.description or movie.synopsis }}"
-                     data-client="{{ movie.director or '8EEN' }}"
-                     data-date="{{ movie.release_date.strftime('%Y') if movie.release_date else '' }}"
-                     data-pricing-type="{{ movie.pricing_type or 'free' }}"
-                     data-price="{{ movie.price or 0 }}"
-                     data-item-id="{{ movie.id }}"
-                     {% if movie.movie_file %}
-                        data-media="{{ url_for('static', filename='uploads/movies/' + movie.movie_file) }}"
+                    data-category="movie" 
+                    data-title="{{ movie.title }}"
+                    data-desc="{{ movie.description or movie.synopsis }}"
+                    data-client="{{ movie.director or '8EEN' }}"
+                    data-date="{{ movie.release_date.strftime('%Y') if movie.release_date else '' }}"
+                    data-pricing-type="{{ movie.pricing_type or 'free' }}"
+                    data-price="{{ movie.price or 0 }}"
+                    data-item-id="{{ movie.id }}"
+                    {% if movie.movie_file %}
+                        data-media="{{ movie.movie_file }}"
                         data-type="video"
-                     {% else %}
+                    {% else %}
                         data-media="" 
                         data-type="image"
-                     {% endif %}
-                     data-poster="{{ url_for('static', filename='uploads/posters/' + movie.poster_file) if movie.poster_file else '' }}">
+                    {% endif %}
+                    data-poster="{{ movie.poster_file if movie.poster_file else '' }}">
                     
                     <span class="type-badge badge-movie">Movie</span>
                     {% if movie.pricing_type in ['paid', 'rent'] %}
@@ -638,7 +638,7 @@
                     {% endif %}
 
                     {% if movie.poster_file %}
-                        <img src="{{ url_for('static', filename='uploads/posters/' + movie.poster_file) }}" alt="{{ movie.title }}">
+                        <img src="{{ movie.poster_file }}" alt="{{ movie.title }}">
                     {% else %}
                         <div class="portfolio-placeholder"><i class="fas fa-film"></i></div>
                     {% endif %}
@@ -656,31 +656,31 @@
             {% if trailers %}
                 {% for trailer in trailers %}
                 <div class="portfolio-item" 
-                     data-category="trailer" 
-                     data-title="{{ trailer.title }}"
-                     data-desc="{{ trailer.description }}"
-                     data-client="Trailer"
-                     data-date="{{ trailer.release_date.strftime('%Y') if trailer.release_date else '' }}"
-                     data-pricing-type="free"
-                     data-price="0"
-                     data-item-id="{{ trailer.id }}"
-                     {% if trailer.trailer_file %}
-                        data-media="{{ url_for('static', filename='uploads/trailers/' + trailer.trailer_file) }}"
+                    data-category="trailer" 
+                    data-title="{{ trailer.title }}"
+                    data-desc="{{ trailer.description }}"
+                    data-client="Trailer"
+                    data-date="{{ trailer.release_date.strftime('%Y') if trailer.release_date else '' }}"
+                    data-pricing-type="free"
+                    data-price="0"
+                    data-item-id="{{ trailer.id }}"
+                    {% if trailer.trailer_file %}
+                        data-media="{{ trailer.trailer_file }}"
                         data-type="video"
                     {% elif trailer.thumbnail %}
-                        data-media="{{ url_for('static', filename='uploads/thumbnails/' + trailer.thumbnail) }}"
+                        data-media="{{ trailer.thumbnail }}"
                         data-type="image"
                     {% endif %}
-                    data-poster="{{ url_for('static', filename='uploads/thumbnails/' + trailer.thumbnail) if trailer.thumbnail else '' }}">
+                    data-poster="{{ trailer.thumbnail if trailer.thumbnail else '' }}">
                     
                     <span class="type-badge badge-trailer">Trailer</span>
 
                     {% if trailer.thumbnail %}
-                        <img src="{{ url_for('static', filename='uploads/thumbnails/' + trailer.thumbnail) }}" alt="{{ trailer.title }}">
+                        <img src="{{ trailer.thumbnail }}" alt="{{ trailer.title }}">
                     {% elif trailer.trailer_file %}
-                         <video muted preload="metadata" style="width:100%; height:100%; object-fit:cover;">
-                             <source src="{{ url_for('static', filename='uploads/trailers/' + trailer.trailer_file) }}" type="video/mp4">
-                         </video>
+                        <video muted preload="metadata" style="width:100%; height:100%; object-fit:cover;">
+                            <source src="{{ trailer.trailer_file }}" type="video/mp4">
+                        </video>
                     {% else %}
                         <div class="portfolio-placeholder"><i class="fas fa-video"></i></div>
                     {% endif %}
@@ -703,26 +703,26 @@
                 {% for f in image_files %}
                     {% set trimmed = f.strip() %}
                     {% if trimmed %}
-                        {% set _ = image_urls.append(url_for('static', filename='uploads/galleries/' + trimmed)) %}
+                        {% set _ = image_urls.append(trimmed) %}
                     {% endif %}
                 {% endfor %}
 
                 <div class="portfolio-item" 
-                     data-category="gallery" 
-                     data-title="{{ gallery.title }}"
-                     data-desc="{{ gallery.description }}"
-                     data-client="Gallery"
-                     data-date="{{ gallery.created_at.strftime('%Y') if gallery.created_at else '' }}"
-                     data-pricing-type="free"
-                     data-price="0"
-                     data-item-id="{{ gallery.id }}"
-                     data-type="gallery"
-                     data-images='{{ image_urls | tojson }}'>
+                    data-category="gallery" 
+                    data-title="{{ gallery.title }}"
+                    data-desc="{{ gallery.description }}"
+                    data-client="Gallery"
+                    data-date="{{ gallery.created_at.strftime('%Y') if gallery.created_at else '' }}"
+                    data-pricing-type="free"
+                    data-price="0"
+                    data-item-id="{{ gallery.id }}"
+                    data-type="gallery"
+                    data-images='{{ image_urls | tojson }}'>
                     
                     <span class="type-badge badge-gallery">Gallery</span>
 
                     {% if image_urls %}
-                         <img src="{{ image_urls[0] }}" alt="{{ gallery.title }}">
+                        <img src="{{ image_urls[0] }}" alt="{{ gallery.title }}">
                     {% else %}
                         <div class="portfolio-placeholder"><i class="fas fa-images"></i></div>
                     {% endif %}
