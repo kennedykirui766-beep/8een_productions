@@ -245,6 +245,15 @@
             letter-spacing: 1px;
             color: var(--color-silver);
             position: relative;
+            /* Setup for icon alignment */
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Hide icons on Desktop to keep top bar clean */
+        .nav-link i {
+            display: none;
         }
 
         .nav-link::after {
@@ -260,6 +269,8 @@
 
         .nav-link:hover { color: var(--color-white); }
         .nav-link:hover::after { width: 100%; }
+        
+        /* Desktop Active State */
         .nav-link.active { color: var(--color-white); }
         .nav-link.active::after { width: 100%; }
 
@@ -287,7 +298,6 @@
             transform-origin: center;
         }
 
-        /* Hamburger to 'X' Transformation */
         .menu-toggle.active span:nth-child(1) {
             transform: translateY(9px) rotate(45deg);
         }
@@ -484,7 +494,6 @@
         .filter-btn:hover, .filter-btn.active { background-color: var(--color-white); color: var(--color-black); border-color: var(--color-white); }
         .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: var(--spacing-md); }
         
-        /* === FIX: Portfolio Item Mobile Interaction === */
         .portfolio-item { 
             position: relative; aspect-ratio: 16/10; overflow: hidden; border-radius: var(--radius-md); cursor: pointer; 
             touch-action: manipulation; 
@@ -502,7 +511,6 @@
         }
         .portfolio-item:hover .portfolio-placeholder { transform: scale(1.05); }
         
-        /* === FIX: Overlay Pointer Events === */
         .portfolio-overlay { 
             position: absolute; inset: 0; background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 100%); 
             opacity: 0; transition: opacity var(--transition-normal); 
@@ -609,18 +617,46 @@
             .nav-menu {
                 position: fixed; top: 0; left: 0; width: 70%; max-width: 300px; height: 100vh;
                 background-color: var(--color-black); flex-direction: column;
-                /* UPDATED: Push content to the top */
-                justify-content: flex-start; 
-                padding-top: calc(var(--header-height) + 20px); /* Add padding to clear header */
-                align-items: flex-start; padding-left: var(--spacing-lg);
-                gap: var(--spacing-md); transform: translateX(-100%); 
+                justify-content: flex-start;
+                padding-top: calc(var(--header-height) + 20px);
+                align-items: stretch; /* Stretch links to fill width */
+                padding-left: 0; /* Remove left padding for full-width hover effect */
+                gap: 0; /* Remove gap, handle spacing via padding */
+                transform: translateX(-100%); 
                 transition: transform var(--transition-normal);
                 box-shadow: 5px 0 15px rgba(0,0,0,0.5); z-index: 1001;
             }
             .nav-menu.active { transform: translateX(0); }
-            .nav-link { font-size: 1.2rem; }
+            
+            /* Mobile Link Styling with Icons */
+            .nav-link {
+                font-size: 1rem;
+                padding: 1rem 1.5rem;
+                color: var(--color-silver);
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+                border-left: 4px solid transparent; /* Placeholder for active indicator */
+            }
 
-            /* === FIX: Mobile Overlay Blocking Clicks === */
+            /* Show Icons on Mobile */
+            .nav-link i {
+                display: inline-block;
+                width: 24px; /* Fixed width for alignment */
+                margin-right: 15px;
+                text-align: center;
+                font-size: 1.1rem;
+            }
+
+            /* Mobile Active State: Gray Overlay + White Left Line */
+            .nav-link.active {
+                background-color: rgba(255, 255, 255, 0.1); /* Gray Overlay */
+                border-left: 4px solid var(--color-white); /* White Line */
+                color: var(--color-white);
+            }
+            
+            /* Remove underline animation on mobile */
+            .nav-link::after { display: none; }
+
+            /* Mobile Overlay Blocking Clicks Fix */
             .mobile-overlay {
                 display: block;
                 pointer-events: none; 
@@ -705,12 +741,25 @@
             <a href="#" class="logo">8EEN<span>PRODUCTIONS</span></a>
 
             <nav class="nav-menu" id="nav-menu">
-                <a href="{{ url_for('main.home') }}" class="nav-link">Home</a>
-                <a href="{{ url_for('projects.all_projects') }}" class="nav-link">Portfolio</a>
-                <a href="{{ url_for('main.services') }}" class="nav-link">Services</a>
-                <a href="{{ url_for('main.testimonials') }}" class="nav-link">Testimonials</a>
-                <a href="{{ url_for('main.contact') }}" class="nav-link">Contact</a>
-                <a href="{{ url_for('main.about') }}" class="nav-link">About</a>
+                <!-- Added Icons and active class logic placeholder -->
+                <a href="{{ url_for('main.home') }}" class="nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="{{ url_for('projects.all_projects') }}" class="nav-link">
+                    <i class="fas fa-film"></i> Portfolio
+                </a>
+                <a href="{{ url_for('main.services') }}" class="nav-link">
+                    <i class="fas fa-briefcase"></i> Services
+                </a>
+                <a href="{{ url_for('main.testimonials') }}" class="nav-link">
+                    <i class="fas fa-quote-left"></i> Testimonials
+                </a>
+                <a href="{{ url_for('main.contact') }}" class="nav-link">
+                    <i class="fas fa-envelope"></i> Contact
+                </a>
+                <a href="{{ url_for('main.about') }}" class="nav-link">
+                    <i class="fas fa-info-circle"></i> About
+                </a>
             </nav>
         </div>
     </header>
@@ -813,7 +862,6 @@
             document.body.classList.remove('menu-open');
         }
 
-        // Toggle button click (Handles both open and close via 'X')
         menuToggle.addEventListener('click', function(e) {
             e.preventDefault();
             if (navMenu.classList.contains('active')) {
@@ -823,7 +871,6 @@
             }
         });
 
-        // Overlay click (Handles close by clicking outside)
         mobileOverlay.addEventListener('click', closeMenu);
 
         // Close menu when clicking a link
@@ -831,7 +878,7 @@
             link.addEventListener('click', closeMenu);
         });
 
-        // Smooth scroll
+        // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 const href = this.getAttribute('href');
@@ -893,6 +940,24 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeMenu();
+            }
+        });
+
+        // =========================================
+        // ACTIVE NAVIGATION HIGHLIGHTING
+        // =========================================
+        // This script adds the 'active' class to the correct link based on the current URL
+        const currentLocation = window.location.pathname;
+        navLinks.forEach(link => {
+            const linkPath = link.getAttribute('href');
+            
+            // Check if the link matches the current path
+            // Note: We use strict equality or startsWith depending on routing structure.
+            // For simplicity, we check if the current location includes the link path (handling slashes).
+            if (linkPath === currentLocation || (linkPath !== '/' && currentLocation.startsWith(linkPath))) {
+                link.classList.add('active');
+            } else if (linkPath === '/' && currentLocation === '/') {
+                link.classList.add('active');
             }
         });
     </script>
