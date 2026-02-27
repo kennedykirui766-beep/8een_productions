@@ -86,11 +86,10 @@ def add_movie():
             trailer_filename = secure_filename(trailer_file.filename) if trailer_file else None
 
             # Upload movie to Cloudinary
-            movie_upload = cloudinary.uploader.upload_large(
+            movie_upload = cloudinary.uploader.upload(
                 movie_file,
                 resource_type="video",
-                folder="movies",
-                chunk_size=6000000  # 6MB chunks
+                folder="movies"
             )
             movie_filename = movie_upload["secure_url"]
 
