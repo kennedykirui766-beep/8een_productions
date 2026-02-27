@@ -310,64 +310,56 @@ from flask import url_for
 @admin_bp.route("/projects")
 @login_required
 def projects():
-    # Fetch content added by admin
-    projects = project.query.order_by(project.created_at.desc()).all()  # <-- important
+    from cloudinary.utils import cloudinary_url
 
-    # If you also want movies/trailers/galleries:
+    # Fetch all content
     movies = Movie.query.order_by(Movie.created_at.desc()).all()
     trailers = Trailer.query.order_by(Trailer.created_at.desc()).all()
     galleries = Gallery.query.order_by(Gallery.created_at.desc()).all()
 
-    # Convert all to a unified "projects" list
     unified_projects = []
 
-    for p in projects:
-        unified_projects.append({
-            "id": p.id,
-            "title": p.title,
-            "content_type": "project",
-            "poster_file": p.poster_file,
-            "movie_file": p.movie_file,
-            "trailer_file": p.trailer_file,
-            "release_date": p.release_date,
-            "pricing_type": p.pricing_type,
-            "price": p.price
-        })
-
-    # You can optionally include movies/trailers/galleries too
+    # Movies
     for m in movies:
+        poster_url, _ = cloudinary_url(m.poster_file) if m.poster_file else (None, None)
+        movie_url, _ = cloudinary_url(m.movie_file) if m.movie_file else (None, None)
         unified_projects.append({
             "id": m.id,
             "title": m.title,
             "content_type": "movie",
-            "poster_file": m.poster_file,
-            "movie_file": m.movie_file,
+            "poster_file": poster_url,
+            "movie_file": movie_url,
             "trailer_file": None,
             "release_date": m.release_date,
             "pricing_type": m.pricing_type,
             "price": m.price
         })
 
+    # Trailers
     for t in trailers:
+        thumb_url, _ = cloudinary_url(t.thumbnail_file) if t.thumbnail_file else (None, None)
+        trailer_url, _ = cloudinary_url(t.trailer_file) if t.trailer_file else (None, None)
         unified_projects.append({
             "id": t.id,
             "title": t.title,
             "content_type": "trailer",
-            "poster_file": t.thumbnail_file,
+            "poster_file": thumb_url,
             "movie_file": None,
-            "trailer_file": t.trailer_file,
+            "trailer_file": trailer_url,
             "release_date": t.release_date,
             "pricing_type": "free",
             "price": 0
         })
 
+    # Galleries
     for g in galleries:
         images = g.image_files.split(',') if g.image_files else []
+        poster_url, _ = cloudinary_url(images[0].strip()) if images else (None, None)
         unified_projects.append({
             "id": g.id,
             "title": g.title,
             "content_type": "gallery",
-            "poster_file": url_for('static', filename=f'uploads/galleries/{images[0].strip()}') if images else None,
+            "poster_file": poster_url,
             "movie_file": None,
             "trailer_file": None,
             "release_date": g.created_at,
