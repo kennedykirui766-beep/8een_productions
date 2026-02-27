@@ -313,22 +313,52 @@ def projects():
     trailers = Trailer.query.order_by(Trailer.created_at.desc()).all()
     galleries = Gallery.query.order_by(Gallery.created_at.desc()).all()
 
-    # Prepare gallery images
-    for gallery in galleries:
-        if gallery.image_files:
-            gallery.images = [
-                url_for('static', filename=f'uploads/galleries/{img.strip()}')
-                for img in gallery.image_files.split(',')
-            ]
-        else:
-            gallery.images = []
+    projects = []
 
-    return render_template(
-        "admin/projects.html",
-        movies=movies,
-        trailers=trailers,
-        galleries=galleries
-    )
+    # Movies
+    for m in movies:
+        projects.append({
+            "id": m.id,
+            "title": m.title,
+            "content_type": "movie",
+            "poster_file": m.poster_file,  # Cloudinary URL or local path
+            "movie_file": m.movie_file,
+            "trailer_file": None,
+            "release_date": m.release_date,
+            "pricing_type": m.pricing_type,
+            "price": m.price
+        })
+
+    # Trailers
+    for t in trailers:
+        projects.append({
+            "id": t.id,
+            "title": t.title,
+            "content_type": "trailer",
+            "poster_file": t.thumbnail_file,
+            "movie_file": None,
+            "trailer_file": t.trailer_file,
+            "release_date": t.release_date,
+            "pricing_type": "free",
+            "price": 0
+        })
+
+    # Galleries (use first image as poster)
+    for g in galleries:
+        images = g.image_files.split(',') if g.image_files else []
+        projects.append({
+            "id": g.id,
+            "title": g.title,
+            "content_type": "picture",
+            "poster_file": url_for('static', filename=f'uploads/galleries/{images[0].strip()}') if images else None,
+            "movie_file": None,
+            "trailer_file": None,
+            "release_date": g.created_at,
+            "pricing_type": "free",
+            "price": 0
+        })
+
+    return render_template("admin/projects.html", projects=projects)
 
 
 
