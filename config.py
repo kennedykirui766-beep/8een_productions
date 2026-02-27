@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import cloudinary
 
 load_dotenv()
 
@@ -13,3 +14,13 @@ class Config:
     MPESA_SHORTCODE = os.getenv("MPESA_SHORTCODE")
     MPESA_PASSKEY = os.getenv("MPESA_PASSKEY")
     MPESA_CALLBACK_URL = os.getenv("MPESA_CALLBACK_URL")
+    
+    
+
+
+cloudinary.config(
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+    secure=True
+)
