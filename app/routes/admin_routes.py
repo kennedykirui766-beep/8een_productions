@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, abort
 from flask_login import login_user, login_required, logout_user, current_user
+from app.models import project
 from app.models.user import User
 from app import db
 from app.models import Payment, Movie
@@ -309,19 +310,37 @@ from flask import url_for
 @admin_bp.route("/projects")
 @login_required
 def projects():
+    # Fetch content added by admin
+    projects = project.query.order_by(project.created_at.desc()).all()  # <-- important
+
+    # If you also want movies/trailers/galleries:
     movies = Movie.query.order_by(Movie.created_at.desc()).all()
     trailers = Trailer.query.order_by(Trailer.created_at.desc()).all()
     galleries = Gallery.query.order_by(Gallery.created_at.desc()).all()
 
-    projects = []
+    # Convert all to a unified "projects" list
+    unified_projects = []
 
-    # Movies
+    for p in projects:
+        unified_projects.append({
+            "id": p.id,
+            "title": p.title,
+            "content_type": "project",
+            "poster_file": p.poster_file,
+            "movie_file": p.movie_file,
+            "trailer_file": p.trailer_file,
+            "release_date": p.release_date,
+            "pricing_type": p.pricing_type,
+            "price": p.price
+        })
+
+    # You can optionally include movies/trailers/galleries too
     for m in movies:
-        projects.append({
+        unified_projects.append({
             "id": m.id,
             "title": m.title,
             "content_type": "movie",
-            "poster_file": m.poster_file,  # Cloudinary URL or local path
+            "poster_file": m.poster_file,
             "movie_file": m.movie_file,
             "trailer_file": None,
             "release_date": m.release_date,
@@ -329,9 +348,8 @@ def projects():
             "price": m.price
         })
 
-    # Trailers
     for t in trailers:
-        projects.append({
+        unified_projects.append({
             "id": t.id,
             "title": t.title,
             "content_type": "trailer",
@@ -343,13 +361,12 @@ def projects():
             "price": 0
         })
 
-    # Galleries (use first image as poster)
     for g in galleries:
         images = g.image_files.split(',') if g.image_files else []
-        projects.append({
+        unified_projects.append({
             "id": g.id,
             "title": g.title,
-            "content_type": "picture",
+            "content_type": "gallery",
             "poster_file": url_for('static', filename=f'uploads/galleries/{images[0].strip()}') if images else None,
             "movie_file": None,
             "trailer_file": None,
@@ -358,8 +375,7 @@ def projects():
             "price": 0
         })
 
-    return render_template("admin/projects.html", projects=projects)
-
+    return render_template("admin/projects.html", projects=unified_projects)
 
 
 @admin_bp.route("/delete_movie/<int:id>", methods=["POST"])
