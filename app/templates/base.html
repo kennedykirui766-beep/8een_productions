@@ -730,12 +730,28 @@
     .navbar img {
         height: 45px;
     }
+
+.top-logo {
+    width: 100%;
+    overflow: hidden; /* prevents scrollbars */
+    display: flex;
+    justify-content: center; /* centers logo horizontally */
+    padding: 10px 0;
+}
+
+.top-logo .logo img {
+    max-width: 100%; /* scales down to viewport */
+    height: auto;
+    display: block;
+}
     </style>
 </head>
 <body>
-    <a href="{{ url_for('main.home') }}" class="logo">
-        <img src="{{ logo_url }}" alt="8EEN PRODUCTIONS">
-    </a>
+    <header class="top-logo">
+        <a href="{{ url_for('main.home') }}" class="logo">
+            <img src="{{ logo_url }}" alt="8EEN PRODUCTIONS">
+        </a>
+    </header>
 
     <!-- Mobile Overlay (Click outside to close) -->
     <div class="mobile-overlay" id="mobile-overlay"></div>
