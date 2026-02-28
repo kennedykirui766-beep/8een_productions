@@ -93,6 +93,7 @@
             list-style: none;
         }
 
+        /* Global Image Handling */
         img {
             max-width: 100%;
             height: auto;
@@ -219,12 +220,24 @@
             width: 100%;
         }
 
+        /* --- LOGO STYLING --- */
         .logo {
-            font-family: var(--font-heading);
-            font-size: 2rem;
-            letter-spacing: 3px;
-            color: var(--color-white);
+            display: flex;
+            align-items: center;
             z-index: 1002;
+            /* Fallback font styling if image fails */
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            color: var(--color-white);
+        }
+
+        /* Logo Image Specific Styling */
+        .logo img {
+            height: 45px; /* Fixed height for the logo image */
+            width: auto;  /* Maintain aspect ratio */
+            object-fit: contain;
+            transition: all var(--transition-normal);
         }
 
         .logo span {
@@ -245,13 +258,12 @@
             letter-spacing: 1px;
             color: var(--color-silver);
             position: relative;
-            /* Setup for icon alignment */
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        /* Hide icons on Desktop to keep top bar clean */
+        /* Hide icons on Desktop */
         .nav-link i {
             display: none;
         }
@@ -270,11 +282,10 @@
         .nav-link:hover { color: var(--color-white); }
         .nav-link:hover::after { width: 100%; }
         
-        /* Desktop Active State */
         .nav-link.active { color: var(--color-white); }
         .nav-link.active::after { width: 100%; }
 
-        /* Mobile Menu Toggle (Hamburger) */
+        /* Mobile Menu Toggle */
         .menu-toggle {
             display: none;
             flex-direction: column;
@@ -298,37 +309,22 @@
             transform-origin: center;
         }
 
-        .menu-toggle.active span:nth-child(1) {
-            transform: translateY(9px) rotate(45deg);
-        }
+        .menu-toggle.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+        .menu-toggle.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .menu-toggle.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
 
-        .menu-toggle.active span:nth-child(2) {
-            opacity: 0;
-            transform: scaleX(0);
-        }
-
-        .menu-toggle.active span:nth-child(3) {
-            transform: translateY(-9px) rotate(-45deg);
-        }
-
-        /* Mobile Overlay (Dark background) */
+        /* Mobile Overlay */
         .mobile-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
-            z-index: 999;
-            opacity: 0;
+            z-index: 999; opacity: 0;
             transition: opacity var(--transition-normal);
             cursor: pointer;
+            pointer-events: none; 
         }
-
-        .mobile-overlay.active {
-            opacity: 1;
-        }
+        .mobile-overlay.active { opacity: 1; pointer-events: auto; }
 
         /* ============================================
            HERO SECTION
@@ -394,18 +390,11 @@
         .hero-buttons { display: flex; flex-wrap: wrap; gap: var(--spacing-sm); }
 
         .scroll-indicator {
-            position: absolute;
-            bottom: var(--spacing-md);
-            left: 50%;
+            position: absolute; bottom: var(--spacing-md); left: 50%;
             transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--color-grey);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+            color: var(--color-grey); font-size: 0.75rem;
+            text-transform: uppercase; letter-spacing: 2px;
             animation: bounce 2s infinite;
         }
 
@@ -427,8 +416,7 @@
 
         .page-header::before {
             content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
             opacity: 0.5;
         }
@@ -466,7 +454,16 @@
             color: var(--color-silver);
         }
         .about-content p { color: var(--color-light-grey); margin-bottom: var(--spacing-md); line-height: 1.8; }
-        .about-image img { width: 100%; border-radius: var(--radius-md); }
+        
+        /* About Image Styling */
+        .about-image img { 
+            width: 100%; 
+            height: auto;
+            border-radius: var(--radius-md); 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            object-fit: cover;
+        }
+        
         .about-image-placeholder {
             aspect-ratio: 4/3;
             background: linear-gradient(135deg, var(--color-charcoal), var(--color-medium-grey));
@@ -474,6 +471,7 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 3rem; color: var(--color-grey);
         }
+        
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-md); margin-top: var(--spacing-md); }
         .stat-item { text-align: center; padding: var(--spacing-sm); background-color: var(--color-charcoal); border-radius: var(--radius-sm); }
         .stat-number { font-family: var(--font-heading); font-size: 2.5rem; color: var(--color-white); }
@@ -612,59 +610,51 @@
 
             .header .container { flex-direction: row; }
             .menu-toggle { display: flex; order: 1; }
-            .logo { order: 2; flex: 1; text-align: center; }
+            
+            /* Mobile Logo Adjustments */
+            .logo { order: 2; flex: 1; justify-content: center; }
+            .logo img { height: 35px; } /* Slightly smaller logo on mobile */
 
             .nav-menu {
                 position: fixed; top: 0; left: 0; width: 70%; max-width: 300px; height: 100vh;
                 background-color: var(--color-black); flex-direction: column;
                 justify-content: flex-start;
                 padding-top: calc(var(--header-height) + 20px);
-                align-items: stretch; /* Stretch links to fill width */
-                padding-left: 0; /* Remove left padding for full-width hover effect */
-                gap: 0; /* Remove gap, handle spacing via padding */
+                align-items: stretch; 
+                padding-left: 0; 
+                gap: 0; 
                 transform: translateX(-100%); 
                 transition: transform var(--transition-normal);
                 box-shadow: 5px 0 15px rgba(0,0,0,0.5); z-index: 1001;
             }
             .nav-menu.active { transform: translateX(0); }
             
-            /* Mobile Link Styling with Icons */
+            /* Mobile Link Styling */
             .nav-link {
                 font-size: 1rem;
                 padding: 1rem 1.5rem;
                 color: var(--color-silver);
                 border-bottom: 1px solid rgba(255,255,255,0.05);
-                border-left: 4px solid transparent; /* Placeholder for active indicator */
+                border-left: 4px solid transparent; 
             }
 
             /* Show Icons on Mobile */
             .nav-link i {
                 display: inline-block;
-                width: 24px; /* Fixed width for alignment */
+                width: 24px; 
                 margin-right: 15px;
                 text-align: center;
                 font-size: 1.1rem;
             }
 
-            /* Mobile Active State: Gray Overlay + White Left Line */
+            /* Mobile Active State */
             .nav-link.active {
-                background-color: rgba(255, 255, 255, 0.1); /* Gray Overlay */
-                border-left: 4px solid var(--color-white); /* White Line */
+                background-color: rgba(255, 255, 255, 0.1); 
+                border-left: 4px solid var(--color-white); 
                 color: var(--color-white);
             }
             
-            /* Remove underline animation on mobile */
             .nav-link::after { display: none; }
-
-            /* Mobile Overlay Blocking Clicks Fix */
-            .mobile-overlay {
-                display: block;
-                pointer-events: none; 
-            }
-            .mobile-overlay.active {
-                opacity: 1;
-                pointer-events: auto;
-            }
 
             .hero { padding-top: var(--header-height); }
             .hero-title { font-size: clamp(2.5rem, 15vw, 4rem); }
@@ -678,7 +668,7 @@
             .stat-item { padding: var(--spacing-xs); }
             .stat-number { font-size: 1.8rem; }
             .services-grid { grid-template-columns: 1fr; }
-            .portfolio-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .portfolio-grid { grid-template-columns: 1fr 2fr; gap: 10px; }
             
             .portfolio-filters { overflow-x: auto; flex-wrap: nowrap; padding-bottom: var(--spacing-xs); -webkit-overflow-scrolling: touch; }
             .filter-btn { flex-shrink: 0; }
@@ -720,21 +710,10 @@
         a:focus, button:focus, input:focus, textarea:focus { outline: 2px solid var(--color-white); outline-offset: 2px; }
         .skip-link { position: absolute; top: -40px; left: 0; background: var(--color-white); color: var(--color-black); padding: 8px 16px; z-index: 1001; font-weight: 600; }
         .skip-link:focus { top: 0; }
-
-    .about-image img {
-        width: 100%;
-        border-radius: 15px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-    }
-
-    .navbar img {
-        height: 45px;
-    }
-
     </style>
 </head>
 <body>
-    
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <!-- Mobile Overlay (Click outside to close) -->
     <div class="mobile-overlay" id="mobile-overlay"></div>
@@ -750,11 +729,11 @@
             </button>
 
             <a href="{{ url_for('main.home') }}" class="logo">
+                <!-- Uses logo_url variable from backend, falls back to text style if image is missing or small -->
                 <img src="{{ logo_url }}" alt="8EEN PRODUCTIONS">
             </a>
 
             <nav class="nav-menu" id="nav-menu">
-                <!-- Added Icons and active class logic placeholder -->
                 <a href="{{ url_for('main.home') }}" class="nav-link">
                     <i class="fas fa-home"></i> Home
                 </a>
@@ -956,17 +935,10 @@
             }
         });
 
-        // =========================================
         // ACTIVE NAVIGATION HIGHLIGHTING
-        // =========================================
-        // This script adds the 'active' class to the correct link based on the current URL
         const currentLocation = window.location.pathname;
         navLinks.forEach(link => {
             const linkPath = link.getAttribute('href');
-            
-            // Check if the link matches the current path
-            // Note: We use strict equality or startsWith depending on routing structure.
-            // For simplicity, we check if the current location includes the link path (handling slashes).
             if (linkPath === currentLocation || (linkPath !== '/' && currentLocation.startsWith(linkPath))) {
                 link.classList.add('active');
             } else if (linkPath === '/' && currentLocation === '/') {
