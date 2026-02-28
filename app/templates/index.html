@@ -9,49 +9,6 @@
     /* ============================================
        INDEX PAGE SPECIFIC STYLES
        ============================================ */
-    
-    /* --- HERO SECTION UPDATES --- */
-    /* 1. Set the background image */
-    .hero {
-        background-image: url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=2070&auto=format&fit=crop');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed; /* Creates a subtle parallax depth effect */
-        position: relative;
-    }
-
-    /* 2. Overlay for Text Readability */
-    /* We override the .hero::before from base.html to use a gradient instead of the grid */
-    .hero::before {
-        content: '';
-        position: absolute;
-        top: 0; 
-        left: 0; 
-        width: 100%; 
-        height: 100%;
-        /* Dark gradient fading from left to right. 
-           Left is darker (for text), right is lighter (to show image) */
-        background: linear-gradient(
-            110deg, 
-            rgba(0, 0, 0, 0.95) 20%, 
-            rgba(0, 0, 0, 0.75) 50%, 
-            rgba(0, 0, 0, 0.4) 100%
-        );
-        z-index: 0; /* Sit behind content */
-    }
-
-    /* 3. Content Animation & Readability */
-    .hero-content {
-        z-index: 1; /* Ensure text sits on top of overlay */
-        animation: fadeInUp 1s ease-out forwards;
-    }
-
-    /* Add subtle text shadow for extra pop against the background */
-    .hero-title, .hero-tagline, .hero-description, .hero-label {
-        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
-    }
-
-    /* --- EXISTING SECTION STYLES --- */
     .about-section {
         background-color: var(--color-dark-grey);
     }
@@ -293,11 +250,6 @@
 
         .about-image-placeholder {
             order: -1;
-        }
-        
-        /* Ensure hero background looks good on tablet */
-        .hero::before {
-            background: rgba(0, 0, 0, 0.85); /* Darker overlay for smaller screens */
         }
     }
 
@@ -605,3 +557,5 @@
     console.log('Index page loaded');
 </script>
 {% endblock %}
+
+
