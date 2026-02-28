@@ -246,7 +246,6 @@
         .upload-zone.picture .upload-icon { color: var(--accent-tertiary); }
         .upload-zone:hover .upload-icon { transform: translateY(-4px); }
         
-        /* Fix for required file inputs */
         .upload-zone input[type="file"] {
             position: absolute;
             inset: 0;
@@ -599,8 +598,6 @@
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toastMessage');
             toastMessage.textContent = message;
-
-            // Apply styling based on category
             toast.classList.add('show', category);
             setTimeout(() => toast.classList.remove('show', category), 4000);
         }
@@ -698,6 +695,19 @@
                             <button type="button" class="genre-tag" data-genre="action">Action</button><button type="button" class="genre-tag" data-genre="comedy">Comedy</button><button type="button" class="genre-tag" data-genre="drama">Drama</button><button type="button" class="genre-tag" data-genre="horror">Horror</button><button type="button" class="genre-tag" data-genre="scifi">Sci-Fi</button><button type="button" class="genre-tag" data-genre="romance">Romance</button><button type="button" class="genre-tag" data-genre="thriller">Thriller</button><button type="button" class="genre-tag" data-genre="animation">Animation</button><button type="button" class="genre-tag" data-genre="documentary">Documentary</button><button type="button" class="genre-tag" data-genre="fantasy">Fantasy</button>
                         </div>
                     </div>
+                    
+                    <!-- Visibility Section Added Here -->
+                    <div class="card-section fade-in">
+                        <h2 class="section-title movie">Visibility & Display</h2>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                <input type="checkbox" name="show_in_services" value="true" style="width: 20px; height: 20px; accent-color: var(--accent);" {% if project and project.show_in_services %}checked{% endif %}>
+                                <span style="font-size: 15px; color: var(--fg-secondary);">Show in Services Page</span>
+                            </label>
+                            <p style="font-size: 13px; color: var(--fg-muted); margin-top: 8px; margin-left: 32px;">If checked, this project will be highlighted on your Services page.</p>
+                        </div>
+                    </div>
+
                     <div class="card-section fade-in stagger-5">
                         <h2 class="section-title movie">Media Files</h2>
                         <div class="form-group">
@@ -767,6 +777,19 @@
                             <div class="form-group"><label class="form-label" for="release_date">Release Date</label><input type="date" name="release_date" id="release_date" class="form-input"></div>
                         </div>
                     </div>
+
+                    <!-- Visibility Section Added Here -->
+                    <div class="card-section fade-in">
+                        <h2 class="section-title trailer">Visibility & Display</h2>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                <input type="checkbox" name="show_in_services" value="true" style="width: 20px; height: 20px; accent-color: var(--accent-secondary);" {% if project and project.show_in_services %}checked{% endif %}>
+                                <span style="font-size: 15px; color: var(--fg-secondary);">Show in Services Page</span>
+                            </label>
+                            <p style="font-size: 13px; color: var(--fg-muted); margin-top: 8px; margin-left: 32px;">If checked, this project will be highlighted on your Services page.</p>
+                        </div>
+                    </div>
+
                     <div class="card-section fade-in stagger-3">
                         <h2 class="section-title trailer">Trailer File</h2>
                         <div class="form-group">
@@ -829,6 +852,19 @@
                         </div>
                         <div class="form-group"><label class="form-label" for="description">Description</label><textarea name="description" id="description" class="form-input" rows="2" placeholder="Describe this gallery..."></textarea></div>
                     </div>
+
+                    <!-- Visibility Section Added Here -->
+                    <div class="card-section fade-in">
+                        <h2 class="section-title picture">Visibility & Display</h2>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                <input type="checkbox" name="show_in_services" value="true" style="width: 20px; height: 20px; accent-color: var(--accent-tertiary);" {% if project and project.show_in_services %}checked{% endif %}>
+                                <span style="font-size: 15px; color: var(--fg-secondary);">Show in Services Page</span>
+                            </label>
+                            <p style="font-size: 13px; color: var(--fg-muted); margin-top: 8px; margin-left: 32px;">If checked, this project will be highlighted on your Services page.</p>
+                        </div>
+                    </div>
+
                     <div class="card-section fade-in stagger-3">
                         <h2 class="section-title picture">Upload Images</h2>
                         <div class="form-group">
@@ -883,7 +919,6 @@
             document.querySelectorAll('.upload-zone').forEach(zone => {
                 const input = zone.querySelector('input[type="file"]');
                 
-                // Drag events for visual feedback on the zone
                 input.addEventListener('dragenter', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
                 input.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
                 input.addEventListener('dragleave', (e) => { e.preventDefault(); zone.classList.remove('drag-over'); });
@@ -893,7 +928,6 @@
                     handleFiles(e.dataTransfer.files, zone.dataset.type); 
                 });
                 
-                // Change event for file selection
                 input.addEventListener('change', (e) => handleFiles(e.target.files, zone.dataset.type));
             });
 
@@ -949,20 +983,17 @@
 
         function handleFiles(files, type) {
             if (type === 'gallery') {
-                // For gallery, we append files to the state
                 Array.from(files).forEach(file => {
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         uploadedFiles.gallery.push({ file: file, preview: e.target.result });
                         renderPreviews(type);
                         updateProgress();
-                        // Sync the DOM input after updating state
                         syncGalleryInput();
                     };
                     reader.readAsDataURL(file);
                 });
             } else {
-                // For single files (movie, poster, trailer), just replace
                 const file = files[0];
                 if (!file) return;
                 
@@ -976,7 +1007,6 @@
             }
         }
 
-        // New function to sync the gallery input with the state
         function syncGalleryInput() {
             const input = document.getElementById('galleryInput');
             if (!input) return;
@@ -1009,7 +1039,6 @@
         function removeFile(type, index = 0) {
             if (type === 'gallery') {
                 uploadedFiles.gallery.splice(index, 1);
-                // Sync the DOM input after removal
                 syncGalleryInput();
                 
                 const previewContainer = document.getElementById('galleryPreview');
@@ -1057,7 +1086,6 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             if (sidebar) sidebar.classList.toggle('open');
-        
         }
 
         
@@ -1069,7 +1097,6 @@
             toastMessage.textContent = message;
             toast.classList.add('show', category);
 
-            // Redirect after 2 seconds
             if(category === 'success') {
                 setTimeout(() => {
                     window.location.href = "{{ url_for('admin.add_project') }}";

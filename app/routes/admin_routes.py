@@ -70,6 +70,9 @@ def add_movie():
             rental_duration = request.form.get("rental_duration") or None
             genres = request.form.get("genres")
 
+            # ✅ NEW LINE (gets checkbox value)
+            show_in_services = True if request.form.get("show_in_services") else False
+
             movie_file = request.files.get("movie_file")
             poster_file = request.files.get("poster_file")
             trailer_file = request.files.get("trailer_file")
@@ -109,7 +112,6 @@ def add_movie():
                 )
                 trailer_filename = trailer_upload["secure_url"]
 
-
             movie = Movie(
                 title=title,
                 original_title=original_title,
@@ -123,7 +125,8 @@ def add_movie():
                 genres=genres,
                 movie_file=movie_filename,
                 poster_file=poster_filename,
-                trailer_file=trailer_filename
+                trailer_file=trailer_filename,
+                show_in_services=show_in_services   # ✅ NEW LINE ADDED HERE
             )
 
             db.session.add(movie)

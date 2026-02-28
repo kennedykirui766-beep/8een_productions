@@ -31,6 +31,8 @@ class Movie(db.Model):
     # Status
     is_published = db.Column(db.Boolean, default=True)
     is_draft = db.Column(db.Boolean, default=False)
+    
+    show_in_services = db.Column(db.Boolean, default=False)
 
     # Relationships
     trailers = db.relationship(
