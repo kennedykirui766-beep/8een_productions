@@ -24,3 +24,9 @@ cloudinary.config(
     api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
     secure=True
 )
+
+class Config:
+    SECRET_KEY = "your-secret-key"
+
+    LOGO_URL = "https://res.cloudinary.com/dvctsb0sm/image/upload/v1772266155/logo.png_isqnga.jpg"
+    ABOUT_IMAGE_URL = "https://res.cloudinary.com/dvctsb0sm/image/upload/v1772266168/about.jpg_yicnh1.jpg"

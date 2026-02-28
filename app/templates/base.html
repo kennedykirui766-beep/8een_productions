@@ -720,10 +720,22 @@
         a:focus, button:focus, input:focus, textarea:focus { outline: 2px solid var(--color-white); outline-offset: 2px; }
         .skip-link { position: absolute; top: -40px; left: 0; background: var(--color-white); color: var(--color-black); padding: 8px 16px; z-index: 1001; font-weight: 600; }
         .skip-link:focus { top: 0; }
+
+    .about-image img {
+        width: 100%;
+        border-radius: 15px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .navbar img {
+        height: 45px;
+    }
     </style>
 </head>
 <body>
-    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <a href="{{ url_for('main.home') }}" class="logo">
+        <img src="{{ logo_url }}" alt="8EEN PRODUCTIONS">
+    </a>
 
     <!-- Mobile Overlay (Click outside to close) -->
     <div class="mobile-overlay" id="mobile-overlay"></div>

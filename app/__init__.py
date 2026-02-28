@@ -36,5 +36,19 @@ def create_app():
     app.register_blueprint(project_bp, url_prefix="/projects")
     app.register_blueprint(admin_bp)
     app.register_blueprint(payment_bp)
+    
+    
+    def create_app():
+        app = Flask(__name__)
+        app.config.from_object(Config)
+
+        @app.context_processor
+        def inject_site_images():
+            return dict(
+                logo_url=app.config["LOGO_URL"],
+                about_image_url=app.config["ABOUT_IMAGE_URL"]
+            )
+
+        return app
 
     return app
