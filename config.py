@@ -8,13 +8,16 @@ class Config:
     SECRET_KEY = os.getenv("SECRET_KEY")
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_pre_ping": True,
+        "pool_recycle": 300
+    }
 
     MPESA_CONSUMER_KEY = os.getenv("MPESA_CONSUMER_KEY")
     MPESA_CONSUMER_SECRET = os.getenv("MPESA_CONSUMER_SECRET")
     MPESA_SHORTCODE = os.getenv("MPESA_SHORTCODE")
     MPESA_PASSKEY = os.getenv("MPESA_PASSKEY")
     MPESA_CALLBACK_URL = os.getenv("MPESA_CALLBACK_URL")
-    SECRET_KEY = "your-secret-key"
     LOGO_URL = "https://res.cloudinary.com/dvctsb0sm/image/upload/v1772306934/file_00000000b2a4722f9b60f61ab86bc14c_ijpfr6.png"
     ABOUT_IMAGE_URL = "https://res.cloudinary.com/dvctsb0sm/image/upload/v1772266168/about.jpg_yicnh1.jpg"
     
