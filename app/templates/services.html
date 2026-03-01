@@ -378,7 +378,7 @@
             {% for movie in movies %}
                 {% if movie.show_in_services %}
                 <!-- Clickable Card Linking to Movie Detail/Watch Page -->
-                <a href="{{ url_for('projects.movie_detail', id=movie.id) }}" class="project-card">
+                <a href="{{ url_for('projects.view_movie', id=movie.id) }}" class="project-card">
                     <div class="project-card-image">
                         {% if movie.poster_file %}
                             <img src="{{ movie.poster_file }}" alt="{{ movie.title }}">
@@ -412,7 +412,7 @@
             {% for trailer in trailers %}
                 {% if trailer.show_in_services %}
                 <!-- Clickable Card Linking to Trailer Detail -->
-                <a href="{{ url_for('projects.trailer_detail', id=trailer.id) }}" class="project-card">
+                <a href="{{ url_for('projects.view_movie', id=movie.id) }}" class="project-card">
                     <div class="project-card-image">
                         {% if trailer.thumbnail_file %}
                             <img src="{{ trailer.thumbnail_file }}" alt="{{ trailer.title }}">
