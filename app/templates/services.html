@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}Services & Portfolio{% endblock %}
+{% block title %}Our Work & Services{% endblock %}
 
-{% block meta_description %}Explore 8een Productions services and watch our featured video portfolio.{% endblock %}
+{% block meta_description %}Explore 8een Productions portfolio - Watch our movies, trailers, and view photo galleries.{% endblock %}
 
 {% block nav_services %}active{% endblock %}
 
@@ -12,7 +12,7 @@
        PORTFOLIO & SERVICE STYLES
        ============================================ */
     
-    /* Services Intro */
+    /* Intro Section */
     .services-intro {
         background-color: var(--color-dark-grey);
         text-align: center;
@@ -80,19 +80,6 @@
     .badge-movie { background-color: rgba(59, 130, 246, 0.9); color: white; }
     .badge-trailer { background-color: rgba(245, 158, 11, 0.9); color: black; }
     .badge-gallery { background-color: rgba(139, 92, 246, 0.9); color: white; }
-
-    .price-badge {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background-color: rgba(0, 0, 0, 0.8);
-        color: var(--color-white);
-        padding: 0.3rem 0.8rem;
-        border-radius: var(--radius-sm);
-        font-size: 0.8rem;
-        font-weight: 600;
-        z-index: 2;
-    }
 
     /* Overlay Content */
     .portfolio-overlay {
@@ -171,7 +158,6 @@
         text-align: center;
         padding: var(--spacing-xl) 0;
         color: var(--color-light-grey);
-        display: none; /* Hidden by default, shown via JS if needed or just logic */
     }
     .empty-state-container i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
 
@@ -223,48 +209,68 @@
         top: 0; left: 0;
         width: 100%; height: 100%;
     }
+    .modal-info {
+        padding: 1rem;
+        background: #111;
+        border-top: 1px solid var(--color-charcoal);
+    }
+    .modal-info h4 {
+        font-family: var(--font-heading);
+        letter-spacing: 1px;
+        font-size: 1.2rem;
+        color: var(--color-white);
+    }
+    .modal-info p {
+        color: var(--color-light-grey);
+        font-size: 0.9rem;
+        margin-top: 0.25rem;
+    }
 
     /* Gallery Modal Specifics */
     .gallery-wrapper {
         padding: 2rem;
         text-align: center;
-        max-height: 80vh;
+        max-height: 90vh;
         overflow-y: auto;
     }
     .gallery-wrapper img {
         max-width: 100%;
         max-height: 70vh;
-        margin-bottom: 1rem;
+        margin: 0 auto 1rem auto;
         border-radius: var(--radius-sm);
         box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        display: block;
     }
     .gallery-nav {
         display: flex; justify-content: center; gap: 1rem;
         margin-top: 1rem;
+        align-items: center;
     }
     .gallery-nav button {
         background: var(--color-charcoal); border: none;
         color: white; padding: 0.5rem 1.5rem;
         border-radius: var(--radius-sm); cursor: pointer;
+        transition: background 0.2s;
     }
     .gallery-nav button:hover { background: var(--color-medium-grey); }
 
-    /* Payment Modal Specifics */
-    .payment-content {
-        padding: 3rem;
-        text-align: center;
-    }
-    .payment-content h3 { font-size: 2rem; margin-bottom: 1rem; color: var(--color-warning); }
-    .payment-content p { margin-bottom: 2rem; color: var(--color-light-grey); }
-    
     /* Responsive */
     @media (max-width: 768px) {
         .portfolio-grid {
             grid-template-columns: 1fr;
         }
         .modal-content {
-            width: 95%;
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
             border-radius: 0;
+        }
+        .video-wrapper {
+            height: 56.25vw; /* Maintain aspect ratio on mobile */
+            padding-top: 0;
+        }
+        .video-wrapper video {
+            position: relative;
         }
     }
 </style>
@@ -278,8 +284,8 @@
     <div class="container">
         <div class="page-header-content">
             <div class="gradient-line"></div>
-            <h1>Our Services</h1>
-            <p>Explore our portfolio and watch our latest work.</p>
+            <h1>Our Work</h1>
+            <p>Watch our latest movies, trailers, and browse photo galleries.</p>
         </div>
     </div>
 </section>
@@ -290,8 +296,8 @@
 <section class="section services-intro">
     <div class="container">
         <p>
-            At 8een Productions, we offer a full spectrum of creative services designed to 
-            bring your vision to life. Below is a selection of our recent projects.
+            Welcome to our showcase. Here you can watch full movies, check out our latest trailers, 
+            and browse through photo galleries from our productions. All content here is free to view.
         </p>
     </div>
 </section>
@@ -301,14 +307,6 @@
      ============================================ -->
 <section class="section portfolio-section">
     <div class="container">
-        <div class="text-center">
-            <div class="gradient-line" style="margin: 0 auto var(--spacing-md);"></div>
-            <h2 class="section-title">Featured Projects</h2>
-            <p class="section-subtitle" style="margin: 0 auto var(--spacing-lg);">
-                Click to view trailers, watch movies, or browse galleries.
-            </p>
-        </div>
-
         <div class="portfolio-grid" id="portfolio-grid">
             
             {# Movies Loop #}
@@ -316,27 +314,13 @@
                 {% for movie in movies %}
                 {% if movie.show_in_services %}
                 <div class="portfolio-item" 
-                    data-category="movie" 
                     data-title="{{ movie.title }}"
                     data-desc="{{ movie.description or movie.synopsis }}"
-                    data-client="{{ movie.director or '8EEN' }}"
-                    data-date="{{ movie.release_date.strftime('%Y') if movie.release_date else '' }}"
-                    data-pricing-type="{{ movie.pricing_type or 'free' }}"
-                    data-price="{{ movie.price or 0 }}"
-                    data-item-id="{{ movie.id }}"
-                    {% if movie.movie_file %}
-                        data-media="{{ movie.movie_file }}"
-                        data-type="video"
-                    {% else %}
-                        data-media="" 
-                        data-type="image"
-                    {% endif %}
+                    data-type="video"
+                    data-media="{{ movie.movie_file }}"
                     data-poster="{{ movie.poster_file if movie.poster_file else '' }}">
                     
                     <span class="type-badge badge-movie">Movie</span>
-                    {% if movie.pricing_type in ['paid', 'rent'] %}
-                        <span class="price-badge">KES {{ movie.price or 0 }}</span>
-                    {% endif %}
 
                     {% if movie.poster_file %}
                         <img src="{{ movie.poster_file }}" alt="{{ movie.title }}">
@@ -359,21 +343,10 @@
                 {% for trailer in trailers %}
                 {% if trailer.show_in_services %}
                 <div class="portfolio-item" 
-                    data-category="trailer" 
                     data-title="{{ trailer.title }}"
                     data-desc="{{ trailer.description }}"
-                    data-client="Trailer"
-                    data-date="{{ trailer.release_date.strftime('%Y') if trailer.release_date else '' }}"
-                    data-pricing-type="free"
-                    data-price="0"
-                    data-item-id="{{ trailer.id }}"
-                    {% if trailer.trailer_file %}
-                        data-media="{{ trailer.trailer_file }}"
-                        data-type="video"
-                    {% elif trailer.thumbnail %}
-                        data-media="{{ trailer.thumbnail }}"
-                        data-type="image"
-                    {% endif %}
+                    data-type="video"
+                    data-media="{{ trailer.trailer_file }}"
                     data-poster="{{ trailer.thumbnail if trailer.thumbnail else '' }}">
                     
                     <span class="type-badge badge-trailer">Trailer</span>
@@ -413,14 +386,8 @@
                 {% endfor %}
 
                 <div class="portfolio-item" 
-                    data-category="gallery" 
                     data-title="{{ gallery.title }}"
                     data-desc="{{ gallery.description }}"
-                    data-client="Gallery"
-                    data-date="{{ gallery.created_at.strftime('%Y') if gallery.created_at else '' }}"
-                    data-pricing-type="free"
-                    data-price="0"
-                    data-item-id="{{ gallery.id }}"
                     data-type="gallery"
                     data-images='{{ image_urls | tojson }}'>
                     
@@ -444,10 +411,10 @@
 
             {# Empty State Fallback #}
             {% if not movies and not trailers and not galleries %}
-                <div class="empty-state-container" style="display: block;">
+                <div class="empty-state-container">
                     <i class="fas fa-photo-video"></i>
-                    <h3>No Projects Yet</h3>
-                    <p style="margin-top: 0.5rem; opacity: 0.7;">Check back soon for updates!</p>
+                    <h3>No Projects Available</h3>
+                    <p style="margin-top: 0.5rem; opacity: 0.7;">The admin has not added any showcase items yet.</p>
                 </div>
             {% endif %}
 
@@ -468,8 +435,9 @@
                 <source src="" type="video/mp4">
             </video>
         </div>
-        <div style="padding: 1rem; background: #111;">
-            <h3 id="videoTitle" style="font-family: var(--font-heading); font-size: 1.2rem;">Video Title</h3>
+        <div class="modal-info">
+            <h4 id="videoTitle">Video Title</h4>
+            <p id="videoDesc">Description</p>
         </div>
     </div>
 </div>
@@ -483,30 +451,9 @@
             <img id="galleryImage" src="" alt="Gallery Image">
             <div class="gallery-nav">
                 <button onclick="prevGalleryImage()"><i class="fas fa-arrow-left"></i> Prev</button>
-                <span id="galleryCount" style="color: #888; align-self: center;">1 / 5</span>
+                <span id="galleryCount" style="color: #888;">1 / 5</span>
                 <button onclick="nextGalleryImage()">Next <i class="fas fa-arrow-right"></i></button>
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- Payment/Premium Modal -->
-<div class="modal" id="paymentModal">
-    <div class="modal-content" style="max-width: 500px;">
-        <button class="modal-close" onclick="closeModal('paymentModal')"><i class="fas fa-times"></i></button>
-        <div class="payment-content">
-            <i class="fas fa-lock" style="font-size: 3rem; color: var(--color-warning); margin-bottom: 1rem;"></i>
-            <h3 id="paymentTitle">Premium Content</h3>
-            <p>This content requires purchase or rental.</p>
-            <p style="font-size: 1.5rem; font-weight: bold; color: white; margin-bottom: 2rem;">
-                Price: KES <span id="paymentPrice">0</span>
-            </p>
-            <a href="#" id="paymentLink" class="btn btn-primary" style="width: 100%;">
-                <i class="fas fa-shopping-cart"></i> Purchase
-            </a>
-            <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--color-light-grey);">
-                * Redirecting to payment details
-            </p>
         </div>
     </div>
 </div>
@@ -518,34 +465,21 @@
 
     // Handle Click on Portfolio Item
     document.getElementById('portfolio-grid').addEventListener('click', function(e) {
-        // Find the closest parent with class 'portfolio-item'
         const item = e.target.closest('.portfolio-item');
         if (!item) return;
 
-        // Extract Data Attributes
         const type = item.dataset.type;
-        const category = item.dataset.category;
         const title = item.dataset.title;
+        const desc = item.dataset.desc;
         const media = item.dataset.media;
         const poster = item.dataset.poster;
-        const pricingType = item.dataset.pricingType;
-        const price = item.dataset.price;
         const imagesJson = item.dataset.images;
 
-        // Logic based on type
-        if (pricingType === 'paid' || pricingType === 'rent') {
-            // Show Payment Modal
-            document.getElementById('paymentTitle').textContent = title;
-            document.getElementById('paymentPrice').textContent = price;
-            // Optional: set a link to a checkout page if you have one
-            // document.getElementById('paymentLink').href = `/checkout/${item.dataset.itemId}`;
-            
-            openModal('paymentModal');
-        
-        } else if (type === 'video') {
+        if (type === 'video') {
             // Show Video Modal
             const videoPlayer = document.getElementById('videoPlayer');
             document.getElementById('videoTitle').textContent = title;
+            document.getElementById('videoDesc').textContent = desc;
             
             // Set sources
             videoPlayer.src = media;
@@ -567,16 +501,6 @@
             } catch (err) {
                 console.error("Error loading gallery images", err);
             }
-        } else if (type === 'image') {
-            // Fallback for single image items (like some trailers without video)
-            if (media) {
-                // We can reuse the video modal structure or create a simple image viewer
-                // Here re-purposing video modal to show a single image
-                const vWrapper = document.querySelector('#videoModal .video-wrapper');
-                vWrapper.innerHTML = `<img src="${media}" style="width:100%; height:auto; position:absolute; top:50%; transform:translateY(-50%);">`;
-                document.getElementById('videoTitle').textContent = title;
-                openModal('videoModal');
-            }
         }
     });
 
@@ -590,16 +514,12 @@
         document.getElementById(id).classList.remove('active');
         document.body.style.overflow = 'auto';
 
-        // Specific cleanup for video modal
+        // Cleanup for video modal
         if (id === 'videoModal') {
             const videoPlayer = document.getElementById('videoPlayer');
             videoPlayer.pause();
             videoPlayer.currentTime = 0;
-            // Reset src to stop loading
             videoPlayer.src = '';
-            // Restore default video wrapper content if we replaced it with an image
-            const vWrapper = document.querySelector('#videoModal .video-wrapper');
-            vWrapper.innerHTML = `<video id="videoPlayer" controls><source src="" type="video/mp4"></video>`;
         }
     }
 
