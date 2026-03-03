@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, url_for, request, abort, flash
 from flask import abort
 from app.models import Payment
 from app.models.project import Movie, Trailer, Gallery
 from app.models import Contact
+from app import db
 
 
 main_bp = Blueprint("main", __name__)
