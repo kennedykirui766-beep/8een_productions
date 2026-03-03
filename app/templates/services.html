@@ -47,7 +47,7 @@
     }
 
     /* ============================================
-       MOVIE SECTION (Visual Screenshot Style)
+       MOVIE SECTION (Screenshot Style + Inline Play)
        ============================================ */
     .movies-grid {
         display: grid;
@@ -72,21 +72,30 @@
         box-shadow: 0 20px 40px rgba(0,0,0,0.7);
     }
 
-    /* 1. The Poster/Image Layer */
-    .card-poster {
+    /* 1. Video Layer (Bottom Layer) */
+    .card-video-layer {
         position: absolute;
         inset: 0;
-        z-index: 2;
-        transition: opacity 0.4s ease, transform 0.5s ease;
+        z-index: 1; /* Lowest z-index - sits at the back */
+        background: #000;
     }
     
-    .card-poster img {
+    .card-video-layer video {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        background-color: #000;
     }
 
-    /* Overlay Gradient for Text Readability */
+    /* 2. The Poster/Image Layer (Top/Overlaying Layer) */
+    .card-poster {
+        position: absolute;
+        inset: 0;
+        z-index: 2; /* Higher than video - sits on top */
+        transition: opacity 0.4s ease, transform 0.5s ease;
+    }
+    
+    /* Gradient for text readability */
     .card-gradient {
         position: absolute;
         inset: 0;
@@ -95,7 +104,13 @@
         transition: opacity 0.3s;
     }
 
-    /* 2. The Badge (Top Left) */
+    .card-poster img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* 3. The Badge (Top Left) */
     .card-badge {
         position: absolute;
         top: 15px;
@@ -112,7 +127,7 @@
         box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
-    /* 3. Play Button (Center) */
+    /* 4. Play Button (Center) */
     .card-play-btn {
         position: absolute;
         top: 50%;
@@ -140,7 +155,7 @@
         margin-left: 4px;
     }
 
-    /* 4. Info (Bottom) */
+    /* 5. Info (Bottom) */
     .card-details {
         position: absolute;
         bottom: 0;
@@ -174,21 +189,8 @@
     
     .card-details p i { font-size: 0.8rem; }
 
-    /* 5. Video Layer (Hidden initially) */
-    .card-video-layer {
-        position: absolute;
-        inset: 0;
-        z-index: 1; /* Behind poster */
-        background: #000;
-    }
-    
-    .card-video-layer video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* Fill the card area */
-    }
-
     /* STATE: Playing */
+    /* When playing, we hide the Top Poster Layer to reveal the Video Layer underneath */
     .movie-card-visual.playing .card-poster,
     .movie-card-visual.playing .card-play-btn,
     .movie-card-visual.playing .card-gradient,
@@ -517,15 +519,14 @@
             {% if movie.show_in_services %}
             <div class="movie-card-visual" onclick="toggleInlineVideo(this)">
                 
-                <!-- Video Layer (Background) -->
+                <!-- 1. Video Layer (Bottom - No Poster Attribute) -->
                 <div class="card-video-layer">
-                    <!-- REMOVED poster attribute to avoid duplication -->
                     <video preload="metadata" onclick="event.stopPropagation()">
                         <source src="{{ movie.movie_file }}" type="video/mp4">
                     </video>
                 </div>
 
-                <!-- Poster/Image Layer (Foreground) -->
+                <!-- 2. Poster Layer (Top - Overlays the video) -->
                 <div class="card-poster">
                     <div class="card-gradient"></div>
                     {% if movie.poster_file %}
@@ -535,18 +536,13 @@
                     {% endif %}
                 </div>
 
-                <!-- Badge -->
+                <!-- UI Elements -->
                 <span class="card-badge">Movie</span>
-
-                <!-- Play Button -->
-                <div class="card-play-btn">
-                    <i class="fas fa-play"></i>
-                </div>
-
-                <!-- Info Bottom -->
+                <div class="card-play-btn"><i class="fas fa-play"></i></div>
+                
                 <div class="card-details">
                     <h3>{{ movie.title }}</h3>
-                    <p><i class="fas fa-clock"></i> {{ movie.description[:30] + '...' if movie.description else 'Click to Watch' }}</p>
+                    <p><i class="fas fa-film"></i> {{ movie.description[:30] + '...' if movie.description else 'Click to Watch' }}</p>
                 </div>
 
             </div>
@@ -704,12 +700,11 @@
        INLINE MOVIE PLAYER LOGIC
        ============================================ */
     function toggleInlineVideo(card) {
-        // If already playing, do nothing (let video controls handle pause)
         if (card.classList.contains('playing')) return;
 
         const video = card.querySelector('video');
         
-        // Add class to fade poster
+        // Add class to fade out the overlaying poster
         card.classList.add('playing');
         
         // Play video
@@ -741,7 +736,6 @@
     let currentGalleryImages = [];
     let currentIndex = 0;
 
-    // Event Delegation for Modals
     document.body.addEventListener('click', function(e) {
         const card = e.target.closest('.media-card');
         if (!card) return;
