@@ -47,7 +47,7 @@
     }
 
     /* ============================================
-       MOVIE SECTION (Screenshot Style + Inline Play)
+       MOVIE SECTION (Visual Screenshot Style)
        ============================================ */
     .movies-grid {
         display: grid;
@@ -62,7 +62,7 @@
         overflow: hidden;
         background-color: #000;
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        aspect-ratio: 16/9; /* Landscape style as seen in screenshot */
+        aspect-ratio: 16/9; /* Landscape style */
         cursor: pointer;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
@@ -101,7 +101,7 @@
         top: 15px;
         left: 15px;
         padding: 0.4rem 0.9rem;
-        background-color: rgba(59, 130, 246, 0.95); /* Blue badge from screenshot */
+        background-color: rgba(59, 130, 246, 0.95);
         color: white;
         font-size: 0.7rem;
         font-weight: 700;
@@ -137,7 +137,7 @@
     .card-play-btn i {
         color: #000;
         font-size: 1.8rem;
-        margin-left: 4px; /* Visual centering */
+        margin-left: 4px;
     }
 
     /* 4. Info (Bottom) */
@@ -189,7 +189,6 @@
     }
 
     /* STATE: Playing */
-    /* When 'playing' class is added, hide the poster layers */
     .movie-card-visual.playing .card-poster,
     .movie-card-visual.playing .card-play-btn,
     .movie-card-visual.playing .card-gradient,
@@ -503,7 +502,7 @@
 </section>
 
 <!-- ============================================
-     MOVIES SECTION (Visual Screenshot Style)
+     MOVIES SECTION
      ============================================ -->
 {% if movies %}
 <section class="category-section">
@@ -520,7 +519,8 @@
                 
                 <!-- Video Layer (Background) -->
                 <div class="card-video-layer">
-                    <video preload="metadata" poster="{{ movie.poster_file }}" onclick="event.stopPropagation()">
+                    <!-- REMOVED poster attribute to avoid duplication -->
+                    <video preload="metadata" onclick="event.stopPropagation()">
                         <source src="{{ movie.movie_file }}" type="video/mp4">
                     </video>
                 </div>
@@ -704,9 +704,7 @@
        INLINE MOVIE PLAYER LOGIC
        ============================================ */
     function toggleInlineVideo(card) {
-        // If already playing, do nothing or pause? 
-        // For better UX, let's let the user click the video controls to pause.
-        // This function only triggers if NOT playing yet.
+        // If already playing, do nothing (let video controls handle pause)
         if (card.classList.contains('playing')) return;
 
         const video = card.querySelector('video');
@@ -733,12 +731,6 @@
             const card = video.closest('.movie-card-visual');
             card.classList.remove('playing');
             video.currentTime = 0;
-        });
-        
-        // Handle Pause -> Optionally show poster again, or leave video visible.
-        // Usually better to leave video visible on pause so user can seek.
-        video.addEventListener('pause', () => {
-            // Optional: card.classList.remove('playing');
         });
     });
 
