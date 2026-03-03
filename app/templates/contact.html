@@ -314,9 +314,6 @@
 
             <!-- Updated Form with Method and Action -->
             <form class="contact-form" id="contact-form" method="POST" action="{{ url_for('main.contact') }}">
-                
-                <!-- CSRF Token (Standard for Flask) -->
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                 <div class="form-row">
                     <div class="form-group">
