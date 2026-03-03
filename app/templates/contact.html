@@ -312,8 +312,9 @@
                 </div>
             </div>
 
-            <!-- Updated Form with Method and Action -->
+            <!-- Form configured to send data to the backend route -->
             <form class="contact-form" id="contact-form" method="POST" action="{{ url_for('main.contact') }}">
+                
 
                 <div class="form-row">
                     <div class="form-group">
@@ -426,7 +427,8 @@
 
 {% block extra_scripts %}
 <script>
-    // Removed the preventDefault logic so the form submits to the backend naturally.
-    // Flash messages from the backend will handle success/error notifications.
+    // The form now submits naturally to the backend. 
+    // Success messages will be handled by Flask's flash() function 
+    // displayed via the base.html toast system.
 </script>
 {% endblock %}
