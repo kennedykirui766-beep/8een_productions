@@ -9,13 +9,15 @@
 {% block extra_styles %}
 <style>
     /* ============================================
-       SERVICES PAGE SPECIFIC STYLES
+       PORTFOLIO & SERVICE STYLES
        ============================================ */
+    
+    /* Services Intro */
     .services-intro {
         background-color: var(--color-dark-grey);
         text-align: center;
+        padding: var(--spacing-lg) 0;
     }
-
     .services-intro p {
         color: var(--color-light-grey);
         max-width: 800px;
@@ -24,83 +26,47 @@
         line-height: 1.8;
     }
 
-    /* --- VIDEO PORTFOLIO GRID --- */
-    .projects-showcase {
+    /* Portfolio Grid Layout */
+    .portfolio-section {
         background-color: var(--color-black);
+        padding: var(--spacing-xl) 0;
     }
 
-    .projects-grid {
+    .portfolio-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: var(--spacing-md);
     }
 
-    /* Project Card - Click triggers modal */
-    .project-card {
+    /* Portfolio Item Card */
+    .portfolio-item {
         position: relative;
-        background-color: var(--color-dark-grey);
+        aspect-ratio: 16/10;
+        overflow: hidden;
         border-radius: var(--radius-md);
-        overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: 1px solid var(--color-charcoal);
         cursor: pointer;
-    }
-
-    .project-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-        border-color: var(--color-medium-grey);
-    }
-
-    .project-card-image {
-        width: 100%;
-        aspect-ratio: 16/9;
-        overflow: hidden;
-        position: relative;
         background-color: var(--color-charcoal);
     }
 
-    .project-card-image img,
-    .project-card-image video {
+    .portfolio-item img,
+    .portfolio-item video {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s ease;
+        transition: transform 0.5s ease, filter 0.5s ease;
     }
 
-    .project-card:hover .project-card-image img,
-    .project-card:hover .project-card-image video {
+    .portfolio-item:hover img,
+    .portfolio-item:hover video {
         transform: scale(1.05);
+        filter: brightness(0.7);
     }
 
-    /* Play Button Overlay */
-    .play-overlay {
+    /* Badges */
+    .type-badge {
         position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.4);
-        display: flex; align-items: center; justify-content: center;
-        opacity: 0; transition: opacity 0.3s ease;
-    }
-
-    .play-overlay i {
-        font-size: 4rem;
-        color: rgba(255, 255, 255, 0.9);
-        transition: transform 0.3s ease;
-        text-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    }
-
-    .project-card:hover .play-overlay {
-        opacity: 1;
-    }
-
-    .project-card:hover .play-overlay i {
-        transform: scale(1.1);
-    }
-
-    .project-type-badge {
-        position: absolute;
-        top: 10px;
-        left: 10px;
+        top: 15px;
+        left: 15px;
         padding: 0.3rem 0.8rem;
         border-radius: var(--radius-sm);
         font-size: 0.7rem;
@@ -108,209 +74,197 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
         z-index: 2;
+        backdrop-filter: blur(4px);
     }
 
     .badge-movie { background-color: rgba(59, 130, 246, 0.9); color: white; }
     .badge-trailer { background-color: rgba(245, 158, 11, 0.9); color: black; }
+    .badge-gallery { background-color: rgba(139, 92, 246, 0.9); color: white; }
 
-    .project-card-content {
-        padding: 1.25rem;
-    }
-
-    .project-card-title {
-        font-family: var(--font-heading);
-        font-size: 1.4rem;
-        letter-spacing: 1px;
-        margin-bottom: 0.5rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .project-card-meta {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 0.85rem;
-        color: var(--color-light-grey);
-    }
-
-    .project-price {
-        font-weight: 600;
+    .price-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background-color: rgba(0, 0, 0, 0.8);
         color: var(--color-white);
+        padding: 0.3rem 0.8rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 2;
     }
 
-    .project-price.free {
-        color: #10B981;
+    /* Overlay Content */
+    .portfolio-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: var(--spacing-md);
+        z-index: 1;
     }
 
-    /* --- VIDEO MODAL --- */
-    .video-modal {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.95);
-        z-index: 2000;
+    .portfolio-item:hover .portfolio-overlay {
+        opacity: 1;
+    }
+
+    .portfolio-overlay .view-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        width: 60px;
+        height: 60px;
+        background-color: var(--color-white);
+        color: var(--color-black);
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
+        font-size: 1.5rem;
         opacity: 0;
-        visibility: hidden;
         transition: all 0.3s ease;
+        box-shadow: 0 0 20px rgba(255,255,255,0.3);
     }
 
-    .video-modal.active {
+    .portfolio-item:hover .view-btn {
         opacity: 1;
-        visibility: visible;
+        transform: translate(-50%, -50%) scale(1);
     }
+
+    .portfolio-overlay h3 {
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+        margin-bottom: 0.25rem;
+        transform: translateY(20px);
+        transition: transform 0.3s ease;
+    }
+
+    .portfolio-overlay p {
+        color: var(--color-light-grey);
+        font-size: 0.9rem;
+        transform: translateY(20px);
+        transition: transform 0.3s ease 0.05s;
+    }
+
+    .portfolio-item:hover .portfolio-overlay h3,
+    .portfolio-item:hover .portfolio-overlay p {
+        transform: translateY(0);
+    }
+
+    /* Placeholder */
+    .portfolio-placeholder {
+        width: 100%; height: 100%;
+        background: linear-gradient(135deg, var(--color-charcoal), var(--color-dark-grey));
+        display: flex; align-items: center; justify-content: center;
+        font-size: 3rem; color: var(--color-grey);
+    }
+
+    /* Empty State */
+    .empty-state-container {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: var(--spacing-xl) 0;
+        color: var(--color-light-grey);
+        display: none; /* Hidden by default, shown via JS if needed or just logic */
+    }
+    .empty-state-container i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+
+    /* --- MODAL STYLES --- */
+    .modal {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 2000;
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    .modal.active { opacity: 1; visibility: visible; }
 
     .modal-content {
         position: relative;
         width: 90%;
         max-width: 1000px;
-        background: #000;
+        background: var(--color-dark-grey);
         border-radius: var(--radius-md);
         overflow: hidden;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         transform: scale(0.9);
         transition: transform 0.3s ease;
     }
+    .modal.active .modal-content { transform: scale(1); }
 
-    .video-modal.active .modal-content {
-        transform: scale(1);
+    .modal-close {
+        position: absolute;
+        top: 1rem; right: 1rem;
+        background: rgba(0,0,0,0.5);
+        border: none; color: white;
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 10;
+        transition: background 0.2s;
     }
+    .modal-close:hover { background: var(--color-danger); }
 
-    .modal-video-wrapper {
+    /* Video Modal Specifics */
+    .video-wrapper {
         position: relative;
-        padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        padding-top: 56.25%; /* 16:9 */
+        background: #000;
     }
-
-    .modal-video-wrapper video {
+    .video-wrapper video {
         position: absolute;
         top: 0; left: 0;
         width: 100%; height: 100%;
     }
 
-    .modal-close {
-        position: absolute;
-        top: -40px;
-        right: 0;
-        background: none;
-        border: none;
-        color: var(--color-white);
-        font-size: 2rem;
-        cursor: pointer;
-        opacity: 0.7;
-        transition: opacity 0.2s;
+    /* Gallery Modal Specifics */
+    .gallery-wrapper {
+        padding: 2rem;
+        text-align: center;
+        max-height: 80vh;
+        overflow-y: auto;
     }
-
-    .modal-close:hover {
-        opacity: 1;
-    }
-
-    .modal-info {
-        padding: 1rem;
-        background: var(--color-dark-grey);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .modal-title {
-        font-family: var(--font-heading);
-        font-size: 1.2rem;
-        color: var(--color-white);
-        letter-spacing: 1px;
-    }
-
-    /* Services List */
-    .services-list {
-        background-color: var(--color-black);
-    }
-
-    .service-item {
-        display: grid;
-        grid-template-columns: 1fr 2fr;
-        gap: var(--spacing-lg);
-        padding: var(--spacing-lg) 0;
-        border-bottom: 1px solid var(--color-charcoal);
-        align-items: center;
-    }
-
-    .service-item:last-child {
-        border-bottom: none;
-    }
-
-    .service-item:nth-child(even) {
-        direction: rtl;
-    }
-
-    .service-item:nth-child(even) > * {
-        direction: ltr;
-    }
-
-    .service-icon-box {
-        aspect-ratio: 1;
-        background: linear-gradient(135deg, var(--color-charcoal), var(--color-medium-grey));
-        border-radius: var(--radius-md);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 4rem;
-        color: var(--color-white);
-    }
-
-    .service-info h3 {
-        font-family: var(--font-heading);
-        font-size: 2.5rem;
-        letter-spacing: 2px;
-        margin-bottom: var(--spacing-sm);
-    }
-
-    .service-info p {
-        color: var(--color-light-grey);
-        margin-bottom: var(--spacing-md);
-        line-height: 1.8;
-        font-size: 1.05rem;
-    }
-
-    .service-features {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--spacing-xs);
-    }
-
-    .service-features span {
-        background-color: var(--color-charcoal);
-        padding: 0.5rem 1rem;
+    .gallery-wrapper img {
+        max-width: 100%;
+        max-height: 70vh;
+        margin-bottom: 1rem;
         border-radius: var(--radius-sm);
-        font-size: 0.85rem;
-        color: var(--color-silver);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
+    .gallery-nav {
+        display: flex; justify-content: center; gap: 1rem;
+        margin-top: 1rem;
+    }
+    .gallery-nav button {
+        background: var(--color-charcoal); border: none;
+        color: white; padding: 0.5rem 1.5rem;
+        border-radius: var(--radius-sm); cursor: pointer;
+    }
+    .gallery-nav button:hover { background: var(--color-medium-grey); }
 
+    /* Payment Modal Specifics */
+    .payment-content {
+        padding: 3rem;
+        text-align: center;
+    }
+    .payment-content h3 { font-size: 2rem; margin-bottom: 1rem; color: var(--color-warning); }
+    .payment-content p { margin-bottom: 2rem; color: var(--color-light-grey); }
+    
     /* Responsive */
     @media (max-width: 768px) {
-        .service-item,
-        .service-item:nth-child(even) {
+        .portfolio-grid {
             grid-template-columns: 1fr;
-            direction: ltr;
         }
-
-        .service-icon-box {
-            max-width: 200px;
-            margin: 0 auto;
-        }
-
-        .service-info {
-            text-align: center;
-        }
-
-        .service-features {
-            justify-content: center;
-        }
-        
-        .projects-grid {
-            grid-template-columns: 1fr;
+        .modal-content {
+            width: 95%;
+            border-radius: 0;
         }
     }
 </style>
@@ -325,231 +279,365 @@
         <div class="page-header-content">
             <div class="gradient-line"></div>
             <h1>Our Services</h1>
-            <p>Comprehensive creative services from concept to final delivery.</p>
+            <p>Explore our portfolio and watch our latest work.</p>
         </div>
     </div>
 </section>
 
 <!-- ============================================
-     FEATURED VIDEO PORTFOLIO
+     SERVICES INTRO
      ============================================ -->
-<section class="section projects-showcase">
+<section class="section services-intro">
+    <div class="container">
+        <p>
+            At 8een Productions, we offer a full spectrum of creative services designed to 
+            bring your vision to life. Below is a selection of our recent projects.
+        </p>
+    </div>
+</section>
+
+<!-- ============================================
+     PORTFOLIO SHOWCASE
+     ============================================ -->
+<section class="section portfolio-section">
     <div class="container">
         <div class="text-center">
             <div class="gradient-line" style="margin: 0 auto var(--spacing-md);"></div>
-            <h2 class="section-title">Featured Work</h2>
+            <h2 class="section-title">Featured Projects</h2>
             <p class="section-subtitle" style="margin: 0 auto var(--spacing-lg);">
-                Click to watch our latest movies and trailers.
+                Click to view trailers, watch movies, or browse galleries.
             </p>
         </div>
 
-        <div class="projects-grid">
-            <!-- Loop Through Movies -->
-            {% for movie in movies %}
+        <div class="portfolio-grid" id="portfolio-grid">
+            
+            {# Movies Loop #}
+            {% if movies %}
+                {% for movie in movies %}
                 {% if movie.show_in_services %}
-                <div class="project-card" onclick="openVideoModal('{{ movie.movie_file }}', '{{ movie.title }}')">
-                    <div class="project-card-image">
-                        {% if movie.poster_file %}
-                            <img src="{{ movie.poster_file }}" alt="{{ movie.title }}">
-                        {% else %}
-                            <img src="https://via.placeholder.com/300x169?text=No+Image" alt="{{ movie.title }}">
-                        {% endif %}
-                        
-                        <div class="play-overlay">
-                            <i class="fas fa-play-circle"></i>
-                        </div>
-                        
-                        <span class="project-type-badge badge-movie">Movie</span>
-                    </div>
-                    <div class="project-card-content">
-                        <h3 class="project-card-title" title="{{ movie.title }}">{{ movie.title }}</h3>
-                        <div class="project-card-meta">
-                            <span><i class="far fa-clock"></i> {{ movie.duration if movie.duration else 'N/A' }} min</span>
-                            {% if movie.pricing_type == 'free' %}
-                                <span class="project-price free">Free Watch</span>
-                            {% else %}
-                                <span class="project-price">KES {{ movie.price or 0 }}</span>
-                            {% endif %}
-                        </div>
+                <div class="portfolio-item" 
+                    data-category="movie" 
+                    data-title="{{ movie.title }}"
+                    data-desc="{{ movie.description or movie.synopsis }}"
+                    data-client="{{ movie.director or '8EEN' }}"
+                    data-date="{{ movie.release_date.strftime('%Y') if movie.release_date else '' }}"
+                    data-pricing-type="{{ movie.pricing_type or 'free' }}"
+                    data-price="{{ movie.price or 0 }}"
+                    data-item-id="{{ movie.id }}"
+                    {% if movie.movie_file %}
+                        data-media="{{ movie.movie_file }}"
+                        data-type="video"
+                    {% else %}
+                        data-media="" 
+                        data-type="image"
+                    {% endif %}
+                    data-poster="{{ movie.poster_file if movie.poster_file else '' }}">
+                    
+                    <span class="type-badge badge-movie">Movie</span>
+                    {% if movie.pricing_type in ['paid', 'rent'] %}
+                        <span class="price-badge">KES {{ movie.price or 0 }}</span>
+                    {% endif %}
+
+                    {% if movie.poster_file %}
+                        <img src="{{ movie.poster_file }}" alt="{{ movie.title }}">
+                    {% else %}
+                        <div class="portfolio-placeholder"><i class="fas fa-film"></i></div>
+                    {% endif %}
+
+                    <div class="portfolio-overlay">
+                        <div class="view-btn"><i class="fas fa-play"></i></div>
+                        <h3>{{ movie.title }}</h3>
+                        <p>Movie</p>
                     </div>
                 </div>
                 {% endif %}
-            {% endfor %}
+                {% endfor %}
+            {% endif %}
 
-            <!-- Loop Through Trailers -->
-            {% for trailer in trailers %}
+            {# Trailers Loop #}
+            {% if trailers %}
+                {% for trailer in trailers %}
                 {% if trailer.show_in_services %}
-                <div class="project-card" onclick="openVideoModal('{{ trailer.trailer_file }}', '{{ trailer.title }}')">
-                    <div class="project-card-image">
-                        {% if trailer.thumbnail_file %}
-                            <img src="{{ trailer.thumbnail_file }}" alt="{{ trailer.title }}">
-                        {% elif trailer.trailer_file %}
-                            <video src="{{ trailer.trailer_file }}" muted></video>
-                        {% else %}
-                             <img src="https://via.placeholder.com/300x169?text=No+Image" alt="{{ trailer.title }}">
-                        {% endif %}
+                <div class="portfolio-item" 
+                    data-category="trailer" 
+                    data-title="{{ trailer.title }}"
+                    data-desc="{{ trailer.description }}"
+                    data-client="Trailer"
+                    data-date="{{ trailer.release_date.strftime('%Y') if trailer.release_date else '' }}"
+                    data-pricing-type="free"
+                    data-price="0"
+                    data-item-id="{{ trailer.id }}"
+                    {% if trailer.trailer_file %}
+                        data-media="{{ trailer.trailer_file }}"
+                        data-type="video"
+                    {% elif trailer.thumbnail %}
+                        data-media="{{ trailer.thumbnail }}"
+                        data-type="image"
+                    {% endif %}
+                    data-poster="{{ trailer.thumbnail if trailer.thumbnail else '' }}">
+                    
+                    <span class="type-badge badge-trailer">Trailer</span>
 
-                        <div class="play-overlay">
-                            <i class="fas fa-play-circle"></i>
-                        </div>
+                    {% if trailer.thumbnail %}
+                        <img src="{{ trailer.thumbnail }}" alt="{{ trailer.title }}">
+                    {% elif trailer.trailer_file %}
+                        <video muted preload="metadata" style="width:100%; height:100%; object-fit:cover;">
+                            <source src="{{ trailer.trailer_file }}" type="video/mp4">
+                        </video>
+                    {% else %}
+                        <div class="portfolio-placeholder"><i class="fas fa-video"></i></div>
+                    {% endif %}
 
-                        <span class="project-type-badge badge-trailer">Trailer</span>
-                    </div>
-                    <div class="project-card-content">
-                        <h3 class="project-card-title" title="{{ trailer.title }}">{{ trailer.title }}</h3>
-                        <div class="project-card-meta">
-                            <span><i class="far fa-calendar-alt"></i> {{ trailer.release_date.strftime('%Y') if trailer.release_date else 'N/A' }}</span>
-                            <span class="project-price free"><i class="fas fa-play"></i> Watch</span>
-                        </div>
+                    <div class="portfolio-overlay">
+                        <div class="view-btn"><i class="fas fa-play-circle"></i></div>
+                        <h3>{{ trailer.title }}</h3>
+                        <p>Trailer</p>
                     </div>
                 </div>
                 {% endif %}
-            {% endfor %}
+                {% endfor %}
+            {% endif %}
+
+            {# Galleries Loop #}
+            {% if galleries %}
+                {% for gallery in galleries %}
+                {% if gallery.show_in_services %}
+                
+                {% set image_files = gallery.image_files.split(',') if gallery.image_files else [] %}
+                {% set image_urls = [] %}
+                {% for f in image_files %}
+                    {% set trimmed = f.strip() %}
+                    {% if trimmed %}
+                        {% set _ = image_urls.append(trimmed) %}
+                    {% endif %}
+                {% endfor %}
+
+                <div class="portfolio-item" 
+                    data-category="gallery" 
+                    data-title="{{ gallery.title }}"
+                    data-desc="{{ gallery.description }}"
+                    data-client="Gallery"
+                    data-date="{{ gallery.created_at.strftime('%Y') if gallery.created_at else '' }}"
+                    data-pricing-type="free"
+                    data-price="0"
+                    data-item-id="{{ gallery.id }}"
+                    data-type="gallery"
+                    data-images='{{ image_urls | tojson }}'>
+                    
+                    <span class="type-badge badge-gallery">Gallery</span>
+
+                    {% if image_urls %}
+                        <img src="{{ image_urls[0] }}" alt="{{ gallery.title }}">
+                    {% else %}
+                        <div class="portfolio-placeholder"><i class="fas fa-images"></i></div>
+                    {% endif %}
+
+                    <div class="portfolio-overlay">
+                        <div class="view-btn"><i class="fas fa-images"></i></div>
+                        <h3>{{ gallery.title }}</h3>
+                        <p>Gallery</p>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            {# Empty State Fallback #}
+            {% if not movies and not trailers and not galleries %}
+                <div class="empty-state-container" style="display: block;">
+                    <i class="fas fa-photo-video"></i>
+                    <h3>No Projects Yet</h3>
+                    <p style="margin-top: 0.5rem; opacity: 0.7;">Check back soon for updates!</p>
+                </div>
+            {% endif %}
+
         </div>
     </div>
 </section>
 
 <!-- ============================================
-     SERVICES LIST
+     MODALS (Hidden by default)
      ============================================ -->
-<section class="section services-list">
-    <div class="container">
-        <!-- Service 1 -->
-        <div class="service-item">
-            <div class="service-icon-box">
-                <i class="fas fa-film"></i>
-            </div>
-            <div class="service-info">
-                <h3>Film Production</h3>
-                <p>
-                    We develop and produce short films, web series, and narrative projects 
-                    from concept to final delivery. Our comprehensive approach includes 
-                    script development, casting, directing, shooting, and post-production.
-                </p>
-                <div class="service-features">
-                    <span>Script Development</span>
-                    <span>Casting</span>
-                    <span>Directing</span>
-                    <span>Cinematography</span>
-                </div>
-            </div>
-        </div>
 
-        <!-- Service 2 -->
-        <div class="service-item">
-            <div class="service-icon-box">
-                <i class="fas fa-music"></i>
-            </div>
-            <div class="service-info">
-                <h3>Music Video Direction</h3>
-                <p>
-                    We create visually compelling music videos that translate sound into 
-                    story. Our approach helps artists build strong visual identities that 
-                    resonate with their audience.
-                </p>
-                <div class="service-features">
-                    <span>Concept Development</span>
-                    <span>Story Boards</span>
-                    <span>Visual Effects</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Service 3 -->
-        <div class="service-item">
-            <div class="service-icon-box">
-                <i class="fas fa-camera"></i>
-            </div>
-            <div class="service-info">
-                <h3>Photography & Branding</h3>
-                <p>
-                    Creative photography for artists, brands, and digital campaigns. 
-                    We capture authentic moments through promotional shoots and 
-                    behind-the-scenes visuals.
-                </p>
-                <div class="service-features">
-                    <span>Artist Portraits</span>
-                    <span>Event Coverage</span>
-                    <span>BTS Documentation</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ============================================
-     VIDEO PLAYER MODAL (Hidden by default)
-     ============================================ -->
-<div class="video-modal" id="videoModal">
+<!-- Video Player Modal -->
+<div class="modal" id="videoModal">
     <div class="modal-content">
-        <button class="modal-close" onclick="closeVideoModal()">
-            <i class="fas fa-times"></i>
-        </button>
-        <div class="modal-video-wrapper">
-            <video id="modalVideo" controls autoplay>
+        <button class="modal-close" onclick="closeModal('videoModal')"><i class="fas fa-times"></i></button>
+        <div class="video-wrapper">
+            <video id="videoPlayer" controls>
                 <source src="" type="video/mp4">
-                Your browser does not support the video tag.
             </video>
         </div>
-        <div class="modal-info">
-            <div class="modal-title" id="modalTitle">Video Title</div>
-            <div class="modal-actions">
-                <!-- Optional: Add share or like buttons here -->
+        <div style="padding: 1rem; background: #111;">
+            <h3 id="videoTitle" style="font-family: var(--font-heading); font-size: 1.2rem;">Video Title</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Gallery Viewer Modal -->
+<div class="modal" id="galleryModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('galleryModal')"><i class="fas fa-times"></i></button>
+        <div class="gallery-wrapper">
+            <h3 id="galleryTitle" style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 1rem;">Gallery</h3>
+            <img id="galleryImage" src="" alt="Gallery Image">
+            <div class="gallery-nav">
+                <button onclick="prevGalleryImage()"><i class="fas fa-arrow-left"></i> Prev</button>
+                <span id="galleryCount" style="color: #888; align-self: center;">1 / 5</span>
+                <button onclick="nextGalleryImage()">Next <i class="fas fa-arrow-right"></i></button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Payment/Premium Modal -->
+<div class="modal" id="paymentModal">
+    <div class="modal-content" style="max-width: 500px;">
+        <button class="modal-close" onclick="closeModal('paymentModal')"><i class="fas fa-times"></i></button>
+        <div class="payment-content">
+            <i class="fas fa-lock" style="font-size: 3rem; color: var(--color-warning); margin-bottom: 1rem;"></i>
+            <h3 id="paymentTitle">Premium Content</h3>
+            <p>This content requires purchase or rental.</p>
+            <p style="font-size: 1.5rem; font-weight: bold; color: white; margin-bottom: 2rem;">
+                Price: KES <span id="paymentPrice">0</span>
+            </p>
+            <a href="#" id="paymentLink" class="btn btn-primary" style="width: 100%;">
+                <i class="fas fa-shopping-cart"></i> Purchase
+            </a>
+            <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--color-light-grey);">
+                * Redirecting to payment details
+            </p>
+        </div>
+    </div>
+</div>
+
 <script>
-    function openVideoModal(videoUrl, title) {
-        if (!videoUrl) {
-            alert('Video not available.');
-            return;
+    // State for Gallery Modal
+    let currentGalleryImages = [];
+    let currentGalleryIndex = 0;
+
+    // Handle Click on Portfolio Item
+    document.getElementById('portfolio-grid').addEventListener('click', function(e) {
+        // Find the closest parent with class 'portfolio-item'
+        const item = e.target.closest('.portfolio-item');
+        if (!item) return;
+
+        // Extract Data Attributes
+        const type = item.dataset.type;
+        const category = item.dataset.category;
+        const title = item.dataset.title;
+        const media = item.dataset.media;
+        const poster = item.dataset.poster;
+        const pricingType = item.dataset.pricingType;
+        const price = item.dataset.price;
+        const imagesJson = item.dataset.images;
+
+        // Logic based on type
+        if (pricingType === 'paid' || pricingType === 'rent') {
+            // Show Payment Modal
+            document.getElementById('paymentTitle').textContent = title;
+            document.getElementById('paymentPrice').textContent = price;
+            // Optional: set a link to a checkout page if you have one
+            // document.getElementById('paymentLink').href = `/checkout/${item.dataset.itemId}`;
+            
+            openModal('paymentModal');
+        
+        } else if (type === 'video') {
+            // Show Video Modal
+            const videoPlayer = document.getElementById('videoPlayer');
+            document.getElementById('videoTitle').textContent = title;
+            
+            // Set sources
+            videoPlayer.src = media;
+            if (poster) videoPlayer.poster = poster;
+            
+            openModal('videoModal');
+            videoPlayer.play();
+
+        } else if (type === 'gallery') {
+            // Show Gallery Modal
+            try {
+                currentGalleryImages = JSON.parse(imagesJson);
+                currentGalleryIndex = 0;
+                
+                document.getElementById('galleryTitle').textContent = title;
+                updateGalleryImage();
+                
+                openModal('galleryModal');
+            } catch (err) {
+                console.error("Error loading gallery images", err);
+            }
+        } else if (type === 'image') {
+            // Fallback for single image items (like some trailers without video)
+            if (media) {
+                // We can reuse the video modal structure or create a simple image viewer
+                // Here re-purposing video modal to show a single image
+                const vWrapper = document.querySelector('#videoModal .video-wrapper');
+                vWrapper.innerHTML = `<img src="${media}" style="width:100%; height:auto; position:absolute; top:50%; transform:translateY(-50%);">`;
+                document.getElementById('videoTitle').textContent = title;
+                openModal('videoModal');
+            }
         }
-        
-        const modal = document.getElementById('videoModal');
-        const video = document.getElementById('modalVideo');
-        const titleEl = document.getElementById('modalTitle');
-        
-        // Set source and title
-        video.src = videoUrl;
-        titleEl.textContent = title;
-        
-        // Show modal
-        modal.classList.add('active');
-        video.play();
-        
-        // Prevent body scroll
+    });
+
+    // Modal Controls
+    function openModal(id) {
+        document.getElementById(id).classList.add('active');
         document.body.style.overflow = 'hidden';
     }
 
-    function closeVideoModal() {
-        const modal = document.getElementById('videoModal');
-        const video = document.getElementById('modalVideo');
-        
-        // Hide modal
-        modal.classList.remove('active');
-        
-        // Stop video
-        video.pause();
-        video.currentTime = 0;
-        video.src = '';
-        
-        // Restore body scroll
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
         document.body.style.overflow = 'auto';
+
+        // Specific cleanup for video modal
+        if (id === 'videoModal') {
+            const videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.pause();
+            videoPlayer.currentTime = 0;
+            // Reset src to stop loading
+            videoPlayer.src = '';
+            // Restore default video wrapper content if we replaced it with an image
+            const vWrapper = document.querySelector('#videoModal .video-wrapper');
+            vWrapper.innerHTML = `<video id="videoPlayer" controls><source src="" type="video/mp4"></video>`;
+        }
     }
 
-    // Close modal if user clicks outside the content area
-    document.getElementById('videoModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeVideoModal();
+    // Gallery Navigation
+    function updateGalleryImage() {
+        if (currentGalleryImages.length > 0) {
+            document.getElementById('galleryImage').src = currentGalleryImages[currentGalleryIndex];
+            document.getElementById('galleryCount').textContent = `${currentGalleryIndex + 1} / ${currentGalleryImages.length}`;
         }
+    }
+
+    function nextGalleryImage() {
+        if (currentGalleryIndex < currentGalleryImages.length - 1) {
+            currentGalleryIndex++;
+            updateGalleryImage();
+        }
+    }
+
+    function prevGalleryImage() {
+        if (currentGalleryIndex > 0) {
+            currentGalleryIndex--;
+            updateGalleryImage();
+        }
+    }
+
+    // Close modal on background click
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal(modal.id);
+            }
+        });
     });
-    
+
     // Close with Escape key
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            closeVideoModal();
+            document.querySelectorAll('.modal.active').forEach(m => closeModal(m.id));
         }
     });
 </script>
