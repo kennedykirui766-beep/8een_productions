@@ -9,165 +9,196 @@
 {% block extra_styles %}
 <style>
     /* ============================================
-       PORTFOLIO & SERVICE STYLES
+       SERVICES PAGE STYLES
        ============================================ */
-    
-    /* Intro Section */
-    .services-intro {
-        background-color: var(--color-dark-grey);
-        text-align: center;
-        padding: var(--spacing-lg) 0;
-    }
-    .services-intro p {
-        color: var(--color-light-grey);
-        max-width: 800px;
-        margin: 0 auto;
-        font-size: 1.1rem;
-        line-height: 1.8;
-    }
 
-    /* Portfolio Grid Layout */
-    .portfolio-section {
-        background-color: var(--color-black);
+    /* Section Headers */
+    .category-section {
         padding: var(--spacing-xl) 0;
+        position: relative;
+    }
+    .category-section:nth-child(even) {
+        background-color: rgba(255,255,255,0.02);
+    }
+    
+    .section-header {
+        text-align: center;
+        margin-bottom: var(--spacing-lg);
+    }
+    .section-header h2 {
+        font-family: var(--font-heading);
+        font-size: 2.5rem;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(to right, var(--color-white), var(--color-grey));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .section-header p {
+        color: var(--color-light-grey);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .section-divider {
+        width: 80px;
+        height: 4px;
+        background: var(--color-red);
+        margin: 1rem auto;
+        border-radius: 2px;
     }
 
-    .portfolio-grid {
+    /* Responsive Grids */
+    .media-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: var(--spacing-md);
     }
 
-    /* Portfolio Item Card */
-    .portfolio-item {
-        position: relative;
-        aspect-ratio: 16/10;
-        overflow: hidden;
-        border-radius: var(--radius-md);
-        cursor: pointer;
-        background-color: var(--color-charcoal);
+    /* Movies: Poster Style Grid (Portrait) */
+    .movies-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     }
 
-    .portfolio-item img,
-    .portfolio-item video {
+    /* Trailers & Galleries: Landscape Grid */
+    .trailers-grid, .galleries-grid {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    }
+
+    /* Card Base Styles */
+    .media-card {
+        position: relative;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        cursor: pointer;
+        background-color: var(--color-charcoal);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .media-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+
+    /* Card Media Container */
+    .card-media {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Movie specific aspect ratio (2:3 Poster) */
+    .movies-grid .card-media {
+        aspect-ratio: 2 / 3;
+    }
+    /* Trailer/Gallery specific aspect ratio (16:9) */
+    .trailers-grid .card-media,
+    .galleries-grid .card-media {
+        aspect-ratio: 16 / 9;
+    }
+
+    .card-media img,
+    .card-media video {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s ease, filter 0.5s ease;
+        transition: transform 0.5s ease;
+    }
+    .media-card:hover .card-media img,
+    .media-card:hover .card-media video {
+        transform: scale(1.1);
     }
 
-    .portfolio-item:hover img,
-    .portfolio-item:hover video {
-        transform: scale(1.05);
-        filter: brightness(0.7);
-    }
-
-    /* Badges */
-    .type-badge {
-        position: absolute;
-        top: 15px;
-        left: 15px;
-        padding: 0.3rem 0.8rem;
-        border-radius: var(--radius-sm);
-        font-size: 0.7rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        z-index: 2;
-        backdrop-filter: blur(4px);
-    }
-
-    .badge-movie { background-color: rgba(59, 130, 246, 0.9); color: white; }
-    .badge-trailer { background-color: rgba(245, 158, 11, 0.9); color: black; }
-    .badge-gallery { background-color: rgba(139, 92, 246, 0.9); color: white; }
-
-    /* Overlay Content */
-    .portfolio-overlay {
+    /* Card Overlays */
+    .card-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
-        opacity: 0;
-        transition: opacity 0.3s ease;
+        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 50%);
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-        padding: var(--spacing-md);
-        z-index: 1;
+        padding: 1.5rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
     }
-
-    .portfolio-item:hover .portfolio-overlay {
+    .media-card:hover .card-overlay {
         opacity: 1;
     }
 
-    .portfolio-overlay .view-btn {
+    /* Play/View Button in Center */
+    .play-btn {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) scale(0.8);
-        width: 60px;
-        height: 60px;
-        background-color: var(--color-white);
-        color: var(--color-black);
+        width: 70px;
+        height: 70px;
+        background: rgba(255,255,255,0.9);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.5rem;
+        box-shadow: 0 0 30px rgba(255,255,255,0.2);
         opacity: 0;
         transition: all 0.3s ease;
-        box-shadow: 0 0 20px rgba(255,255,255,0.3);
     }
-
-    .portfolio-item:hover .view-btn {
+    .media-card:hover .play-btn {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
     }
+    .play-btn i {
+        color: var(--color-black);
+        font-size: 1.8rem;
+        margin-left: 4px; /* Visual centering for play icon */
+    }
 
-    .portfolio-overlay h3 {
+    /* Card Info (Bottom) */
+    .card-info {
+        padding: 1rem;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        background: rgba(0,0,0,0.8);
+    }
+    .card-info h3 {
         font-family: var(--font-heading);
-        font-size: 1.5rem;
-        letter-spacing: 1px;
+        font-size: 1.1rem;
         margin-bottom: 0.25rem;
-        transform: translateY(20px);
-        transition: transform 0.3s ease;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
-
-    .portfolio-overlay p {
-        color: var(--color-light-grey);
-        font-size: 0.9rem;
-        transform: translateY(20px);
-        transition: transform 0.3s ease 0.05s;
-    }
-
-    .portfolio-item:hover .portfolio-overlay h3,
-    .portfolio-item:hover .portfolio-overlay p {
-        transform: translateY(0);
-    }
-
-    /* Placeholder */
-    .portfolio-placeholder {
-        width: 100%; height: 100%;
-        background: linear-gradient(135deg, var(--color-charcoal), var(--color-dark-grey));
-        display: flex; align-items: center; justify-content: center;
-        font-size: 3rem; color: var(--color-grey);
-    }
-
-    /* Empty State */
-    .empty-state-container {
-        grid-column: 1 / -1;
-        text-align: center;
-        padding: var(--spacing-xl) 0;
+    .card-info span {
+        font-size: 0.85rem;
         color: var(--color-light-grey);
     }
-    .empty-state-container i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+
+    /* Badges */
+    .badge {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        padding: 0.3rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        z-index: 2;
+        backdrop-filter: blur(10px);
+    }
+    .badge-movie { background: rgba(59, 130, 246, 0.9); color: white; }
+    .badge-trailer { background: rgba(245, 158, 11, 0.9); color: black; }
+    .badge-gallery { background: rgba(139, 92, 246, 0.9); color: white; }
 
     /* --- MODAL STYLES --- */
     .modal {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
         background: rgba(0, 0, 0, 0.95);
         z-index: 2000;
-        display: flex; align-items: center; justify-content: center;
-        opacity: 0; visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
         transition: all 0.3s ease;
     }
     .modal.active { opacity: 1; visibility: visible; }
@@ -175,102 +206,153 @@
     .modal-content {
         position: relative;
         width: 90%;
-        max-width: 1000px;
+        max-width: 1100px;
         background: var(--color-dark-grey);
         border-radius: var(--radius-md);
         overflow: hidden;
         box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        transform: scale(0.9);
+        transform: scale(0.9) translateY(20px);
         transition: transform 0.3s ease;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
     }
-    .modal.active .modal-content { transform: scale(1); }
+    .modal.active .modal-content { transform: scale(1) translateY(0); }
 
     .modal-close {
         position: absolute;
         top: 1rem; right: 1rem;
-        background: rgba(0,0,0,0.5);
+        background: rgba(0,0,0,0.7);
         border: none; color: white;
         width: 40px; height: 40px;
         border-radius: 50%;
         cursor: pointer;
         z-index: 10;
         transition: background 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .modal-close:hover { background: var(--color-danger); }
 
-    /* Video Modal Specifics */
+    /* Video Modal */
     .video-wrapper {
         position: relative;
-        padding-top: 56.25%; /* 16:9 */
         background: #000;
+        width: 100%;
     }
     .video-wrapper video {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
+        width: 100%;
+        display: block;
+        max-height: 70vh;
+        object-fit: contain;
     }
     .modal-info {
-        padding: 1rem;
-        background: #111;
+        padding: 1.5rem;
         border-top: 1px solid var(--color-charcoal);
     }
-    .modal-info h4 {
-        font-family: var(--font-heading);
-        letter-spacing: 1px;
-        font-size: 1.2rem;
-        color: var(--color-white);
-    }
-    .modal-info p {
-        color: var(--color-light-grey);
-        font-size: 0.9rem;
-        margin-top: 0.25rem;
-    }
+    .modal-info h4 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .modal-info p { color: var(--color-light-grey); }
 
     /* Gallery Modal Specifics */
-    .gallery-wrapper {
-        padding: 2rem;
-        text-align: center;
-        max-height: 90vh;
-        overflow-y: auto;
+    .gallery-container {
+        display: flex;
+        height: 80vh;
     }
-    .gallery-wrapper img {
-        max-width: 100%;
-        max-height: 70vh;
-        margin: 0 auto 1rem auto;
-        border-radius: var(--radius-sm);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        display: block;
-    }
-    .gallery-nav {
-        display: flex; justify-content: center; gap: 1rem;
-        margin-top: 1rem;
+    
+    /* Main Image Area */
+    .gallery-main {
+        flex: 1;
+        display: flex;
         align-items: center;
+        justify-content: center;
+        background: #000;
+        position: relative;
+        padding: 1rem;
     }
-    .gallery-nav button {
-        background: var(--color-charcoal); border: none;
-        color: white; padding: 0.5rem 1.5rem;
-        border-radius: var(--radius-sm); cursor: pointer;
+    .gallery-main img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: var(--radius-sm);
+        transition: opacity 0.3s ease;
+    }
+    
+    /* Navigation Arrows */
+    .gallery-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255,255,255,0.1);
+        border: none;
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1.2rem;
         transition: background 0.2s;
+        z-index: 5;
     }
-    .gallery-nav button:hover { background: var(--color-medium-grey); }
+    .gallery-arrow:hover { background: rgba(255,255,255,0.3); }
+    .gallery-arrow.prev { left: 20px; }
+    .gallery-arrow.next { right: 20px; }
+
+    /* Sidebar Strip */
+    .gallery-sidebar {
+        width: 120px;
+        background: var(--color-dark-grey);
+        border-left: 1px solid var(--color-charcoal);
+        overflow-y: auto;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .sidebar-thumb {
+        width: 100%;
+        aspect-ratio: 16/9;
+        object-fit: cover;
+        border-radius: 4px;
+        cursor: pointer;
+        opacity: 0.5;
+        transition: all 0.2s;
+        border: 2px solid transparent;
+    }
+    .sidebar-thumb:hover { opacity: 0.8; }
+    .sidebar-thumb.active {
+        opacity: 1;
+        border-color: var(--color-red);
+    }
 
     /* Responsive */
     @media (max-width: 768px) {
-        .portfolio-grid {
-            grid-template-columns: 1fr;
-        }
+        .section-header h2 { font-size: 1.8rem; }
+        .movies-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+        .trailers-grid, .galleries-grid { grid-template-columns: 1fr; }
+        
         .modal-content {
             width: 100%;
             height: 100%;
             max-height: 100%;
             border-radius: 0;
         }
-        .video-wrapper {
-            height: 56.25vw; /* Maintain aspect ratio on mobile */
-            padding-top: 0;
+        .gallery-container {
+            flex-direction: column;
+            height: 100vh;
         }
-        .video-wrapper video {
-            position: relative;
+        .gallery-sidebar {
+            width: 100%;
+            height: 100px;
+            flex-direction: row;
+            overflow-x: auto;
+            overflow-y: hidden;
+            border-left: none;
+            border-top: 1px solid var(--color-charcoal);
+        }
+        .sidebar-thumb {
+            width: 80px;
+            flex-shrink: 0;
         }
     }
 </style>
@@ -284,146 +366,163 @@
     <div class="container">
         <div class="page-header-content">
             <div class="gradient-line"></div>
-            <h1>Our Work</h1>
-            <p>Watch our latest movies, trailers, and browse photo galleries.</p>
+            <h1>Our Portfolio</h1>
+            <p>Explore our collection of movies, trailers, and photo galleries.</p>
         </div>
     </div>
 </section>
 
 <!-- ============================================
-     SERVICES INTRO
+     MOVIES SECTION
      ============================================ -->
-<section class="section services-intro">
+{% if movies %}
+<section class="category-section">
     <div class="container">
-        <p>
-            Welcome to our showcase. Here you can watch full movies, check out our latest trailers, 
-            and browse through photo galleries from our productions. All content here is free to view.
-        </p>
-    </div>
-</section>
-
-<!-- ============================================
-     PORTFOLIO SHOWCASE
-     ============================================ -->
-<section class="section portfolio-section">
-    <div class="container">
-        <div class="portfolio-grid" id="portfolio-grid">
-            
-            {# Movies Loop #}
-            {% if movies %}
-                {% for movie in movies %}
-                {% if movie.show_in_services %}
-                <div class="portfolio-item" 
-                    data-title="{{ movie.title }}"
-                    data-desc="{{ movie.description or movie.synopsis }}"
-                    data-type="video"
-                    data-media="{{ movie.movie_file }}"
-                    data-poster="{{ movie.poster_file if movie.poster_file else '' }}">
-                    
-                    <span class="type-badge badge-movie">Movie</span>
-
+        <div class="section-header">
+            <h2>Featured Movies</h2>
+            <div class="section-divider"></div>
+            <p>Watch our full-length productions.</p>
+        </div>
+        <div class="media-grid movies-grid">
+            {% for movie in movies %}
+            {% if movie.show_in_services %}
+            <div class="media-card" 
+                data-title="{{ movie.title }}"
+                data-desc="{{ movie.description or movie.synopsis }}"
+                data-type="video"
+                data-media="{{ movie.movie_file }}"
+                data-poster="{{ movie.poster_file if movie.poster_file else '' }}">
+                
+                <div class="card-media">
+                    <span class="badge badge-movie">Movie</span>
                     {% if movie.poster_file %}
                         <img src="{{ movie.poster_file }}" alt="{{ movie.title }}">
                     {% else %}
-                        <div class="portfolio-placeholder"><i class="fas fa-film"></i></div>
+                        <img src="https://via.placeholder.com/300x450?text=No+Poster" alt="{{ movie.title }}">
                     {% endif %}
-
-                    <div class="portfolio-overlay">
-                        <div class="view-btn"><i class="fas fa-play"></i></div>
-                        <h3>{{ movie.title }}</h3>
-                        <p>Movie</p>
-                    </div>
+                    <div class="play-btn"><i class="fas fa-play"></i></div>
                 </div>
-                {% endif %}
-                {% endfor %}
-            {% endif %}
-
-            {# Trailers Loop #}
-            {% if trailers %}
-                {% for trailer in trailers %}
-                {% if trailer.show_in_services %}
-                <div class="portfolio-item" 
-                    data-title="{{ trailer.title }}"
-                    data-desc="{{ trailer.description }}"
-                    data-type="video"
-                    data-media="{{ trailer.trailer_file }}"
-                    data-poster="{{ trailer.thumbnail if trailer.thumbnail else '' }}">
-                    
-                    <span class="type-badge badge-trailer">Trailer</span>
-
-                    {% if trailer.thumbnail %}
-                        <img src="{{ trailer.thumbnail }}" alt="{{ trailer.title }}">
-                    {% elif trailer.trailer_file %}
-                        <video muted preload="metadata" style="width:100%; height:100%; object-fit:cover;">
-                            <source src="{{ trailer.trailer_file }}" type="video/mp4">
-                        </video>
-                    {% else %}
-                        <div class="portfolio-placeholder"><i class="fas fa-video"></i></div>
-                    {% endif %}
-
-                    <div class="portfolio-overlay">
-                        <div class="view-btn"><i class="fas fa-play-circle"></i></div>
-                        <h3>{{ trailer.title }}</h3>
-                        <p>Trailer</p>
-                    </div>
+                <div class="card-info">
+                    <h3>{{ movie.title }}</h3>
+                    <span>Click to Play</span>
                 </div>
-                {% endif %}
-                {% endfor %}
+            </div>
             {% endif %}
-
-            {# Galleries Loop #}
-            {% if galleries %}
-                {% for gallery in galleries %}
-                {% if gallery.show_in_services %}
-                
-                {% set image_files = gallery.image_files.split(',') if gallery.image_files else [] %}
-                {% set image_urls = [] %}
-                {% for f in image_files %}
-                    {% set trimmed = f.strip() %}
-                    {% if trimmed %}
-                        {% set _ = image_urls.append(trimmed) %}
-                    {% endif %}
-                {% endfor %}
-
-                <div class="portfolio-item" 
-                    data-title="{{ gallery.title }}"
-                    data-desc="{{ gallery.description }}"
-                    data-type="gallery"
-                    data-images='{{ image_urls | tojson }}'>
-                    
-                    <span class="type-badge badge-gallery">Gallery</span>
-
-                    {% if image_urls %}
-                        <img src="{{ image_urls[0] }}" alt="{{ gallery.title }}">
-                    {% else %}
-                        <div class="portfolio-placeholder"><i class="fas fa-images"></i></div>
-                    {% endif %}
-
-                    <div class="portfolio-overlay">
-                        <div class="view-btn"><i class="fas fa-images"></i></div>
-                        <h3>{{ gallery.title }}</h3>
-                        <p>Gallery</p>
-                    </div>
-                </div>
-                {% endif %}
-                {% endfor %}
-            {% endif %}
-
-            {# Empty State Fallback #}
-            {% if not movies and not trailers and not galleries %}
-                <div class="empty-state-container">
-                    <i class="fas fa-photo-video"></i>
-                    <h3>No Projects Available</h3>
-                    <p style="margin-top: 0.5rem; opacity: 0.7;">The admin has not added any showcase items yet.</p>
-                </div>
-            {% endif %}
-
+            {% endfor %}
         </div>
     </div>
 </section>
+{% endif %}
 
 <!-- ============================================
-     MODALS (Hidden by default)
+     TRAILERS SECTION
+     ============================================ -->
+{% if trailers %}
+<section class="category-section" style="background-color: var(--color-dark-grey);">
+    <div class="container">
+        <div class="section-header">
+            <h2>Trailers & Clips</h2>
+            <div class="section-divider"></div>
+            <p>Sneak peeks and promotional trailers.</p>
+        </div>
+        <div class="media-grid trailers-grid">
+            {% for trailer in trailers %}
+            {% if trailer.show_in_services %}
+            <div class="media-card" 
+                data-title="{{ trailer.title }}"
+                data-desc="{{ trailer.description }}"
+                data-type="video"
+                data-media="{{ trailer.trailer_file }}"
+                data-poster="{{ trailer.thumbnail if trailer.thumbnail else '' }}">
+                
+                <div class="card-media">
+                    <span class="badge badge-trailer">Trailer</span>
+                    {% if trailer.thumbnail %}
+                        <img src="{{ trailer.thumbnail }}" alt="{{ trailer.title }}">
+                    {% elif trailer.trailer_file %}
+                        <video muted preload="metadata">
+                            <source src="{{ trailer.trailer_file }}" type="video/mp4">
+                        </video>
+                    {% else %}
+                        <img src="https://via.placeholder.com/600x338?text=Trailer" alt="{{ trailer.title }}">
+                    {% endif %}
+                    <div class="play-btn"><i class="fas fa-play"></i></div>
+                </div>
+                <div class="card-info">
+                    <h3>{{ trailer.title }}</h3>
+                    <span>Watch Trailer</span>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ============================================
+     GALLERIES SECTION
+     ============================================ -->
+{% if galleries %}
+<section class="category-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Photo Galleries</h2>
+            <div class="section-divider"></div>
+            <p>Browse high-quality images from our sets.</p>
+        </div>
+        <div class="media-grid galleries-grid">
+            {% for gallery in galleries %}
+            {% if gallery.show_in_services %}
+            
+            {% set image_files = gallery.image_files.split(',') if gallery.image_files else [] %}
+            {% set image_urls = [] %}
+            {% for f in image_files %}
+                {% set trimmed = f.strip() %}
+                {% if trimmed %}
+                    {% set _ = image_urls.append(trimmed) %}
+                {% endif %}
+            {% endfor %}
+
+            <div class="media-card" 
+                data-title="{{ gallery.title }}"
+                data-desc="{{ gallery.description }}"
+                data-type="gallery"
+                data-images='{{ image_urls | tojson }}'>
+                
+                <div class="card-media">
+                    <span class="badge badge-gallery">Gallery</span>
+                    {% if image_urls %}
+                        <img src="{{ image_urls[0] }}" alt="{{ gallery.title }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/600x338?text=Gallery" alt="{{ gallery.title }}">
+                    {% endif %}
+                    <div class="play-btn"><i class="fas fa-images"></i></div>
+                </div>
+                <div class="card-info">
+                    <h3>{{ gallery.title }}</h3>
+                    <span>{{ image_urls|length }} Photos</span>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# Empty State if absolutely nothing exists #}
+{% if not movies and not trailers and not galleries %}
+<section class="section">
+    <div class="container text-center">
+        <h3>No Content Available</h3>
+        <p>Check back later for updates.</p>
+    </div>
+</section>
+{% endif %}
+
+<!-- ============================================
+     MODALS
      ============================================ -->
 
 <!-- Video Player Modal -->
@@ -444,65 +543,111 @@
 
 <!-- Gallery Viewer Modal -->
 <div class="modal" id="galleryModal">
-    <div class="modal-content">
+    <div class="modal-content" style="max-width: 1400px;">
         <button class="modal-close" onclick="closeModal('galleryModal')"><i class="fas fa-times"></i></button>
-        <div class="gallery-wrapper">
-            <h3 id="galleryTitle" style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 1rem;">Gallery</h3>
-            <img id="galleryImage" src="" alt="Gallery Image">
-            <div class="gallery-nav">
-                <button onclick="prevGalleryImage()"><i class="fas fa-arrow-left"></i> Prev</button>
-                <span id="galleryCount" style="color: #888;">1 / 5</span>
-                <button onclick="nextGalleryImage()">Next <i class="fas fa-arrow-right"></i></button>
+        
+        <div class="gallery-container">
+            <!-- Main Image -->
+            <div class="gallery-main">
+                <button class="gallery-arrow prev" onclick="changeGalleryImage(-1)"><i class="fas fa-chevron-left"></i></button>
+                <img id="galleryMainImage" src="" alt="Gallery Image">
+                <button class="gallery-arrow next" onclick="changeGalleryImage(1)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            
+            <!-- Sidebar Thumbnails -->
+            <div class="gallery-sidebar" id="gallerySidebar">
+                <!-- Thumbnails injected by JS -->
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // State for Gallery Modal
+    // State
     let currentGalleryImages = [];
-    let currentGalleryIndex = 0;
+    let currentIndex = 0;
 
-    // Handle Click on Portfolio Item
-    document.getElementById('portfolio-grid').addEventListener('click', function(e) {
-        const item = e.target.closest('.portfolio-item');
-        if (!item) return;
+    // Event Delegation for Cards
+    document.body.addEventListener('click', function(e) {
+        const card = e.target.closest('.media-card');
+        if (!card) return;
 
-        const type = item.dataset.type;
-        const title = item.dataset.title;
-        const desc = item.dataset.desc;
-        const media = item.dataset.media;
-        const poster = item.dataset.poster;
-        const imagesJson = item.dataset.images;
+        const type = card.dataset.type;
+        const title = card.dataset.title;
+        const desc = card.dataset.desc;
 
         if (type === 'video') {
-            // Show Video Modal
-            const videoPlayer = document.getElementById('videoPlayer');
-            document.getElementById('videoTitle').textContent = title;
-            document.getElementById('videoDesc').textContent = desc;
+            const media = card.dataset.media;
+            const poster = card.dataset.poster;
             
-            // Set sources
+            // Set Video Data
+            document.getElementById('videoTitle').textContent = title;
+            document.getElementById('videoDesc').textContent = desc || 'No description available.';
+            const videoPlayer = document.getElementById('videoPlayer');
             videoPlayer.src = media;
             if (poster) videoPlayer.poster = poster;
             
             openModal('videoModal');
             videoPlayer.play();
-
-        } else if (type === 'gallery') {
-            // Show Gallery Modal
+        } 
+        else if (type === 'gallery') {
             try {
-                currentGalleryImages = JSON.parse(imagesJson);
-                currentGalleryIndex = 0;
+                currentGalleryImages = JSON.parse(card.dataset.images);
+                if (currentGalleryImages.length === 0) return;
                 
-                document.getElementById('galleryTitle').textContent = title;
-                updateGalleryImage();
+                currentIndex = 0;
                 
+                // Render Thumbnails
+                const sidebar = document.getElementById('gallerySidebar');
+                sidebar.innerHTML = '';
+                
+                currentGalleryImages.forEach((url, index) => {
+                    const img = document.createElement('img');
+                    img.src = url;
+                    img.className = 'sidebar-thumb' + (index === 0 ? ' active' : '');
+                    img.onclick = () => setGalleryImage(index);
+                    sidebar.appendChild(img);
+                });
+
+                setGalleryImage(0);
                 openModal('galleryModal');
             } catch (err) {
-                console.error("Error loading gallery images", err);
+                console.error("Gallery error:", err);
             }
         }
     });
+
+    // Gallery Logic
+    function setGalleryImage(index) {
+        if (index < 0 || index >= currentGalleryImages.length) return;
+        currentIndex = index;
+
+        // Update Main Image
+        const mainImg = document.getElementById('galleryMainImage');
+        mainImg.style.opacity = 0;
+        setTimeout(() => {
+            mainImg.src = currentGalleryImages[index];
+            mainImg.style.opacity = 1;
+        }, 150);
+
+        // Update Active Thumbnail
+        const thumbs = document.querySelectorAll('.sidebar-thumb');
+        thumbs.forEach((t, i) => {
+            t.classList.toggle('active', i === index);
+        });
+        
+        // Scroll thumbnail into view
+        if (thumbs[index]) {
+            thumbs[index].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+
+    function changeGalleryImage(direction) {
+        let newIndex = currentIndex + direction;
+        if (newIndex < 0) newIndex = currentGalleryImages.length - 1;
+        if (newIndex >= currentGalleryImages.length) newIndex = 0;
+        setGalleryImage(newIndex);
+    }
 
     // Modal Controls
     function openModal(id) {
@@ -514,50 +659,36 @@
         document.getElementById(id).classList.remove('active');
         document.body.style.overflow = 'auto';
 
-        // Cleanup for video modal
         if (id === 'videoModal') {
-            const videoPlayer = document.getElementById('videoPlayer');
-            videoPlayer.pause();
-            videoPlayer.currentTime = 0;
-            videoPlayer.src = '';
+            const vp = document.getElementById('videoPlayer');
+            vp.pause();
+            vp.src = '';
         }
     }
 
-    // Gallery Navigation
-    function updateGalleryImage() {
-        if (currentGalleryImages.length > 0) {
-            document.getElementById('galleryImage').src = currentGalleryImages[currentGalleryIndex];
-            document.getElementById('galleryCount').textContent = `${currentGalleryIndex + 1} / ${currentGalleryImages.length}`;
-        }
-    }
-
-    function nextGalleryImage() {
-        if (currentGalleryIndex < currentGalleryImages.length - 1) {
-            currentGalleryIndex++;
-            updateGalleryImage();
-        }
-    }
-
-    function prevGalleryImage() {
-        if (currentGalleryIndex > 0) {
-            currentGalleryIndex--;
-            updateGalleryImage();
-        }
-    }
-
-    // Close modal on background click
+    // Close on background click
     document.querySelectorAll('.modal').forEach(modal => {
         modal.addEventListener('click', (e) => {
+            // Only close if clicked on the modal background, not content
             if (e.target === modal) {
                 closeModal(modal.id);
             }
         });
     });
 
-    // Close with Escape key
+    // Keyboard Navigation
     document.addEventListener('keydown', (e) => {
+        if (!document.querySelector('.modal.active')) return;
+        
         if (e.key === 'Escape') {
             document.querySelectorAll('.modal.active').forEach(m => closeModal(m.id));
+        }
+        
+        // Arrow keys for gallery
+        const galleryModal = document.getElementById('galleryModal');
+        if (galleryModal.classList.contains('active')) {
+            if (e.key === 'ArrowLeft') changeGalleryImage(-1);
+            if (e.key === 'ArrowRight') changeGalleryImage(1);
         }
     });
 </script>
