@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}Services{% endblock %}
+{% block title %}Services & Portfolio{% endblock %}
 
-{% block meta_description %}Explore 8een Productions services - Film Production, Music Videos, Video Editing, Photography, Scriptwriting, and Social Media Content.{% endblock %}
+{% block meta_description %}Explore 8een Productions services and watch our featured video portfolio.{% endblock %}
 
 {% block nav_services %}active{% endblock %}
 
@@ -24,32 +24,31 @@
         line-height: 1.8;
     }
 
-    /* --- FEATURED PROJECTS GRID --- */
+    /* --- VIDEO PORTFOLIO GRID --- */
     .projects-showcase {
         background-color: var(--color-black);
     }
 
     .projects-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: var(--spacing-md);
     }
 
-    /* Project Card - Now a clickable block */
+    /* Project Card - Click triggers modal */
     .project-card {
-        display: block; /* Makes the anchor tag behave like a div */
+        position: relative;
         background-color: var(--color-dark-grey);
         border-radius: var(--radius-md);
         overflow: hidden;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         border: 1px solid var(--color-charcoal);
-        text-decoration: none;
-        color: inherit;
+        cursor: pointer;
     }
 
     .project-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
         border-color: var(--color-medium-grey);
     }
 
@@ -74,21 +73,20 @@
         transform: scale(1.05);
     }
 
-    /* Play Icon Overlay */
+    /* Play Button Overlay */
     .play-overlay {
         position: absolute;
         top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.3);
+        background: rgba(0, 0, 0, 0.4);
         display: flex; align-items: center; justify-content: center;
         opacity: 0; transition: opacity 0.3s ease;
-        pointer-events: none; /* Allows click to pass through to the anchor tag */
     }
 
     .play-overlay i {
-        font-size: 3rem;
+        font-size: 4rem;
         color: rgba(255, 255, 255, 0.9);
-        text-shadow: 0 4px 10px rgba(0,0,0,0.5);
         transition: transform 0.3s ease;
+        text-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
 
     .project-card:hover .play-overlay {
@@ -114,7 +112,6 @@
 
     .badge-movie { background-color: rgba(59, 130, 246, 0.9); color: white; }
     .badge-trailer { background-color: rgba(245, 158, 11, 0.9); color: black; }
-    .badge-gallery { background-color: rgba(139, 92, 246, 0.9); color: white; }
 
     .project-card-content {
         padding: 1.25rem;
@@ -122,7 +119,7 @@
 
     .project-card-title {
         font-family: var(--font-heading);
-        font-size: 1.3rem;
+        font-size: 1.4rem;
         letter-spacing: 1px;
         margin-bottom: 0.5rem;
         white-space: nowrap;
@@ -145,6 +142,85 @@
 
     .project-price.free {
         color: #10B981;
+    }
+
+    /* --- VIDEO MODAL --- */
+    .video-modal {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 2000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .video-modal.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .modal-content {
+        position: relative;
+        width: 90%;
+        max-width: 1000px;
+        background: #000;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+    }
+
+    .video-modal.active .modal-content {
+        transform: scale(1);
+    }
+
+    .modal-video-wrapper {
+        position: relative;
+        padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    }
+
+    .modal-video-wrapper video {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+    }
+
+    .modal-close {
+        position: absolute;
+        top: -40px;
+        right: 0;
+        background: none;
+        border: none;
+        color: var(--color-white);
+        font-size: 2rem;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+
+    .modal-close:hover {
+        opacity: 1;
+    }
+
+    .modal-info {
+        padding: 1rem;
+        background: var(--color-dark-grey);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-title {
+        font-family: var(--font-heading);
+        font-size: 1.2rem;
+        color: var(--color-white);
+        letter-spacing: 1px;
     }
 
     /* Services List */
@@ -212,91 +288,7 @@
         color: var(--color-silver);
     }
 
-    /* Process Section */
-    .process-section {
-        background-color: var(--color-dark-grey);
-    }
-
-    .process-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: var(--spacing-md);
-    }
-
-    .process-step {
-        text-align: center;
-        position: relative;
-    }
-
-    .process-step:not(:last-child)::after {
-        content: '';
-        position: absolute;
-        top: 40px;
-        right: -50%;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(90deg, var(--color-white), var(--color-charcoal));
-    }
-
-    .process-number {
-        width: 80px;
-        height: 80px;
-        background-color: var(--color-charcoal);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: var(--font-heading);
-        font-size: 2rem;
-        color: var(--color-white);
-        margin: 0 auto var(--spacing-sm);
-        position: relative;
-        z-index: 1;
-    }
-
-    .process-step h3 {
-        font-family: var(--font-heading);
-        font-size: 1.5rem;
-        letter-spacing: 1px;
-        margin-bottom: var(--spacing-xs);
-    }
-
-    .process-step p {
-        color: var(--color-light-grey);
-        font-size: 0.95rem;
-    }
-
-    /* CTA */
-    .cta-section {
-        background-color: var(--color-black);
-        text-align: center;
-    }
-
-    .cta-section h2 {
-        font-family: var(--font-heading);
-        font-size: clamp(2rem, 6vw, 4rem);
-        letter-spacing: 2px;
-        margin-bottom: var(--spacing-md);
-    }
-
-    .cta-section p {
-        color: var(--color-light-grey);
-        max-width: 600px;
-        margin: 0 auto var(--spacing-lg);
-        font-size: 1.1rem;
-    }
-
     /* Responsive */
-    @media (max-width: 1024px) {
-        .process-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .process-step:nth-child(2)::after {
-            display: none;
-        }
-    }
-
     @media (max-width: 768px) {
         .service-item,
         .service-item:nth-child(even) {
@@ -315,14 +307,6 @@
 
         .service-features {
             justify-content: center;
-        }
-
-        .process-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .process-step::after {
-            display: none;
         }
         
         .projects-grid {
@@ -347,21 +331,7 @@
 </section>
 
 <!-- ============================================
-     SERVICES INTRO
-     ============================================ -->
-<section class="section services-intro">
-    <div class="container">
-        <p>
-            At 8een Productions, we offer a full spectrum of creative services designed to 
-            bring your vision to life. From initial concept development to final delivery, 
-            our team is equipped to handle every aspect of visual storytelling with 
-            professionalism, creativity, and cinematic excellence.
-        </p>
-    </div>
-</section>
-
-<!-- ============================================
-     FEATURED PROJECTS SHOWCASE
+     FEATURED VIDEO PORTFOLIO
      ============================================ -->
 <section class="section projects-showcase">
     <div class="container">
@@ -369,7 +339,7 @@
             <div class="gradient-line" style="margin: 0 auto var(--spacing-md);"></div>
             <h2 class="section-title">Featured Work</h2>
             <p class="section-subtitle" style="margin: 0 auto var(--spacing-lg);">
-                A selection of our recent projects and creative highlights.
+                Click to watch our latest movies and trailers.
             </p>
         </div>
 
@@ -377,8 +347,7 @@
             <!-- Loop Through Movies -->
             {% for movie in movies %}
                 {% if movie.show_in_services %}
-                <!-- Clickable Card Linking to Movie Detail/Watch Page -->
-                <a href="{{ url_for('projects.view_movie', id=movie.id) }}" class="project-card">
+                <div class="project-card" onclick="openVideoModal('{{ movie.movie_file }}', '{{ movie.title }}')">
                     <div class="project-card-image">
                         {% if movie.poster_file %}
                             <img src="{{ movie.poster_file }}" alt="{{ movie.title }}">
@@ -386,7 +355,6 @@
                             <img src="https://via.placeholder.com/300x169?text=No+Image" alt="{{ movie.title }}">
                         {% endif %}
                         
-                        <!-- Play Icon Overlay -->
                         <div class="play-overlay">
                             <i class="fas fa-play-circle"></i>
                         </div>
@@ -396,7 +364,7 @@
                     <div class="project-card-content">
                         <h3 class="project-card-title" title="{{ movie.title }}">{{ movie.title }}</h3>
                         <div class="project-card-meta">
-                            <span><i class="far fa-calendar-alt"></i> {{ movie.release_date.strftime('%Y') if movie.release_date else 'N/A' }}</span>
+                            <span><i class="far fa-clock"></i> {{ movie.duration if movie.duration else 'N/A' }} min</span>
                             {% if movie.pricing_type == 'free' %}
                                 <span class="project-price free">Free Watch</span>
                             {% else %}
@@ -404,15 +372,14 @@
                             {% endif %}
                         </div>
                     </div>
-                </a>
+                </div>
                 {% endif %}
             {% endfor %}
 
             <!-- Loop Through Trailers -->
             {% for trailer in trailers %}
                 {% if trailer.show_in_services %}
-                <!-- Clickable Card Linking to Trailer Detail -->
-                <a href="{{ url_for('projects.view_movie', id=movie.id) }}" class="project-card">
+                <div class="project-card" onclick="openVideoModal('{{ trailer.trailer_file }}', '{{ trailer.title }}')">
                     <div class="project-card-image">
                         {% if trailer.thumbnail_file %}
                             <img src="{{ trailer.thumbnail_file }}" alt="{{ trailer.title }}">
@@ -422,7 +389,6 @@
                              <img src="https://via.placeholder.com/300x169?text=No+Image" alt="{{ trailer.title }}">
                         {% endif %}
 
-                        <!-- Play Icon Overlay -->
                         <div class="play-overlay">
                             <i class="fas fa-play-circle"></i>
                         </div>
@@ -436,37 +402,7 @@
                             <span class="project-price free"><i class="fas fa-play"></i> Watch</span>
                         </div>
                     </div>
-                </a>
-                {% endif %}
-            {% endfor %}
-
-            <!-- Loop Through Galleries -->
-            {% for gallery in galleries %}
-                {% if gallery.show_in_services %}
-                <!-- Clickable Card Linking to Gallery Page -->
-                <a href="{{ url_for('projects.gallery_detail', id=gallery.id) }}" class="project-card">
-                    <div class="project-card-image">
-                        {% if gallery.images and gallery.images[0].image_url %}
-                            <img src="{{ gallery.images[0].image_url }}" alt="{{ gallery.title }}">
-                        {% else %}
-                            <img src="https://via.placeholder.com/300x169?text=Gallery" alt="{{ gallery.title }}">
-                        {% endif %}
-                        
-                        <!-- Gallery Icon Overlay -->
-                        <div class="play-overlay">
-                            <i class="fas fa-images"></i>
-                        </div>
-
-                        <span class="project-type-badge badge-gallery">Gallery</span>
-                    </div>
-                    <div class="project-card-content">
-                        <h3 class="project-card-title" title="{{ gallery.title }}">{{ gallery.title }}</h3>
-                        <div class="project-card-meta">
-                            <span><i class="far fa-images"></i> {{ gallery.images|length if gallery.images else 0 }} Photos</span>
-                            <span><i class="fas fa-eye"></i> View</span>
-                        </div>
-                    </div>
-                </a>
+                </div>
                 {% endif %}
             {% endfor %}
         </div>
@@ -488,16 +424,13 @@
                 <p>
                     We develop and produce short films, web series, and narrative projects 
                     from concept to final delivery. Our comprehensive approach includes 
-                    script development, casting, directing, shooting, and post-production. 
-                    Every project is handled with the attention to detail and creative 
-                    vision it deserves, ensuring stories resonate with audiences.
+                    script development, casting, directing, shooting, and post-production.
                 </p>
                 <div class="service-features">
                     <span>Script Development</span>
                     <span>Casting</span>
                     <span>Directing</span>
                     <span>Cinematography</span>
-                    <span>Post-Production</span>
                 </div>
             </div>
         </div>
@@ -512,15 +445,11 @@
                 <p>
                     We create visually compelling music videos that translate sound into 
                     story. Our approach helps artists build strong visual identities that 
-                    resonate with their audience. From concept development to final edit, 
-                    we work closely with musicians to create videos that amplify their 
-                    artistic vision and connect with fans on a deeper level.
+                    resonate with their audience.
                 </p>
                 <div class="service-features">
                     <span>Concept Development</span>
                     <span>Story Boards</span>
-                    <span>Location Scouting</span>
-                    <span>Performance Direction</span>
                     <span>Visual Effects</span>
                 </div>
             </div>
@@ -529,153 +458,100 @@
         <!-- Service 3 -->
         <div class="service-item">
             <div class="service-icon-box">
-                <i class="fas fa-cut"></i>
-            </div>
-            <div class="service-info">
-                <h3>Video Editing & Post-Production</h3>
-                <p>
-                    Professional editing, color grading, sound design, subtitles, and 
-                    optimized exports for digital platforms. We ensure your content looks 
-                    its best everywhere, from cinema screens to mobile devices. Our 
-                    post-production team brings technical expertise and creative flair 
-                    to every project, polishing raw footage into compelling narratives.
-                </p>
-                <div class="service-features">
-                    <span>Video Editing</span>
-                    <span>Color Grading</span>
-                    <span>Sound Design</span>
-                    <span>Subtitles</span>
-                    <span>Multi-Platform Export</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Service 4 -->
-        <div class="service-item">
-            <div class="service-icon-box">
                 <i class="fas fa-camera"></i>
             </div>
             <div class="service-info">
-                <h3>Photography & Visual Branding</h3>
+                <h3>Photography & Branding</h3>
                 <p>
                     Creative photography for artists, brands, and digital campaigns. 
                     We capture authentic moments through promotional shoots and 
-                    behind-the-scenes visuals that tell your story. Our photography 
-                    services extend beyond simple documentation to create powerful 
-                    visual narratives that strengthen brand identity.
+                    behind-the-scenes visuals.
                 </p>
                 <div class="service-features">
                     <span>Artist Portraits</span>
-                    <span>Brand Photography</span>
                     <span>Event Coverage</span>
-                    <span>Product Shoots</span>
                     <span>BTS Documentation</span>
                 </div>
             </div>
         </div>
-
-        <!-- Service 5 -->
-        <div class="service-item">
-            <div class="service-icon-box">
-                <i class="fas fa-pen-fancy"></i>
-            </div>
-            <div class="service-info">
-                <h3>Scriptwriting & Creative Development</h3>
-                <p>
-                    Story development for films, series, skits, and branded content. 
-                    We turn ideas into emotionally engaging screenplays that connect 
-                    with audiences. Our creative development process involves deep 
-                    collaboration with clients to understand their vision and translate 
-                    it into compelling narrative structures.
-                </p>
-                <div class="service-features">
-                    <span>Screenwriting</span>
-                    <span>Story Consulting</span>
-                    <span>Script Doctoring</span>
-                    <span>Concept Development</span>
-                    <span>Adaptation</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Service 6 -->
-        <div class="service-item">
-            <div class="service-icon-box">
-                <i class="fas fa-share-alt"></i>
-            </div>
-            <div class="service-info">
-                <h3>Social Media Content Production</h3>
-                <p>
-                    Short-form video content designed for online engagement, including 
-                    reels, TikTok videos, and promotional skits optimized for maximum 
-                    social impact. We understand the unique demands of each platform 
-                    and create content that captures attention in the first seconds 
-                    and holds it through compelling storytelling.
-                </p>
-                <div class="service-features">
-                    <span>Reels & Shorts</span>
-                    <span>TikTok Content</span>
-                    <span>Promotional Skits</span>
-                    <span>Social Campaigns</span>
-                    <span>Platform Optimization</span>
-                </div>
-            </div>
-        </div>
     </div>
 </section>
 
 <!-- ============================================
-     PROCESS SECTION
+     VIDEO PLAYER MODAL (Hidden by default)
      ============================================ -->
-<section class="section process-section">
-    <div class="container">
-        <div class="text-center">
-            <div class="gradient-line" style="margin: 0 auto var(--spacing-md);"></div>
-            <h2 class="section-title">Our Process</h2>
-            <p class="section-subtitle" style="margin: 0 auto var(--spacing-lg);">
-                How we bring your vision to life.
-            </p>
+<div class="video-modal" id="videoModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeVideoModal()">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="modal-video-wrapper">
+            <video id="modalVideo" controls autoplay>
+                <source src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
         </div>
-
-        <div class="process-grid">
-            <div class="process-step">
-                <div class="process-number">01</div>
-                <h3>Discovery</h3>
-                <p>We learn about your vision, goals, and the story you want to tell.</p>
-            </div>
-            <div class="process-step">
-                <div class="process-number">02</div>
-                <h3>Planning</h3>
-                <p>Script development, storyboarding, and pre-production logistics.</p>
-            </div>
-            <div class="process-step">
-                <div class="process-number">03</div>
-                <h3>Production</h3>
-                <p>Shooting your project with professional equipment and expertise.</p>
-            </div>
-            <div class="process-step">
-                <div class="process-number">04</div>
-                <h3>Delivery</h3>
-                <p>Editing, color grading, and final delivery in your preferred format.</p>
+        <div class="modal-info">
+            <div class="modal-title" id="modalTitle">Video Title</div>
+            <div class="modal-actions">
+                <!-- Optional: Add share or like buttons here -->
             </div>
         </div>
     </div>
-</section>
+</div>
 
-<!-- ============================================
-     CTA SECTION
-     ============================================ -->
-<section class="section cta-section">
-    <div class="container">
-        <h2>Ready to Start Your Project?</h2>
-        <p>
-            Let's discuss your vision and create something extraordinary together.
-            Get in touch for a free consultation.
-        </p>
-        <a href="contact.html" class="btn btn-primary">
-            <i class="fas fa-envelope"></i>
-            Contact Us
-        </a>
-    </div>
-</section>
+<script>
+    function openVideoModal(videoUrl, title) {
+        if (!videoUrl) {
+            alert('Video not available.');
+            return;
+        }
+        
+        const modal = document.getElementById('videoModal');
+        const video = document.getElementById('modalVideo');
+        const titleEl = document.getElementById('modalTitle');
+        
+        // Set source and title
+        video.src = videoUrl;
+        titleEl.textContent = title;
+        
+        // Show modal
+        modal.classList.add('active');
+        video.play();
+        
+        // Prevent body scroll
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeVideoModal() {
+        const modal = document.getElementById('videoModal');
+        const video = document.getElementById('modalVideo');
+        
+        // Hide modal
+        modal.classList.remove('active');
+        
+        // Stop video
+        video.pause();
+        video.currentTime = 0;
+        video.src = '';
+        
+        // Restore body scroll
+        document.body.style.overflow = 'auto';
+    }
+
+    // Close modal if user clicks outside the content area
+    document.getElementById('videoModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeVideoModal();
+        }
+    });
+    
+    // Close with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeVideoModal();
+        }
+    });
+</script>
+
 {% endblock %}
