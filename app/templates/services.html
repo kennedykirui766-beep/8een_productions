@@ -8,327 +8,157 @@
 
 <style>
     /* ============================================
-       PORTFOLIO / SERVICES STYLES
+       PORTFOLIO & SERVICE STYLES
        ============================================ */
-
-    /* Section Headers */
-    .category-section {
-        padding: var(--spacing-xl) 0;
-        position: relative;
-    }
-    .category-section:nth-child(even) {
-        background-color: rgba(20, 20, 20, 0.4);
-    }
     
-    .section-header {
+    /* Intro Section */
+    .services-intro {
+        background-color: var(--color-dark-grey);
         text-align: center;
-        margin-bottom: var(--spacing-xl);
+        padding: var(--spacing-lg) 0;
     }
-    .section-header h2 {
-        font-family: var(--font-heading);
-        font-size: 2.5rem;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        margin-bottom: 0.5rem;
-        color: var(--color-white);
-    }
-    .section-header p {
+    .services-intro p {
         color: var(--color-light-grey);
-        max-width: 600px;
+        max-width: 800px;
         margin: 0 auto;
-    }
-    .section-divider {
-        width: 60px;
-        height: 3px;
-        background: var(--color-red);
-        margin: 1rem auto;
-        border-radius: 2px;
+        font-size: 1.1rem;
+        line-height: 1.8;
     }
 
-    /* ============================================
-       MOVIE SECTION (Strict Overlay Fix)
-       ============================================ */
-    .movies-grid {
+    /* Portfolio Grid Layout */
+    .portfolio-section {
+        background-color: var(--color-black);
+        padding: var(--spacing-xl) 0;
+    }
+
+    .portfolio-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: var(--spacing-lg);
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: var(--spacing-md);
     }
 
-    /* 1. Container: Relative & Fixed Height */
-    .movie-card-visual {
-        position: relative; /* Base for absolute children */
-        width: 100%;
-        aspect-ratio: 16/9; /* Fixed aspect ratio */
-        overflow: hidden; /* Contains children */
-        
-        background-color: #000;
-        border-radius: var(--radius-md);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        cursor: pointer;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .movie-card-visual:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.7);
-    }
-
-    /* 2. Video Layer: Absolute, Bottom Z-Index */
-    .card-video-layer {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1; /* Behind poster */
-        background: #000;
-        /* No margin/padding */
-    }
-
-    /* Force video inside */
-    .card-video-layer video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+    /* Portfolio Item Card */
+    .portfolio-item {
         position: relative;
-        z-index: 0; /* Lower than poster */
-        background: #000;
+        aspect-ratio: 16/10;
+        overflow: hidden;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        background-color: var(--color-charcoal);
     }
 
-    /* 3. Poster Layer: Absolute, Top Z-Index */
-    .card-poster {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 10; /* ON TOP */
-        
-        transition: opacity 0.4s ease, transform 0.5s ease;
-        /* No margin/padding */
-    }
-
-    /* Poster Image covers fully */
-    .card-poster img {
+    .portfolio-item img,
+    .portfolio-item video {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        display: block; /* Remove bottom gap */
+        transition: transform 0.5s ease, filter 0.5s ease;
     }
 
-    /* Gradient overlay for text */
-    .card-gradient {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 40%, transparent 100%);
-        z-index: 1; /* Relative to poster parent, so above image but below text */
+    .portfolio-item:hover img,
+    .portfolio-item:hover video {
+        transform: scale(1.05);
+        filter: brightness(0.7);
     }
 
-    /* UI Elements (Badge, Play, Info) */
-    .card-badge {
+    /* Badges */
+    .type-badge {
         position: absolute;
         top: 15px;
         left: 15px;
-        padding: 0.4rem 0.9rem;
-        background-color: rgba(59, 130, 246, 0.95);
-        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: var(--radius-sm);
         font-size: 0.7rem;
-        font-weight: 700;
+        font-weight: 600;
         text-transform: uppercase;
-        border-radius: 50px;
-        z-index: 20; /* Higher than poster layer */
         letter-spacing: 0.5px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        z-index: 2;
+        backdrop-filter: blur(4px);
     }
 
-    .card-play-btn {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 70px;
-        height: 70px;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 20;
-        box-shadow: 0 0 30px rgba(255,255,255,0.2);
-        transition: transform 0.2s ease, opacity 0.2s ease;
-    }
-    
-    .movie-card-visual:hover .card-play-btn {
-        transform: translate(-50%, -50%) scale(1.1);
-    }
+    .badge-movie { background-color: rgba(59, 130, 246, 0.9); color: white; }
+    .badge-trailer { background-color: rgba(245, 158, 11, 0.9); color: black; }
+    .badge-gallery { background-color: rgba(139, 92, 246, 0.9); color: white; }
 
-    .card-play-btn i {
-        color: #000;
-        font-size: 1.8rem;
-        margin-left: 4px;
-    }
-
-    .card-details {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 1.5rem;
-        z-index: 20;
-        transform: translateY(10px);
-        transition: transform 0.3s ease;
-    }
-
-    .movie-card-visual:hover .card-details {
-        transform: translateY(0);
-    }
-
-    .card-details h3 {
-        font-family: var(--font-heading);
-        font-size: 1.3rem;
-        color: white;
-        margin-bottom: 0.25rem;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    }
-    
-    .card-details p {
-        color: rgba(255,255,255,0.8);
-        font-size: 0.9rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    /* 4. Playing State: Hide Poster Layer */
-    .movie-card-visual.playing .card-poster {
-        opacity: 0;
-        pointer-events: none; /* Allows clicks to pass to video */
-        transform: scale(1.1);
-    }
-    
-    .movie-card-visual.playing {
-        cursor: default;
-    }
-
-    /* ============================================
-       TRAILERS & GALLERIES (Modal Based)
-       ============================================ */
-    .media-grid {
-        display: grid;
-        gap: var(--spacing-lg);
-    }
-
-    .trailers-grid, .galleries-grid {
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    }
-
-    .media-card {
-        position: relative;
-        border-radius: var(--radius-md);
-        overflow: hidden;
-        cursor: pointer;
-        background-color: var(--color-charcoal);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .media-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-    }
-
-    .card-media {
-        position: relative;
-        overflow: hidden;
-        aspect-ratio: 16 / 9;
-    }
-
-    .card-media img,
-    .card-media video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-    }
-    .media-card:hover .card-media img,
-    .media-card:hover .card-media video {
-        transform: scale(1.05);
-    }
-
-    .card-overlay {
+    /* Overlay Content */
+    .portfolio-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 50%);
+        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-        padding: 1.5rem;
-        opacity: 0;
-        transition: opacity 0.3s ease;
+        padding: var(--spacing-md);
+        z-index: 1;
     }
-    .media-card:hover .card-overlay {
+
+    .portfolio-item:hover .portfolio-overlay {
         opacity: 1;
     }
 
-    .overlay-play-btn {
+    .portfolio-overlay .view-btn {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) scale(0.8);
         width: 60px;
         height: 60px;
-        background: rgba(255,255,255,0.9);
+        background-color: var(--color-white);
+        color: var(--color-black);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        font-size: 1.5rem;
         opacity: 0;
         transition: all 0.3s ease;
+        box-shadow: 0 0 20px rgba(255,255,255,0.3);
     }
-    .media-card:hover .overlay-play-btn {
+
+    .portfolio-item:hover .view-btn {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
     }
-    .overlay-play-btn i {
-        color: var(--color-black);
+
+    .portfolio-overlay h3 {
+        font-family: var(--font-heading);
         font-size: 1.5rem;
-        margin-left: 3px;
+        letter-spacing: 1px;
+        margin-bottom: 0.25rem;
+        transform: translateY(20px);
+        transition: transform 0.3s ease;
     }
 
-    .card-info {
-        padding: 1rem;
-        border-top: 1px solid rgba(255,255,255,0.1);
-        background: rgba(0,0,0,0.8);
+    .portfolio-overlay p {
+        color: var(--color-light-grey);
+        font-size: 0.9rem;
+        transform: translateY(20px);
+        transition: transform 0.3s ease 0.05s;
     }
-    .card-info h3 {
-        font-family: var(--font-heading);
-        font-size: 1.1rem;
-        margin-bottom: 0.25rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+
+    .portfolio-item:hover .portfolio-overlay h3,
+    .portfolio-item:hover .portfolio-overlay p {
+        transform: translateY(0);
     }
-    .card-info span {
-        font-size: 0.85rem;
+
+    /* Placeholder */
+    .portfolio-placeholder {
+        width: 100%; height: 100%;
+        background: linear-gradient(135deg, var(--color-charcoal), var(--color-dark-grey));
+        display: flex; align-items: center; justify-content: center;
+        font-size: 3rem; color: var(--color-grey);
+    }
+
+    /* Empty State */
+    .empty-state-container {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: var(--spacing-xl) 0;
         color: var(--color-light-grey);
     }
-
-    /* Badges */
-    .badge {
-        position: absolute;
-        top: 1rem;
-        left: 1rem;
-        padding: 0.3rem 0.8rem;
-        border-radius: 50px;
-        font-size: 0.7rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        z-index: 2;
-        backdrop-filter: blur(10px);
-    }
-    .badge-trailer { background: rgba(245, 158, 11, 0.9); color: black; }
-    .badge-gallery { background: rgba(139, 92, 246, 0.9); color: white; }
+    .empty-state-container i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
 
     /* --- MODAL STYLES --- */
     .modal {
@@ -344,149 +174,102 @@
     .modal-content {
         position: relative;
         width: 90%;
-        max-width: 1100px;
+        max-width: 1000px;
         background: var(--color-dark-grey);
         border-radius: var(--radius-md);
         overflow: hidden;
         box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        transform: scale(0.9) translateY(20px);
+        transform: scale(0.9);
         transition: transform 0.3s ease;
-        max-height: 90vh;
-        display: flex;
-        flex-direction: column;
     }
-    .modal.active .modal-content { transform: scale(1) translateY(0); }
+    .modal.active .modal-content { transform: scale(1); }
 
     .modal-close {
         position: absolute;
         top: 1rem; right: 1rem;
-        background: rgba(0,0,0,0.7);
+        background: rgba(0,0,0,0.5);
         border: none; color: white;
         width: 40px; height: 40px;
         border-radius: 50%;
         cursor: pointer;
         z-index: 10;
         transition: background 0.2s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
     .modal-close:hover { background: var(--color-danger); }
 
-    /* Video Modal */
+    /* Video Modal Specifics */
     .video-wrapper {
         position: relative;
+        padding-top: 56.25%; /* 16:9 */
         background: #000;
-        width: 100%;
     }
     .video-wrapper video {
-        width: 100%;
-        display: block;
-        max-height: 70vh;
-        object-fit: contain;
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
     }
     .modal-info {
-        padding: 1.5rem;
+        padding: 1rem;
+        background: #111;
         border-top: 1px solid var(--color-charcoal);
     }
-    .modal-info h4 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-    .modal-info p { color: var(--color-light-grey); }
+    .modal-info h4 {
+        font-family: var(--font-heading);
+        letter-spacing: 1px;
+        font-size: 1.2rem;
+        color: var(--color-white);
+    }
+    .modal-info p {
+        color: var(--color-light-grey);
+        font-size: 0.9rem;
+        margin-top: 0.25rem;
+    }
 
     /* Gallery Modal Specifics */
-    .gallery-container {
-        display: flex;
-        height: 80vh;
-    }
-    .gallery-main {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #000;
-        position: relative;
-        padding: 1rem;
-    }
-    .gallery-main img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-        border-radius: var(--radius-sm);
-        transition: opacity 0.3s ease;
-    }
-    .gallery-arrow {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        background: rgba(255,255,255,0.1);
-        border: none;
-        color: white;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: 1.2rem;
-        transition: background 0.2s;
-        z-index: 5;
-    }
-    .gallery-arrow:hover { background: rgba(255,255,255,0.3); }
-    .gallery-arrow.prev { left: 20px; }
-    .gallery-arrow.next { right: 20px; }
-
-    .gallery-sidebar {
-        width: 120px;
-        background: var(--color-dark-grey);
-        border-left: 1px solid var(--color-charcoal);
+    .gallery-wrapper {
+        padding: 2rem;
+        text-align: center;
+        max-height: 90vh;
         overflow-y: auto;
-        padding: 10px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
     }
-    .sidebar-thumb {
-        width: 100%;
-        aspect-ratio: 16/9;
-        object-fit: cover;
-        border-radius: 4px;
-        cursor: pointer;
-        opacity: 0.5;
-        transition: all 0.2s;
-        border: 2px solid transparent;
+    .gallery-wrapper img {
+        max-width: 100%;
+        max-height: 70vh;
+        margin: 0 auto 1rem auto;
+        border-radius: var(--radius-sm);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        display: block;
     }
-    .sidebar-thumb:hover { opacity: 0.8; }
-    .sidebar-thumb.active {
-        opacity: 1;
-        border-color: var(--color-red);
+    .gallery-nav {
+        display: flex; justify-content: center; gap: 1rem;
+        margin-top: 1rem;
+        align-items: center;
     }
+    .gallery-nav button {
+        background: var(--color-charcoal); border: none;
+        color: white; padding: 0.5rem 1.5rem;
+        border-radius: var(--radius-sm); cursor: pointer;
+        transition: background 0.2s;
+    }
+    .gallery-nav button:hover { background: var(--color-medium-grey); }
 
     /* Responsive */
     @media (max-width: 768px) {
-        .section-header h2 { font-size: 1.8rem; }
-        
-        .movies-grid { grid-template-columns: 1fr; }
-        .trailers-grid, .galleries-grid { grid-template-columns: 1fr; }
-        
+        .portfolio-grid {
+            grid-template-columns: 1fr;
+        }
         .modal-content {
             width: 100%;
             height: 100%;
             max-height: 100%;
             border-radius: 0;
         }
-        .gallery-container {
-            flex-direction: column;
-            height: 100vh;
+        .video-wrapper {
+            height: 56.25vw; /* Maintain aspect ratio on mobile */
+            padding-top: 0;
         }
-        .gallery-sidebar {
-            width: 100%;
-            height: 100px;
-            flex-direction: row;
-            overflow-x: auto;
-            overflow-y: hidden;
-            border-left: none;
-            border-top: 1px solid var(--color-charcoal);
-        }
-        .sidebar-thumb {
-            width: 80px;
-            flex-shrink: 0;
+        .video-wrapper video {
+            position: relative;
         }
     }
 </style>
@@ -498,173 +281,149 @@
     <div class="container">
         <div class="page-header-content">
             <div class="gradient-line"></div>
-            <h1>Our Portfolio</h1>
-            <p>Explore our collection of movies, trailers, and photo galleries.</p>
+            <h1>Our Work</h1>
+            <p>Watch our latest movies, trailers, and browse photo galleries.</p>
         </div>
     </div>
 </section>
 
 <!-- ============================================
-     MOVIES SECTION (Fixed Overlay)
+     SERVICES INTRO
      ============================================ -->
-{% if movies %}
-<section class="category-section">
+<section class="section services-intro">
     <div class="container">
-        <div class="section-header">
-            <h2>Featured Movies</h2>
-            <div class="section-divider"></div>
-            <p>Click to play our full-length productions directly.</p>
-        </div>
-        <div class="movies-grid">
-            {% for movie in movies %}
-            {% if movie.show_in_services %}
-            <div class="movie-card-visual" onclick="toggleInlineVideo(this)">
-                
-                <!-- Video Layer (Behind) -->
-                <div class="card-video-layer">
-                    <video preload="metadata" onclick="event.stopPropagation()">
-                        <source src="{{ movie.movie_file }}" type="video/mp4">
-                    </video>
-                </div>
+        <p>
+            Welcome to our showcase. Here you can watch full movies, check out our latest trailers, 
+            and browse through photo galleries from our productions. All content here is free to view.
+        </p>
+    </div>
+</section>
 
-                <!-- Poster Layer (On Top) -->
-                <div class="card-poster">
-                    <div class="card-gradient"></div>
+<!-- ============================================
+     PORTFOLIO SHOWCASE
+     ============================================ -->
+<section class="section portfolio-section">
+    <div class="container">
+        <div class="portfolio-grid" id="portfolio-grid">
+            
+            {# Movies Loop #}
+            {% if movies %}
+                {% for movie in movies %}
+                {% if movie.show_in_services %}
+                <div class="portfolio-item" 
+                    data-title="{{ movie.title }}"
+                    data-desc="{{ movie.description or movie.synopsis }}"
+                    data-type="video"
+                    data-media="{{ movie.movie_file }}"
+                    data-poster="{{ movie.poster_file if movie.poster_file else '' }}">
+                    
+                    <span class="type-badge badge-movie">Movie</span>
+
                     {% if movie.poster_file %}
                         <img src="{{ movie.poster_file }}" alt="{{ movie.title }}">
                     {% else %}
-                        <img src="https://via.placeholder.com/600x338?text=Movie" alt="{{ movie.title }}">
+                        <div class="portfolio-placeholder"><i class="fas fa-film"></i></div>
                     {% endif %}
-                </div>
 
-                <!-- UI Elements -->
-                <span class="card-badge">Movie</span>
-                <div class="card-play-btn"><i class="fas fa-play"></i></div>
-                
-                <div class="card-details">
-                    <h3>{{ movie.title }}</h3>
-                    <p><i class="fas fa-film"></i> {{ movie.description[:30] + '...' if movie.description else 'Click to Watch' }}</p>
+                    <div class="portfolio-overlay">
+                        <div class="view-btn"><i class="fas fa-play"></i></div>
+                        <h3>{{ movie.title }}</h3>
+                        <p>Movie</p>
+                    </div>
                 </div>
-
-            </div>
+                {% endif %}
+                {% endfor %}
             {% endif %}
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
 
-<!-- ============================================
-     TRAILERS SECTION (Modal)
-     ============================================ -->
-{% if trailers %}
-<section class="category-section" style="background-color: var(--color-dark-grey);">
-    <div class="container">
-        <div class="section-header">
-            <h2>Trailers & Clips</h2>
-            <div class="section-divider"></div>
-            <p>Sneak peeks and promotional trailers.</p>
-        </div>
-        <div class="media-grid trailers-grid">
-            {% for trailer in trailers %}
-            {% if trailer.show_in_services %}
-            <div class="media-card" 
-                data-title="{{ trailer.title }}"
-                data-desc="{{ trailer.description }}"
-                data-type="video"
-                data-media="{{ trailer.trailer_file }}"
-                data-poster="{{ trailer.thumbnail if trailer.thumbnail else '' }}">
-                
-                <div class="card-media">
-                    <span class="badge badge-trailer">Trailer</span>
+            {# Trailers Loop #}
+            {% if trailers %}
+                {% for trailer in trailers %}
+                {% if trailer.show_in_services %}
+                <div class="portfolio-item" 
+                    data-title="{{ trailer.title }}"
+                    data-desc="{{ trailer.description }}"
+                    data-type="video"
+                    data-media="{{ trailer.trailer_file }}"
+                    data-poster="{{ trailer.thumbnail if trailer.thumbnail else '' }}">
+                    
+                    <span class="type-badge badge-trailer">Trailer</span>
+
                     {% if trailer.thumbnail %}
                         <img src="{{ trailer.thumbnail }}" alt="{{ trailer.title }}">
                     {% elif trailer.trailer_file %}
-                        <video muted preload="metadata">
+                        <video muted preload="metadata" style="width:100%; height:100%; object-fit:cover;">
                             <source src="{{ trailer.trailer_file }}" type="video/mp4">
                         </video>
                     {% else %}
-                        <img src="https://via.placeholder.com/600x338?text=Trailer" alt="{{ trailer.title }}">
+                        <div class="portfolio-placeholder"><i class="fas fa-video"></i></div>
                     {% endif %}
-                    <div class="overlay-play-btn"><i class="fas fa-play"></i></div>
-                </div>
-                <div class="card-info">
-                    <h3>{{ trailer.title }}</h3>
-                    <span>Watch Trailer</span>
-                </div>
-            </div>
-            {% endif %}
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
 
-<!-- ============================================
-     GALLERIES SECTION (Modal)
-     ============================================ -->
-{% if galleries %}
-<section class="category-section">
-    <div class="container">
-        <div class="section-header">
-            <h2>Photo Galleries</h2>
-            <div class="section-divider"></div>
-            <p>Browse high-quality images from our sets.</p>
-        </div>
-        <div class="media-grid galleries-grid">
-            {% for gallery in galleries %}
-            {% if gallery.show_in_services %}
-            
-            {% set image_files = gallery.image_files.split(',') if gallery.image_files else [] %}
-            {% set image_urls = [] %}
-            {% for f in image_files %}
-                {% set trimmed = f.strip() %}
-                {% if trimmed %}
-                    {% set _ = image_urls.append(trimmed) %}
+                    <div class="portfolio-overlay">
+                        <div class="view-btn"><i class="fas fa-play-circle"></i></div>
+                        <h3>{{ trailer.title }}</h3>
+                        <p>Trailer</p>
+                    </div>
+                </div>
                 {% endif %}
-            {% endfor %}
+                {% endfor %}
+            {% endif %}
 
-            <div class="media-card" 
-                data-title="{{ gallery.title }}"
-                data-desc="{{ gallery.description }}"
-                data-type="gallery"
-                data-images='{{ image_urls | tojson }}'>
+            {# Galleries Loop #}
+            {% if galleries %}
+                {% for gallery in galleries %}
+                {% if gallery.show_in_services %}
                 
-                <div class="card-media">
-                    <span class="badge badge-gallery">Gallery</span>
+                {% set image_files = gallery.image_files.split(',') if gallery.image_files else [] %}
+                {% set image_urls = [] %}
+                {% for f in image_files %}
+                    {% set trimmed = f.strip() %}
+                    {% if trimmed %}
+                        {% set _ = image_urls.append(trimmed) %}
+                    {% endif %}
+                {% endfor %}
+
+                <div class="portfolio-item" 
+                    data-title="{{ gallery.title }}"
+                    data-desc="{{ gallery.description }}"
+                    data-type="gallery"
+                    data-images='{{ image_urls | tojson }}'>
+                    
+                    <span class="type-badge badge-gallery">Gallery</span>
+
                     {% if image_urls %}
                         <img src="{{ image_urls[0] }}" alt="{{ gallery.title }}">
                     {% else %}
-                        <img src="https://via.placeholder.com/600x338?text=Gallery" alt="{{ gallery.title }}">
+                        <div class="portfolio-placeholder"><i class="fas fa-images"></i></div>
                     {% endif %}
-                    <div class="overlay-play-btn"><i class="fas fa-images"></i></div>
+
+                    <div class="portfolio-overlay">
+                        <div class="view-btn"><i class="fas fa-images"></i></div>
+                        <h3>{{ gallery.title }}</h3>
+                        <p>Gallery</p>
+                    </div>
                 </div>
-                <div class="card-info">
-                    <h3>{{ gallery.title }}</h3>
-                    <span>{{ image_urls|length }} Photos</span>
-                </div>
-            </div>
+                {% endif %}
+                {% endfor %}
             {% endif %}
-            {% endfor %}
+
+            {# Empty State Fallback #}
+            {% if not movies and not trailers and not galleries %}
+                <div class="empty-state-container">
+                    <i class="fas fa-photo-video"></i>
+                    <h3>No Projects Available</h3>
+                    <p style="margin-top: 0.5rem; opacity: 0.7;">The admin has not added any showcase items yet.</p>
+                </div>
+            {% endif %}
+
         </div>
     </div>
 </section>
-{% endif %}
-
-{% if not movies and not trailers and not galleries %}
-<section class="section">
-    <div class="container text-center">
-        <h3>No Content Available</h3>
-        <p>Check back later for updates.</p>
-    </div>
-</section>
-{% endif %}
 
 <!-- ============================================
-     MODALS
+     MODALS (Hidden by default)
      ============================================ -->
 
-<!-- Video Player Modal (For Trailers) -->
+<!-- Video Player Modal -->
 <div class="modal" id="videoModal">
     <div class="modal-content">
         <button class="modal-close" onclick="closeModal('videoModal')"><i class="fas fa-times"></i></button>
@@ -682,135 +441,67 @@
 
 <!-- Gallery Viewer Modal -->
 <div class="modal" id="galleryModal">
-    <div class="modal-content" style="max-width: 1400px;">
+    <div class="modal-content">
         <button class="modal-close" onclick="closeModal('galleryModal')"><i class="fas fa-times"></i></button>
-        
-        <div class="gallery-container">
-            <div class="gallery-main">
-                <button class="gallery-arrow prev" onclick="changeGalleryImage(-1)"><i class="fas fa-chevron-left"></i></button>
-                <img id="galleryMainImage" src="" alt="Gallery Image">
-                <button class="gallery-arrow next" onclick="changeGalleryImage(1)"><i class="fas fa-chevron-right"></i></button>
+        <div class="gallery-wrapper">
+            <h3 id="galleryTitle" style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 1rem;">Gallery</h3>
+            <img id="galleryImage" src="" alt="Gallery Image">
+            <div class="gallery-nav">
+                <button onclick="prevGalleryImage()"><i class="fas fa-arrow-left"></i> Prev</button>
+                <span id="galleryCount" style="color: #888;">1 / 5</span>
+                <button onclick="nextGalleryImage()">Next <i class="fas fa-arrow-right"></i></button>
             </div>
-            <div class="gallery-sidebar" id="gallerySidebar"></div>
         </div>
     </div>
 </div>
 
 <script>
-    /* ============================================
-       INLINE MOVIE PLAYER LOGIC
-       ============================================ */
-    function toggleInlineVideo(card) {
-        if (card.classList.contains('playing')) return;
-
-        const video = card.querySelector('video');
-        
-        // Add class to fade out the overlaying poster
-        card.classList.add('playing');
-        
-        // Play video
-        video.play();
-        
-        // Pause other playing videos
-        document.querySelectorAll('.movie-card-visual.playing').forEach(otherCard => {
-            if (otherCard !== card) {
-                const otherVid = otherCard.querySelector('video');
-                otherVid.pause();
-                otherCard.classList.remove('playing');
-            }
-        });
-    }
-
-    // Handle Video End -> Show Poster Again
-    document.querySelectorAll('.movie-card-visual video').forEach(video => {
-        video.addEventListener('ended', () => {
-            const card = video.closest('.movie-card-visual');
-            card.classList.remove('playing');
-            video.currentTime = 0;
-        });
-    });
-
-
-    /* ============================================
-       MODAL & GALLERY LOGIC
-       ============================================ */
+    // State for Gallery Modal
     let currentGalleryImages = [];
-    let currentIndex = 0;
+    let currentGalleryIndex = 0;
 
-    document.body.addEventListener('click', function(e) {
-        const card = e.target.closest('.media-card');
-        if (!card) return;
+    // Handle Click on Portfolio Item
+    document.getElementById('portfolio-grid').addEventListener('click', function(e) {
+        const item = e.target.closest('.portfolio-item');
+        if (!item) return;
 
-        const type = card.dataset.type;
-        const title = card.dataset.title;
-        const desc = card.dataset.desc;
+        const type = item.dataset.type;
+        const title = item.dataset.title;
+        const desc = item.dataset.desc;
+        const media = item.dataset.media;
+        const poster = item.dataset.poster;
+        const imagesJson = item.dataset.images;
 
         if (type === 'video') {
-            const media = card.dataset.media;
-            const poster = card.dataset.poster;
-            
-            document.getElementById('videoTitle').textContent = title;
-            document.getElementById('videoDesc').textContent = desc || 'No description available.';
+            // Show Video Modal
             const videoPlayer = document.getElementById('videoPlayer');
+            document.getElementById('videoTitle').textContent = title;
+            document.getElementById('videoDesc').textContent = desc;
+            
+            // Set sources
             videoPlayer.src = media;
             if (poster) videoPlayer.poster = poster;
             
             openModal('videoModal');
             videoPlayer.play();
-        } 
-        else if (type === 'gallery') {
-            try {
-                currentGalleryImages = JSON.parse(card.dataset.images);
-                if (currentGalleryImages.length === 0) return;
-                
-                currentIndex = 0;
-                const sidebar = document.getElementById('gallerySidebar');
-                sidebar.innerHTML = '';
-                
-                currentGalleryImages.forEach((url, index) => {
-                    const img = document.createElement('img');
-                    img.src = url;
-                    img.className = 'sidebar-thumb' + (index === 0 ? ' active' : '');
-                    img.onclick = () => setGalleryImage(index);
-                    sidebar.appendChild(img);
-                });
 
-                setGalleryImage(0);
+        } else if (type === 'gallery') {
+            // Show Gallery Modal
+            try {
+                currentGalleryImages = JSON.parse(imagesJson);
+                currentGalleryIndex = 0;
+                
+                document.getElementById('galleryTitle').textContent = title;
+                updateGalleryImage();
+                
                 openModal('galleryModal');
             } catch (err) {
-                console.error("Gallery error:", err);
+                console.error("Error loading gallery images", err);
             }
         }
     });
 
-    function setGalleryImage(index) {
-        if (index < 0 || index >= currentGalleryImages.length) return;
-        currentIndex = index;
-
-        const mainImg = document.getElementById('galleryMainImage');
-        mainImg.style.opacity = 0;
-        setTimeout(() => {
-            mainImg.src = currentGalleryImages[index];
-            mainImg.style.opacity = 1;
-        }, 150);
-
-        document.querySelectorAll('.sidebar-thumb').forEach((t, i) => {
-            t.classList.toggle('active', i === index);
-        });
-        
-        const activeThumb = document.querySelectorAll('.sidebar-thumb')[index];
-        if (activeThumb) {
-            activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-    }
-
-    function changeGalleryImage(direction) {
-        let newIndex = currentIndex + direction;
-        if (newIndex < 0) newIndex = currentGalleryImages.length - 1;
-        if (newIndex >= currentGalleryImages.length) newIndex = 0;
-        setGalleryImage(newIndex);
-    }
-
+    // Modal Controls
     function openModal(id) {
         document.getElementById(id).classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -820,13 +511,38 @@
         document.getElementById(id).classList.remove('active');
         document.body.style.overflow = 'auto';
 
+        // Cleanup for video modal
         if (id === 'videoModal') {
-            const vp = document.getElementById('videoPlayer');
-            vp.pause();
-            vp.src = '';
+            const videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.pause();
+            videoPlayer.currentTime = 0;
+            videoPlayer.src = '';
         }
     }
 
+    // Gallery Navigation
+    function updateGalleryImage() {
+        if (currentGalleryImages.length > 0) {
+            document.getElementById('galleryImage').src = currentGalleryImages[currentGalleryIndex];
+            document.getElementById('galleryCount').textContent = `${currentGalleryIndex + 1} / ${currentGalleryImages.length}`;
+        }
+    }
+
+    function nextGalleryImage() {
+        if (currentGalleryIndex < currentGalleryImages.length - 1) {
+            currentGalleryIndex++;
+            updateGalleryImage();
+        }
+    }
+
+    function prevGalleryImage() {
+        if (currentGalleryIndex > 0) {
+            currentGalleryIndex--;
+            updateGalleryImage();
+        }
+    }
+
+    // Close modal on background click
     document.querySelectorAll('.modal').forEach(modal => {
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
@@ -835,17 +551,10 @@
         });
     });
 
+    // Close with Escape key
     document.addEventListener('keydown', (e) => {
-        if (!document.querySelector('.modal.active')) return;
-        
         if (e.key === 'Escape') {
             document.querySelectorAll('.modal.active').forEach(m => closeModal(m.id));
-        }
-        
-        const galleryModal = document.getElementById('galleryModal');
-        if (galleryModal.classList.contains('active')) {
-            if (e.key === 'ArrowLeft') changeGalleryImage(-1);
-            if (e.key === 'ArrowRight') changeGalleryImage(1);
         }
     });
 </script>
