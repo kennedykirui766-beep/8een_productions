@@ -9,7 +9,7 @@
 {% block extra_styles %}
 <style>
     /* ============================================
-       SERVICES PAGE STYLES
+       PORTFOLIO / SERVICES STYLES
        ============================================ */
 
     /* Section Headers */
@@ -18,12 +18,12 @@
         position: relative;
     }
     .category-section:nth-child(even) {
-        background-color: rgba(255,255,255,0.02);
+        background-color: rgba(20, 20, 20, 0.4);
     }
     
     .section-header {
         text-align: center;
-        margin-bottom: var(--spacing-lg);
+        margin-bottom: var(--spacing-xl);
     }
     .section-header h2 {
         font-family: var(--font-heading);
@@ -31,9 +31,7 @@
         text-transform: uppercase;
         letter-spacing: 3px;
         margin-bottom: 0.5rem;
-        background: linear-gradient(to right, var(--color-white), var(--color-grey));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: var(--color-white);
     }
     .section-header p {
         color: var(--color-light-grey);
@@ -41,126 +39,183 @@
         margin: 0 auto;
     }
     .section-divider {
-        width: 80px;
-        height: 4px;
+        width: 60px;
+        height: 3px;
         background: var(--color-red);
         margin: 1rem auto;
         border-radius: 2px;
     }
 
-    /* Responsive Grids */
-    .media-grid {
+    /* ============================================
+       MOVIE SECTION (Screenshot Style + Inline Play)
+       ============================================ */
+    .movies-grid {
         display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         gap: var(--spacing-lg);
     }
 
-    /* --- MOVIE SECTION STYLES (Inline Player) --- */
-    .movies-grid {
-        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    }
-
-    .movie-card-inline {
+    /* The Card Container */
+    .movie-card-visual {
         position: relative;
         border-radius: var(--radius-md);
         overflow: hidden;
         background-color: #000;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-        aspect-ratio: 16/9; /* Force landscape for video playback */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        aspect-ratio: 16/9; /* Landscape style as seen in screenshot */
         cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    /* The Video Element (Hidden initially or behind poster) */
-    .movie-card-inline video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* or contain depending on preference */
-        background-color: #000;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 1;
+    .movie-card-visual:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.7);
     }
 
-    /* The Poster Overlay */
-    .movie-poster-overlay {
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        z-index: 2;
-        transition: opacity 0.5s ease, visibility 0.5s ease;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* When playing, hide poster */
-    .movie-card-inline.playing .movie-poster-overlay {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-    }
-
-    /* Gradient overlay on poster for text readability */
-    .movie-poster-overlay::after {
-        content: '';
+    /* 1. The Poster/Image Layer */
+    .card-poster {
         position: absolute;
         inset: 0;
-        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
-        z-index: -1;
+        z-index: 2;
+        transition: opacity 0.4s ease, transform 0.5s ease;
+    }
+    
+    .card-poster img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
-    /* Central Play Button */
-    .inline-play-btn {
-        width: 90px;
-        height: 90px;
+    /* Overlay Gradient for Text Readability */
+    .card-gradient {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 40%, transparent 100%);
+        z-index: 1;
+        transition: opacity 0.3s;
+    }
+
+    /* 2. The Badge (Top Left) */
+    .card-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        padding: 0.4rem 0.9rem;
+        background-color: rgba(59, 130, 246, 0.95); /* Blue badge from screenshot */
+        color: white;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        border-radius: 50px;
+        z-index: 5;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    /* 3. Play Button (Center) */
+    .card-play-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 70px;
+        height: 70px;
         background: rgba(255, 255, 255, 0.95);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 0 30px rgba(255,255,255,0.3);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        z-index: 4;
+        box-shadow: 0 0 30px rgba(255,255,255,0.2);
+        transition: transform 0.2s ease, opacity 0.2s ease;
     }
-    .movie-card-inline:hover .inline-play-btn {
-        transform: scale(1.1);
-        box-shadow: 0 0 50px rgba(255,255,255,0.5);
-    }
-    .inline-play-btn i {
-        color: var(--color-black);
-        font-size: 2rem;
-        margin-left: 5px; /* Visual centering */
+    
+    .movie-card-visual:hover .card-play-btn {
+        transform: translate(-50%, -50%) scale(1.1);
     }
 
-    /* Movie Info Bar (Bottom of Poster) */
-    .movie-info-bar {
+    .card-play-btn i {
+        color: #000;
+        font-size: 1.8rem;
+        margin-left: 4px; /* Visual centering */
+    }
+
+    /* 4. Info (Bottom) */
+    .card-details {
         position: absolute;
         bottom: 0;
         left: 0;
         right: 0;
         padding: 1.5rem;
         z-index: 3;
-        opacity: 1;
-        transition: opacity 0.3s;
-    }
-    .movie-card-inline.playing .movie-info-bar {
-        opacity: 0; /* Hide title while video plays */
-    }
-    .movie-info-bar h3 {
-        font-family: var(--font-heading);
-        font-size: 1.5rem;
-        letter-spacing: 1px;
-        margin-bottom: 0.25rem;
-    }
-    .movie-info-bar span {
-        color: var(--color-light-grey);
-        font-size: 0.9rem;
+        transform: translateY(10px);
+        transition: transform 0.3s ease;
     }
 
-    /* --- TRAILERS & GALLERIES STYLES (Cards) --- */
+    .movie-card-visual:hover .card-details {
+        transform: translateY(0);
+    }
+
+    .card-details h3 {
+        font-family: var(--font-heading);
+        font-size: 1.3rem;
+        color: white;
+        margin-bottom: 0.25rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    .card-details p {
+        color: rgba(255,255,255,0.8);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .card-details p i { font-size: 0.8rem; }
+
+    /* 5. Video Layer (Hidden initially) */
+    .card-video-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 1; /* Behind poster */
+        background: #000;
+    }
+    
+    .card-video-layer video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Fill the card area */
+    }
+
+    /* STATE: Playing */
+    /* When 'playing' class is added, hide the poster layers */
+    .movie-card-visual.playing .card-poster,
+    .movie-card-visual.playing .card-play-btn,
+    .movie-card-visual.playing .card-gradient,
+    .movie-card-visual.playing .card-details {
+        opacity: 0;
+        pointer-events: none;
+    }
+    
+    .movie-card-visual.playing .card-poster {
+        transform: scale(1.1);
+    }
+    
+    .movie-card-visual.playing {
+        cursor: default;
+    }
+
+    /* ============================================
+       TRAILERS & GALLERIES (Modal Based)
+       ============================================ */
+    .media-grid {
+        display: grid;
+        gap: var(--spacing-lg);
+    }
+
     .trailers-grid, .galleries-grid {
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     }
 
     .media-card {
@@ -173,7 +228,7 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .media-card:hover {
-        transform: translateY(-10px);
+        transform: translateY(-5px);
         box-shadow: 0 20px 40px rgba(0,0,0,0.5);
     }
 
@@ -192,7 +247,7 @@
     }
     .media-card:hover .card-media img,
     .media-card:hover .card-media video {
-        transform: scale(1.1);
+        transform: scale(1.05);
     }
 
     .card-overlay {
@@ -210,30 +265,30 @@
         opacity: 1;
     }
 
-    .play-btn {
+    .overlay-play-btn {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) scale(0.8);
-        width: 70px;
-        height: 70px;
+        width: 60px;
+        height: 60px;
         background: rgba(255,255,255,0.9);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 0 30px rgba(255,255,255,0.2);
+        box-shadow: 0 0 20px rgba(255,255,255,0.2);
         opacity: 0;
         transition: all 0.3s ease;
     }
-    .media-card:hover .play-btn {
+    .media-card:hover .overlay-play-btn {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
     }
-    .play-btn i {
+    .overlay-play-btn i {
         color: var(--color-black);
-        font-size: 1.8rem;
-        margin-left: 4px;
+        font-size: 1.5rem;
+        margin-left: 3px;
     }
 
     .card-info {
@@ -273,16 +328,11 @@
 
     /* --- MODAL STYLES --- */
     .modal {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0, 0, 0, 0.95);
         z-index: 2000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        visibility: hidden;
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; visibility: hidden;
         transition: all 0.3s ease;
     }
     .modal.active { opacity: 1; visibility: visible; }
@@ -408,7 +458,6 @@
     @media (max-width: 768px) {
         .section-header h2 { font-size: 1.8rem; }
         
-        /* Movies stack full width on mobile */
         .movies-grid { grid-template-columns: 1fr; }
         .trailers-grid, .galleries-grid { grid-template-columns: 1fr; }
         
@@ -454,7 +503,7 @@
 </section>
 
 <!-- ============================================
-     MOVIES SECTION (Inline Playback)
+     MOVIES SECTION (Visual Screenshot Style)
      ============================================ -->
 {% if movies %}
 <section class="category-section">
@@ -464,28 +513,40 @@
             <div class="section-divider"></div>
             <p>Click to play our full-length productions directly.</p>
         </div>
-        <div class="media-grid movies-grid">
+        <div class="movies-grid">
             {% for movie in movies %}
             {% if movie.show_in_services %}
-            <div class="movie-card-inline" id="movie-{{ movie.id }}">
+            <div class="movie-card-visual" onclick="toggleInlineVideo(this)">
                 
-                <!-- Video Element (Preloaded but not playing) -->
-                <video preload="metadata" poster="{{ movie.poster_file }}">
-                    <source src="{{ movie.movie_file }}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-
-                <!-- Poster Overlay Layer -->
-                <div class="movie-poster-overlay" style="background-image: url('{{ movie.poster_file }}');">
-                    <div class="inline-play-btn" onclick="playInlineVideo(this)">
-                        <i class="fas fa-play"></i>
-                    </div>
+                <!-- Video Layer (Background) -->
+                <div class="card-video-layer">
+                    <video preload="metadata" poster="{{ movie.poster_file }}" onclick="event.stopPropagation()">
+                        <source src="{{ movie.movie_file }}" type="video/mp4">
+                    </video>
                 </div>
 
-                <!-- Info Bar (Visible on Poster) -->
-                <div class="movie-info-bar">
+                <!-- Poster/Image Layer (Foreground) -->
+                <div class="card-poster">
+                    <div class="card-gradient"></div>
+                    {% if movie.poster_file %}
+                        <img src="{{ movie.poster_file }}" alt="{{ movie.title }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/600x338?text=Movie" alt="{{ movie.title }}">
+                    {% endif %}
+                </div>
+
+                <!-- Badge -->
+                <span class="card-badge">Movie</span>
+
+                <!-- Play Button -->
+                <div class="card-play-btn">
+                    <i class="fas fa-play"></i>
+                </div>
+
+                <!-- Info Bottom -->
+                <div class="card-details">
                     <h3>{{ movie.title }}</h3>
-                    <span>{{ movie.description[:50] + '...' if movie.description and movie.description|length > 50 else movie.description }}</span>
+                    <p><i class="fas fa-clock"></i> {{ movie.description[:30] + '...' if movie.description else 'Click to Watch' }}</p>
                 </div>
 
             </div>
@@ -528,7 +589,7 @@
                     {% else %}
                         <img src="https://via.placeholder.com/600x338?text=Trailer" alt="{{ trailer.title }}">
                     {% endif %}
-                    <div class="play-btn"><i class="fas fa-play"></i></div>
+                    <div class="overlay-play-btn"><i class="fas fa-play"></i></div>
                 </div>
                 <div class="card-info">
                     <h3>{{ trailer.title }}</h3>
@@ -579,7 +640,7 @@
                     {% else %}
                         <img src="https://via.placeholder.com/600x338?text=Gallery" alt="{{ gallery.title }}">
                     {% endif %}
-                    <div class="play-btn"><i class="fas fa-images"></i></div>
+                    <div class="overlay-play-btn"><i class="fas fa-images"></i></div>
                 </div>
                 <div class="card-info">
                     <h3>{{ gallery.title }}</h3>
@@ -642,21 +703,22 @@
     /* ============================================
        INLINE MOVIE PLAYER LOGIC
        ============================================ */
-    function playInlineVideo(button) {
-        // Find parent card
-        const card = button.closest('.movie-card-inline');
-        if (!card) return;
+    function toggleInlineVideo(card) {
+        // If already playing, do nothing or pause? 
+        // For better UX, let's let the user click the video controls to pause.
+        // This function only triggers if NOT playing yet.
+        if (card.classList.contains('playing')) return;
 
         const video = card.querySelector('video');
         
-        // Add 'playing' class to fade out poster
+        // Add class to fade poster
         card.classList.add('playing');
         
         // Play video
         video.play();
-
-        // Optional: Pause other inline videos when one starts
-        document.querySelectorAll('.movie-card-inline.playing').forEach(otherCard => {
+        
+        // Pause other playing videos
+        document.querySelectorAll('.movie-card-visual.playing').forEach(otherCard => {
             if (otherCard !== card) {
                 const otherVid = otherCard.querySelector('video');
                 otherVid.pause();
@@ -666,17 +728,23 @@
     }
 
     // Handle Video End -> Show Poster Again
-    document.querySelectorAll('.movie-card-inline video').forEach(video => {
+    document.querySelectorAll('.movie-card-visual video').forEach(video => {
         video.addEventListener('ended', () => {
-            const card = video.closest('.movie-card-inline');
+            const card = video.closest('.movie-card-visual');
             card.classList.remove('playing');
-            video.currentTime = 0; // Reset to start
+            video.currentTime = 0;
+        });
+        
+        // Handle Pause -> Optionally show poster again, or leave video visible.
+        // Usually better to leave video visible on pause so user can seek.
+        video.addEventListener('pause', () => {
+            // Optional: card.classList.remove('playing');
         });
     });
 
 
     /* ============================================
-       MODAL & GALLERY LOGIC (Trailers & Gallery)
+       MODAL & GALLERY LOGIC
        ============================================ */
     let currentGalleryImages = [];
     let currentIndex = 0;
