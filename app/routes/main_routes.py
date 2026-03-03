@@ -2,6 +2,7 @@ from flask import Blueprint, render_template
 from flask import abort
 from app.models import Payment
 from app.models.project import Movie, Trailer, Gallery
+from app.models import Contact
 
 
 main_bp = Blueprint("main", __name__)
@@ -14,8 +15,33 @@ def home():
 def about():
     return render_template("about.html")
 
-@main_bp.route("/contact")
+
+@main_bp.route("/contact", methods=["GET", "POST"])
 def contact():
+    if request.method == "POST":
+        name = request.form.get("name")
+        email = request.form.get("email")
+        phone = request.form.get("phone")
+        service = request.form.get("service")
+        subject = request.form.get("subject")
+        message = request.form.get("message")
+
+        # Save to database
+        new_contact = Contact(
+            name=name,
+            email=email,
+            phone=phone,
+            service=service,
+            subject=subject,
+            message=message
+        )
+
+        db.session.add(new_contact)
+        db.session.commit()
+
+        flash("Message sent successfully!", "success")
+        return redirect(url_for("main_bp.contact"))
+
     return render_template("contact.html")
 
 @main_bp.route("/services")

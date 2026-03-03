@@ -312,7 +312,12 @@
                 </div>
             </div>
 
-            <form class="contact-form" id="contact-form">
+            <!-- Updated Form with Method and Action -->
+            <form class="contact-form" id="contact-form" method="POST" action="{{ url_for('main.contact') }}">
+                
+                <!-- CSRF Token (Standard for Flask) -->
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="name">Your Name *</label>
@@ -424,24 +429,7 @@
 
 {% block extra_scripts %}
 <script>
-    // Contact Form Handling
-    const contactForm = document.getElementById('contact-form');
-
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        // Get form data
-        const formData = new FormData(contactForm);
-        const data = Object.fromEntries(formData.entries());
-        
-        // Here you would typically send the data to a server
-        console.log('Form submitted:', data);
-        
-        // Show success message
-        alert('Thank you for your message! We will get back to you within 24-48 hours.');
-        
-        // Reset form
-        contactForm.reset();
-    });
+    // Removed the preventDefault logic so the form submits to the backend naturally.
+    // Flash messages from the backend will handle success/error notifications.
 </script>
 {% endblock %}
