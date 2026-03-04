@@ -903,15 +903,6 @@
             });
         });
 
-        // Contact form
-        if (contactForm) {
-            contactForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                console.log('Form submitted:', Object.fromEntries(new FormData(contactForm).entries()));
-                alert('Thank you for your message!');
-                contactForm.reset();
-            });
-        }
 
         // Intersection Observer for animations
         const observer = new IntersectionObserver((entries) => {
