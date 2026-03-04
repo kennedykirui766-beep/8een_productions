@@ -27,7 +27,6 @@ def contact():
         subject = request.form.get("subject")
         message = request.form.get("message")
 
-        # Save to database
         new_contact = Contact(
             name=name,
             email=email,
@@ -41,7 +40,7 @@ def contact():
         db.session.commit()
 
         flash("Message sent successfully!", "success")
-        return redirect(url_for("main_bp.contact"))
+        return redirect(url_for("main.contact"))
 
     return render_template("contact.html")
 
