@@ -128,6 +128,7 @@
             <a href="{{ url_for('admin.payments') }}" class="nav-link {% if request.endpoint == 'admin.payments' %}active{% endif %}"><i class="fas fa-credit-card"></i> Payments</a>
             <a href="{{ url_for('admin.users') }}" class="nav-link {% if request.endpoint == 'admin.users' %}active{% endif %}"><i class="fas fa-users"></i> Users</a>
             <a href="{{ url_for('admin.access') }}" class="nav-link {% if request.endpoint == 'admin.access' %}active{% endif %}"><i class="fas fa-key"></i> Access Control</a>
+            <a href="{{ url_for('admin.contacts') }}" class="nav-link {% if request.endpoint == 'admin.contacts' %}active{% endif %}"><i class="fas fa-envelope"></i> Contacts</a>
             
             <div class="nav-section">Insights</div>
             <a href="{{ url_for('admin.analytics') }}" class="nav-link {% if request.endpoint == 'admin.analytics' %}active{% endif %}"><i class="fas fa-chart-line"></i> Analytics</a>
