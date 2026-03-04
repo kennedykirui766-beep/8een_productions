@@ -290,7 +290,12 @@
             </a>
 
             <div class="nav-section">System</div>
-            <a class="nav-link" href="{{ url_for('admin.settings') }}">
+            <!-- Added Messages Link Here -->
+            <a class="nav-link {% if request.endpoint == 'admin.view_contacts' %}active{% endif %}" href="{{ url_for('admin.view_contacts') }}">
+                <i class="fas fa-envelope"></i> Messages
+            </a>
+            <!-- Updated Settings Link with active logic -->
+            <a class="nav-link {% if request.endpoint == 'admin.settings' %}active{% endif %}" href="{{ url_for('admin.settings') }}">
                 <i class="fas fa-cog"></i> Settings
             </a>
         </nav>
@@ -484,18 +489,16 @@
         Chart.defaults.color = '#888';
         Chart.defaults.borderColor = '#333';
 
-        // 1. Revenue/Transactions Line Chart (Placeholder logic)
-        // Note: Real revenue over time requires grouping data in Python.
-        // This shows a static representation or "Transactions" volume concept.
+        // 1. Revenue/Transactions Line Chart
         const revenueCtx = document.getElementById('revenueChart').getContext('2d');
         
         new Chart(revenueCtx, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], // Placeholder
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
                 datasets: [{
                     label: 'Transactions',
-                    data: [0, 0, 0, 0, 0, 0], // Placeholder
+                    data: [0, 0, 0, 0, 0, 0],
                     borderColor: '#ffffff',
                     backgroundColor: 'rgba(255, 255, 255, 0.1)',
                     tension: 0.4,
@@ -515,7 +518,6 @@
         // 2. Payment Status Doughnut Chart
         const statusCtx = document.getElementById('statusChart').getContext('2d');
         
-        // Data passed from Flask
         const paidCount = {{ total_paid }};
         const pendingCount = {{ total_pending }};
         const failedCount = {{ total_failed }};

@@ -3,7 +3,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 from app.models import project
 from app.models.user import User
 from app import db
-from app.models import Payment, Movie
+from app.models import Payment, Movie, Contact
 from app.utils import normalize_phone
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/secure-admin-8een")
@@ -29,6 +29,7 @@ from werkzeug.utils import secure_filename
 from app import db
 from app.models.project import Movie, Gallery, Trailer
 from datetime import datetime
+from flask import jsonify
 
 
 
@@ -670,4 +671,39 @@ def edit_project(project_type, id):
 
 
 
+@admin_bp.route("/contacts")
+@login_required
+def view_contacts():
+    if not current_user.is_admin:
+        abort(403)
 
+    contacts = Contact.query.order_by(Contact.created_at.desc()).all()
+    return render_template("admin/contacts.html", contacts=contacts)
+
+
+
+
+# 1. Route to Mark as Read (Called via AJAX)
+@admin_bp.route("/contacts/mark-read/<int:contact_id>", methods=['POST'])
+@login_required
+def mark_contact_read(contact_id):
+    if not current_user.is_admin:
+        return jsonify({'success': False, 'error': 'Unauthorized'}), 403
+        
+    contact = Contact.query.get_or_404(contact_id)
+    contact.is_read = True
+    db.session.commit()
+    return jsonify({'success': True})
+
+# 2. Route to Delete Contact
+@admin_bp.route("/contacts/delete/<int:contact_id>", methods=['POST'])
+@login_required
+def delete_contact(contact_id):
+    if not current_user.is_admin:
+        abort(403)
+        
+    contact = Contact.query.get_or_404(contact_id)
+    db.session.delete(contact)
+    db.session.commit()
+    flash('Message deleted successfully.', 'success')
+    return redirect(url_for('admin.view_contacts'))

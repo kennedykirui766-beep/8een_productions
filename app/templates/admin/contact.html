@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbox & Messages | 8EEN Productions</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --admin-bg: #000000;
+            --admin-sidebar: #111111;
+            --admin-card: #1a1a1a;
+            --admin-hover: #2d2d2d;
+            --admin-border: #333333;
+            --admin-text: #ffffff;
+            --admin-text-muted: #888888;
+            --admin-success: #10B981;
+            --admin-warning: #F59E0B;
+            --admin-danger: #EF4444;
+            --admin-info: #3B82F6;
+            --font-body: 'Inter', sans-serif;
+            --sidebar-width: 260px;
+            --header-height: 70px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--admin-bg);
+            color: var(--admin-text);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--admin-sidebar);
+            height: 100vh;
+            position: fixed;
+            top: 0; left: 0;
+            border-right: 1px solid var(--admin-border);
+            display: flex; flex-direction: column;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid var(--admin-border); }
+        .sidebar-logo { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; }
+        .sidebar-logo span { color: var(--admin-text-muted); font-weight: 300; }
+
+        .sidebar-nav { flex: 1; overflow-y: auto; padding: 1rem 0; }
+        .nav-section { padding: 0.5rem 1.5rem; margin-top: 1rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--admin-text-muted); }
+        
+        .nav-link {
+            display: flex; align-items: center; padding: 0.8rem 1.5rem;
+            color: var(--admin-text-muted); text-decoration: none;
+            transition: all 0.2s; border-left: 3px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active { background-color: var(--admin-hover); color: var(--admin-text); border-left-color: var(--admin-text); }
+        .nav-link i { width: 20px; margin-right: 15px; font-size: 1rem; }
+
+        /* --- Main Content --- */
+        .main-content { margin-left: var(--sidebar-width); flex: 1; display: flex; flex-direction: column; min-height: 100vh; width: 100%; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+        /* --- Header --- */
+        .admin-header {
+            height: var(--header-height); background-color: rgba(17, 17, 17, 0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; justify-content: space-between;
+            padding: 0 2rem; position: sticky; top: 0; z-index: 900;
+        }
+        .header-left { display: flex; align-items: center; gap: 1rem; }
+        .header-left h2 { font-size: 1.2rem; font-weight: 600; }
+        .header-right { display: flex; align-items: center; gap: 1.5rem; }
+        .user-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .user-avatar { width: 36px; height: 36px; background: var(--admin-hover); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .content-container { padding: 2rem; flex: 1; width: 100%; }
+
+        /* --- Stats --- */
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-box {
+            background: var(--admin-card); border: 1px solid var(--admin-border);
+            border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;
+        }
+        .stat-icon { width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .stat-info h3 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+        .stat-info p { font-size: 0.85rem; color: var(--admin-text-muted); }
+
+        /* --- Inbox Table --- */
+        .card {
+            background: var(--admin-card); border: 1px solid var(--admin-border);
+            border-radius: 12px; overflow: hidden;
+        }
+        .card-header { padding: 1.5rem; border-bottom: 1px solid var(--admin-border); display: flex; justify-content: space-between; align-items: center; }
+        .card-title { font-size: 1.1rem; font-weight: 600; }
+
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 1rem 1.5rem; text-align: left; border-bottom: 1px solid var(--admin-border); }
+        th { color: var(--admin-text-muted); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; }
+        tr:hover { background: var(--admin-hover); }
+        tr.unread { background: rgba(59, 130, 246, 0.05); font-weight: 600; }
+        tr.unread td:first-child { border-left: 3px solid var(--admin-info); }
+
+        .user-cell { display: flex; align-items: center; gap: 12px; }
+        .avatar-sm { width: 36px; height: 36px; border-radius: 50%; background: var(--admin-border); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; }
+        
+        .badge { padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+        .badge-new { background: rgba(59, 130, 246, 0.15); color: var(--admin-info); }
+        .badge-read { background: rgba(255, 255, 255, 0.05); color: var(--admin-text-muted); }
+
+        .action-btn {
+            background: none; border: none; color: var(--admin-text-muted); cursor: pointer;
+            padding: 0.5rem; border-radius: 4px; transition: all 0.2s;
+        }
+        .action-btn:hover { background: var(--admin-hover); color: var(--admin-text); }
+        .action-btn.delete:hover { color: var(--admin-danger); }
+
+        /* --- Modal --- */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 1rem; opacity: 0; visibility: hidden; transition: all 0.3s; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal {
+            background: var(--admin-card); border: 1px solid var(--admin-border);
+            width: 100%; max-width: 600px; border-radius: 16px; max-height: 90vh;
+            display: flex; flex-direction: column; transform: translateY(-20px); transition: transform 0.3s;
+        }
+        .modal-overlay.active .modal { transform: translateY(0); }
+        .modal-header { padding: 1.5rem; border-bottom: 1px solid var(--admin-border); display: flex; justify-content: space-between; align-items: flex-start; }
+        .modal-close { background: none; border: none; color: var(--admin-text-muted); font-size: 1.2rem; cursor: pointer; }
+        .modal-body { padding: 1.5rem; overflow-y: auto; flex: 1; }
+        .modal-footer { padding: 1.5rem; border-top: 1px solid var(--admin-border); display: flex; gap: 1rem; justify-content: flex-end; }
+
+        .message-meta { margin-bottom: 1.5rem; font-size: 0.9rem; color: var(--admin-text-muted); }
+        .message-content { line-height: 1.6; color: var(--fg-primary); white-space: pre-wrap; }
+
+        .btn {
+            padding: 0.5rem 1rem; border-radius: 6px; border: none;
+            cursor: pointer; font-size: 0.85rem; font-weight: 500;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
+            text-decoration: none;
+        }
+        .btn-primary { background: var(--admin-text); color: var(--admin-bg); }
+        .btn-outline { background: transparent; border: 1px solid var(--admin-border); color: var(--admin-text); }
+        .btn-danger { background: var(--admin-danger); color: white; }
+
+        /* Empty State */
+        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--admin-text-muted); }
+        .empty-state i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; }
+
+        /* Hamburger Menu */
+        .menu-toggle { display: none; width: 30px; height: 24px; position: relative; cursor: pointer; background: none; border: none; z-index: 1001; }
+        .menu-toggle span { display: block; position: absolute; height: 3px; width: 100%; background: var(--admin-text); border-radius: 3px; opacity: 1; left: 0; transform: rotate(0deg); transition: 0.25s ease-in-out; }
+        .menu-toggle span:nth-child(1) { top: 0px; }
+        .menu-toggle span:nth-child(2) { top: 10px; }
+        .menu-toggle span:nth-child(3) { top: 20px; }
+        .menu-toggle.active span:nth-child(1) { transform: rotate(45deg); top: -2px; left: 3px; }
+        .menu-toggle.active span:nth-child(2) { width: 0%; opacity: 0; }
+        .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg); top: 22px; left: 3px; }
+
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .menu-toggle { display: block; }
+            .header-right .user-name { display: none; }
+            .content-container { padding: 1.5rem; }
+            
+            /* Stack table cells on mobile */
+            table, thead, tbody, th, td, tr { display: block; }
+            thead { display: none; }
+            tr { margin-bottom: 1rem; border: 1px solid var(--admin-border); border-radius: 8px; }
+            td { position: relative; padding-left: 50%; border: none; border-bottom: 1px solid rgba(255,255,255,0.05); }
+            td:before { position: absolute; top: 1rem; left: 1rem; width: 45%; padding-right: 10px; white-space: nowrap; content: attr(data-label); font-weight: 600; color: var(--admin-text-muted); font-size: 0.8rem; }
+            td:last-child { border-bottom: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">8EEN<span>ADMIN</span></div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">Main</div>
+            <a class="nav-link" href="{{ url_for('admin.dashboard') }}"><i class="fas fa-home"></i> Dashboard</a>
+            
+            <div class="nav-section">Management</div>
+            <a class="nav-link" href="{{ url_for('admin.projects') }}"><i class="fas fa-film"></i> Projects</a>
+            <a class="nav-link" href="{{ url_for('admin.payments') }}"><i class="fas fa-credit-card"></i> Payments</a>
+            <a class="nav-link" href="{{ url_for('admin.users') }}"><i class="fas fa-users"></i> Users</a>
+
+            <div class="nav-section">Insights</div>
+            <a class="nav-link" href="{{ url_for('admin.analytics') }}"><i class="fas fa-chart-line"></i> Analytics</a>
+
+            <div class="nav-section">System</div>
+            <a class="nav-link active" href="{{ url_for('admin.view_contacts') }}"><i class="fas fa-envelope"></i> Messages</a>
+            <a class="nav-link" href="{{ url_for('admin.settings') }}"><i class="fas fa-cog"></i> Settings</a>
+        </nav>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menu-toggle">
+                    <span></span><span></span><span></span>
+                </button>
+                <h2>Contact Messages</h2>
+            </div>
+            <div class="header-right">
+                <div class="user-profile">
+                    <div class="user-avatar"><i class="fas fa-user"></i></div>
+                    <span class="user-name">{{ current_user.username }}</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-container">
+            
+            <!-- Stats -->
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--admin-info);">
+                        <i class="fas fa-inbox"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>{{ contacts|length }}</h3>
+                        <p>Total Messages</p>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--admin-warning);">
+                        <i class="fas fa-envelope-open"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>{{ contacts|selectattr('is_read', 'equalto', False)|list|length }}</h3>
+                        <p>Unread</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inbox List -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Inbox</h3>
+                    <!-- Filter buttons could go here -->
+                </div>
+                <div class="table-responsive">
+                    {% if contacts %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sender</th>
+                                <th>Subject</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for contact in contacts %}
+                            <tr class="{{ 'unread' if not contact.is_read else '' }}">
+                                <td data-label="Sender">
+                                    <div class="user-cell">
+                                        <div class="avatar-sm" style="background: var(--admin-info);">
+                                            {{ contact.name[0]|upper if contact.name else 'U' }}
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 500;">{{ contact.name }}</div>
+                                            <div style="font-size: 0.8rem; color: var(--admin-text-muted);">{{ contact.email }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td data-label="Subject">{{ contact.subject }}</td>
+                                <td data-label="Date">{{ contact.created_at.strftime('%b %d, %Y') }}</td>
+                                <td data-label="Status">
+                                    {% if contact.is_read %}
+                                        <span class="badge badge-read">Read</span>
+                                    {% else %}
+                                        <span class="badge badge-new">New</span>
+                                    {% endif %}
+                                </td>
+                                <td data-label="Actions">
+                                    <button class="action-btn" onclick="openModal('{{ contact.id }}', '{{ contact.name|replace("'", "\\'") }}', '{{ contact.email }}', '{{ contact.subject|replace("'", "\\'") }}', `{{ contact.message|replace('`', '\\`') }}`, {{ 'true' if contact.is_read else 'false' }})" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <a class="action-btn" href="mailto:{{ contact.email }}" title="Reply">
+                                        <i class="fas fa-reply"></i>
+                                    </a>
+                                    <form action="{{ url_for('admin.delete_contact', contact_id=contact.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this message?');">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="action-btn delete" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>Inbox Empty</h3>
+                        <p style="margin-top: 0.5rem;">No messages from users yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Message Detail Modal -->
+    <div class="modal-overlay" id="messageModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div>
+                    <h3 id="modalSubject" style="font-size: 1.25rem; margin-bottom: 5px;">Message Subject</h3>
+                    <div style="font-size: 0.85rem; color: var(--admin-text-muted);">
+                        From: <span id="modalName">Name</span> &lt;<span id="modalEmail">email</span>&gt;
+                    </div>
+                </div>
+                <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="message-content" id="modalMessage">
+                    Message content goes here...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a id="replyLink" href="#" class="btn btn-primary"><i class="fas fa-reply"></i> Reply via Email</a>
+                <button class="btn btn-outline" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar Logic
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menu-toggle');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        function closeSidebar() {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            menuToggle.classList.remove('active');
+        }
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', closeSidebar);
+
+        // Modal Logic
+        const modal = document.getElementById('messageModal');
+
+        function openModal(id, name, email, subject, message, isRead) {
+            document.getElementById('modalSubject').textContent = subject;
+            document.getElementById('modalName').textContent = name;
+            document.getElementById('modalEmail').textContent = email;
+            document.getElementById('modalMessage').textContent = message;
+            
+            // Set Reply Link
+            const replyLink = document.getElementById('replyLink');
+            replyLink.href = `mailto:${email}?subject=Re: ${subject}`;
+
+            modal.classList.add('active');
+
+            // Mark as read via AJAX if it was unread
+            if (!isRead) {
+                fetch(`/admin/contacts/mark-read/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Include CSRF token header if you have it set up globally
+                    }
+                }).then(response => response.json())
+                  .then(data => {
+                      if(data.success) {
+                          // Find the row and update UI
+                          const row = document.querySelector(`tr[data-id="${id}"]`);
+                          if(row) {
+                              row.classList.remove('unread');
+                              // Update badge
+                              const badge = row.querySelector('.badge-new');
+                              if(badge) {
+                                  badge.classList.remove('badge-new');
+                                  badge.classList.add('badge-read');
+                                  badge.textContent = 'Read';
+                              }
+                          }
+                      }
+                  });
+            }
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html>
