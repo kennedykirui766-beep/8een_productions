@@ -42,7 +42,8 @@ def create_app():
     def inject_site_images():
         return dict(
             logo_url=app.config.get("LOGO_URL"),
-            about_image_url=app.config.get("ABOUT_IMAGE_URL")
+            about_image_url=app.config.get("ABOUT_IMAGE_URL"),
+            hero_image_url=app.config.get("HERO_IMAGE_URL")
         )
 
     return app
