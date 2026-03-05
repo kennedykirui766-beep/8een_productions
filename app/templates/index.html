@@ -7,7 +7,7 @@
 {% block content %}
 <style>
     /* ============================================
-       INDEX PAGE SPECIFIC STYLES
+       INDEX PAGE SPECIFIC STYLES (CINEMATIC HERO)
        ============================================ */
 
     /* --- HERO SECTION --- */
@@ -100,6 +100,12 @@
         color: var(--color-gold);
     }
 
+    .about-content p {
+        color: var(--color-light-grey);
+        margin-bottom: var(--spacing-md);
+        line-height: 1.8;
+    }
+
     .stats-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -129,12 +135,16 @@
     }
 
     /* --- SERVICES SECTION --- */
-    .services-section { background-color: var(--color-black); }
+    .services-section {
+        background-color: var(--color-black);
+    }
+
     .services-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: var(--spacing-md);
     }
+
     .service-card {
         background-color: var(--color-dark-grey);
         padding: var(--spacing-md);
@@ -142,31 +152,52 @@
         transition: all var(--transition-normal);
         border: 1px solid var(--color-medium-grey);
     }
+
     .service-card:hover {
         transform: translateY(-5px);
         border-color: var(--color-gold);
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
+
     .service-icon {
-        width: 60px; height: 60px;
+        width: 60px;
+        height: 60px;
         background-color: rgba(212, 175, 55, 0.1);
         border-radius: var(--radius-sm);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.5rem; color: var(--color-gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--color-gold);
         margin-bottom: var(--spacing-sm);
         border: 1px solid var(--color-gold-dark);
     }
+
     .service-card:hover .service-icon {
         background-color: var(--color-gold);
         color: var(--color-black);
         border-color: var(--color-gold);
     }
-    .service-card h3 { font-family: var(--font-heading); font-size: 1.5rem; letter-spacing: 1px; margin-bottom: var(--spacing-xs); color: var(--color-gold); }
-    .service-card p { color: var(--color-light-grey); font-size: 0.95rem; line-height: 1.7; }
 
-    /* --- PORTFOLIO PREVIEW (FIXED VIDEO OVERLAY) --- */
-    .portfolio-section { background-color: var(--color-dark-grey); }
-    
+    .service-card h3 {
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+        margin-bottom: var(--spacing-xs);
+        color: var(--color-gold);
+    }
+
+    .service-card p {
+        color: var(--color-light-grey);
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    /* --- PORTFOLIO PREVIEW (VIDEO OVERLAY STYLE) --- */
+    .portfolio-section {
+        background-color: var(--color-dark-grey);
+    }
+
     .portfolio-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -174,56 +205,61 @@
     }
 
     .portfolio-item {
-        position: relative; /* Context for absolute children */
+        position: relative;
         aspect-ratio: 16/10;
         overflow: hidden;
         border-radius: var(--radius-md);
         cursor: pointer;
         border: 1px solid var(--color-medium-grey);
-        background-color: #000; /* Fallback if video fails */
-    }
-
-    /* 1. VIDEO STYLING: Ensures it acts as the background */
-    .portfolio-video {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; 
-        height: 100%;
-        object-fit: cover; /* Stretches to fill */
-        z-index: 1; /* Bottom layer */
-        display: block; /* Removes default inline spacing */
         background-color: #000;
     }
 
-    /* 2. OVERLAY STYLING: Transparent background */
-    .portfolio-item .portfolio-overlay {
+    /* 1. Video is the background (The "Overlay") */
+    .portfolio-video {
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        z-index: 2; /* Top layer */
-        
-        /* REMOVE BLACK BACKGROUND - FORCE TRANSPARENT */
-        background: transparent !important; 
-        
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 1; /* Bottom layer */
+        transition: transform 0.5s ease;
+    }
+
+    /* Scale video on hover */
+    .portfolio-item:hover .portfolio-video {
+        transform: scale(1.05);
+    }
+
+    /* 2. Overlay for Text - No Black Background, just text styling */
+    .portfolio-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-        padding: 0; /* Remove padding, let wrapper handle it */
-        
-        opacity: 0;
-        transition: opacity var(--transition-normal);
-    }
-
-    .portfolio-item:hover .portfolio-overlay {
-        opacity: 1;
-    }
-
-    /* 3. TEXT WRAPPER: Gradient for readability */
-    .portfolio-text-wrapper {
-        margin-top: auto; /* Push to bottom */
         padding: var(--spacing-md);
-        /* Gradient only behind text, video visible above */
-        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
-        width: 100%;
+        /* Removed the black gradient background */
+        background: transparent; 
+    }
+
+    /* Subtle gradient ONLY at the bottom for text readability */
+    .portfolio-text-wrapper {
+        position: relative;
+        padding-top: 40%; /* Push text to bottom area */
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+        margin: calc(var(--spacing-md) * -1);
+        margin-top: auto;
+        padding: var(--spacing-md);
+        transform: translateY(20px);
+        opacity: 0;
+        transition: all 0.4s ease;
+    }
+
+    .portfolio-item:hover .portfolio-text-wrapper {
+        transform: translateY(0);
+        opacity: 1;
     }
 
     .portfolio-overlay h3 {
@@ -232,13 +268,14 @@
         letter-spacing: 1px;
         margin-bottom: 0.25rem;
         color: var(--color-gold);
-        text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        /* Text shadow for readability over video */
+        text-shadow: 0 2px 10px rgba(0,0,0,0.8); 
     }
-    
+
     .portfolio-overlay p {
         color: var(--color-white);
-        text-shadow: 0 1px 3px rgba(0,0,0,0.8);
         font-size: 0.9rem;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.8);
     }
 
     .portfolio-overlay .view-btn {
@@ -255,25 +292,50 @@
         justify-content: center;
         font-size: 1.2rem;
         opacity: 0;
-        transform: translateY(-10px);
         transition: all var(--transition-normal);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        z-index: 3;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
 
     .portfolio-item:hover .portfolio-overlay .view-btn {
         opacity: 1;
-        transform: translateY(0);
     }
 
     /* --- CTA SECTION --- */
-    .cta-section { background-color: var(--color-black); text-align: center; border-top: 1px solid var(--color-gold-dark); }
-    .cta-section h2 { font-family: var(--font-heading); font-size: clamp(2rem, 6vw, 4rem); letter-spacing: 2px; margin-bottom: var(--spacing-md); color: var(--color-gold); }
-    .cta-section p { color: var(--color-light-grey); max-width: 600px; margin: 0 auto var(--spacing-lg); font-size: 1.1rem; }
-    .cta-buttons { display: flex; justify-content: center; gap: var(--spacing-sm); flex-wrap: wrap; }
+    .cta-section {
+        background-color: var(--color-black);
+        text-align: center;
+        border-top: 1px solid var(--color-gold-dark);
+    }
+
+    .cta-section h2 {
+        font-family: var(--font-heading);
+        font-size: clamp(2rem, 6vw, 4rem);
+        letter-spacing: 2px;
+        margin-bottom: var(--spacing-md);
+        color: var(--color-gold);
+    }
+
+    .cta-section p {
+        color: var(--color-light-grey);
+        max-width: 600px;
+        margin: 0 auto var(--spacing-lg);
+        font-size: 1.1rem;
+    }
+
+    .cta-buttons {
+        display: flex;
+        justify-content: center;
+        gap: var(--spacing-sm);
+        flex-wrap: wrap;
+    }
 
     /* --- RESPONSIVE --- */
     @media (max-width: 1024px) {
-        .about-grid { grid-template-columns: 1fr; gap: var(--spacing-md); }
+        .about-grid {
+            grid-template-columns: 1fr;
+            gap: var(--spacing-md);
+        }
         .about-image { order: -1; }
         .hero-content { text-align: center; padding: 0 var(--spacing-sm); }
         .hero-description { margin-left: auto; margin-right: auto; }
@@ -336,7 +398,8 @@
                 <p>
                     8een Productions is a Nairobi-born film and creative studio dedicated to 
                     telling youth-driven, emotionally rich, and visually powerful stories for 
-                    the modern world.
+                    the modern world. Rooted in the streets, shaped by real conversations, and 
+                    polished for global screens.
                 </p>
                 <p>
                     We believe every story deserves more than just a camera — it deserves 
@@ -386,7 +449,7 @@
             <div class="service-card">
                 <div class="service-icon"><i class="fas fa-film"></i></div>
                 <h3>Film Production</h3>
-                <p>Full-scale production from script to screen.</p>
+                <p>Full-scale production from script to screen for narratives and documentaries.</p>
             </div>
 
             <div class="service-card">
@@ -437,20 +500,20 @@
             <div class="gradient-line" style="margin: 0 auto var(--spacing-md);"></div>
             <h2 class="section-title">Our Work</h2>
             <p class="section-subtitle" style="margin: 0 auto var(--spacing-lg);">
-                A selection of our recent projects.
+                A selection of our recent projects across film, music videos, and branded content.
             </p>
         </div>
 
         <div class="portfolio-grid">
             <!-- Portfolio Item 1 -->
             <div class="portfolio-item">
-                <!-- Video Layer -->
-                <!-- NOTE: Ensure your backend passes valid .mp4 URLs to these variables -->
+                <!-- Video Layer (Replaces placeholder) -->
+                <!-- Ensure backend passes video file URLs (e.g. .mp4) to these variables -->
                 <video class="portfolio-video" autoplay muted loop playsinline>
                     <source src="{{ video_1_src }}" type="video/mp4">
                 </video>
                 
-                <!-- Text Overlay (Transparent Background) -->
+                <!-- Content Overlay -->
                 <div class="portfolio-overlay">
                     <a href="{{ short_film_url }}" class="view-btn"><i class="fas fa-play"></i></a>
                     <div class="portfolio-text-wrapper">
@@ -523,17 +586,17 @@
 <script>
     console.log('Index page loaded');
     
-    // Logic to pause videos when not in view
+    // Optional: Pause videos when not in viewport to save resources
     const videos = document.querySelectorAll('.portfolio-video');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.play().catch(e => {});
+                entry.target.play();
             } else {
                 entry.target.pause();
             }
         });
-    }, { threshold: 0.3 });
+    }, { threshold: 0.25 }); // Play when 25% visible
 
     videos.forEach(video => {
         observer.observe(video);
