@@ -7,13 +7,107 @@
 <!-- Page Specific Styles -->
 <style>
     /* ============================================
-       TESTIMONIALS PAGE STYLES
+       HERO SECTION (VIDEO BACKGROUND)
        ============================================ */
+    .testimonials-hero {
+        position: relative;
+        height: 70vh;
+        min-height: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background-color: #000;
+    }
+
+    .hero-video-bg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: 0;
+        transform: translate(-50%, -50%);
+        object-fit: cover;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.9) 100%);
+        z-index: 1;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        padding: 0 var(--spacing-md);
+    }
+
+    .hero-title {
+        font-family: var(--font-heading);
+        font-size: clamp(3rem, 10vw, 6rem);
+        color: var(--color-gold); /* GOLD Title */
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        margin-bottom: 1rem;
+        text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        color: var(--color-silver);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    .hero-scroll-btn {
+        margin-top: 2.5rem;
+        background: transparent;
+        border: 2px solid var(--color-gold);
+        color: var(--color-gold);
+        width: 50px; height: 50px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        animation: bounce 2s infinite;
+    }
+
+    .hero-scroll-btn:hover {
+        background: var(--color-gold);
+        color: #000;
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-10px); }
+        60% { transform: translateY(-5px); }
+    }
+
+    /* ============================================
+       GENERAL THEME OVERRIDES
+       ============================================ */
+    
+    .section-title {
+        color: var(--color-gold) !important; 
+    }
+    
+    .gradient-line {
+        background: var(--color-gold-gradient);
+    }
 
     /* Featured Slider Section */
     .testimonial-slider-section {
         padding: var(--spacing-xl) 0;
-        background: linear-gradient(180deg, var(--color-black) 0%, var(--color-dark-grey) 100%);
+        background: var(--color-black);
         position: relative;
         overflow: hidden;
     }
@@ -28,6 +122,7 @@
     .slider-wrapper {
         overflow: hidden;
         border-radius: var(--radius-lg);
+        border: 1px solid var(--color-charcoal);
     }
 
     .slider-track {
@@ -38,8 +133,7 @@
     .slide {
         min-width: 100%;
         padding: var(--spacing-lg);
-        background: var(--color-charcoal);
-        border-radius: var(--radius-lg);
+        background: var(--color-dark-grey);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -54,7 +148,7 @@
         position: absolute;
         top: -20px;
         left: 0;
-        color: var(--color-medium-grey);
+        color: var(--color-gold); /* Gold Quote Icon */
         opacity: 0.1;
         line-height: 1;
         pointer-events: none;
@@ -66,8 +160,8 @@
         border-radius: 50%;
         object-fit: cover;
         margin-bottom: var(--spacing-md);
-        border: 3px solid var(--color-white);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        border: 3px solid var(--color-gold); /* Gold Border */
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
     }
 
     .slide-quote {
@@ -105,7 +199,7 @@
         width: 50px;
         height: 50px;
         border-radius: 50%;
-        background: var(--color-charcoal);
+        background: transparent;
         border: 1px solid var(--color-medium-grey);
         color: var(--color-white);
         font-size: 1.2rem;
@@ -117,9 +211,9 @@
     }
 
     .slider-btn:hover {
-        background: var(--color-white);
+        background: var(--color-gold);
         color: var(--color-black);
-        border-color: var(--color-white);
+        border-color: var(--color-gold);
         transform: scale(1.1);
     }
 
@@ -138,7 +232,7 @@
     }
 
     .dot.active {
-        background: var(--color-white);
+        background: var(--color-gold);
         transform: scale(1.2);
     }
 
@@ -167,8 +261,8 @@
 
     .wall-card:hover {
         transform: translateY(-5px);
-        border-color: var(--color-charcoal);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        border-color: var(--color-gold);
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
     }
 
     .wall-card-header {
@@ -187,8 +281,9 @@
         align-items: center;
         justify-content: center;
         font-weight: 700;
-        color: var(--color-white);
+        color: var(--color-gold);
         font-size: 1.2rem;
+        border: 1px solid var(--color-charcoal);
     }
 
     .wall-info h4 {
@@ -203,7 +298,7 @@
     }
 
     .wall-stars {
-        color: #FFD700; /* Gold */
+        color: var(--color-gold); /* Gold */
         margin-bottom: var(--spacing-sm);
         font-size: 0.9rem;
     }
@@ -247,6 +342,12 @@
         display: block;
         text-decoration: none;
         color: inherit;
+        border: 1px solid var(--color-charcoal);
+        transition: border-color 0.3s;
+    }
+
+    .video-card:hover {
+        border-color: var(--color-gold);
     }
 
     .video-card img {
@@ -269,20 +370,20 @@
         transform: translate(-50%, -50%);
         width: 70px;
         height: 70px;
-        background: rgba(255,255,255,0.9);
+        background: var(--color-gold); /* Gold Button */
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--color-black);
+        color: var(--color-black); /* Black Icon */
         font-size: 1.8rem;
         transition: all var(--transition-normal);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
     }
 
     .video-card:hover .play-btn {
         transform: translate(-50%, -50%) scale(1.1);
-        background: var(--color-white);
+        box-shadow: 0 0 40px rgba(212, 175, 55, 0.5);
     }
 
     .video-caption {
@@ -297,7 +398,7 @@
     }
 
     /* ============================================
-       DEDICATED VIDEO PLAYER OVERLAY (NEW PAGE FEEL)
+       DEDICATED VIDEO PLAYER OVERLAY
        ============================================ */
     .video-player-overlay {
         position: fixed;
@@ -324,14 +425,14 @@
         position: relative;
         width: 90%;
         max-width: 1200px;
-        /* Constraint to keep video away from top/bottom edges */
         max-height: 85vh; 
         background: #000;
         border-radius: var(--radius-md);
         overflow: hidden;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        box-shadow: 0 0 50px rgba(0,0,0,0.8);
         display: flex;
         flex-direction: column;
+        border: 1px solid var(--color-gold);
     }
 
     .video-player-container video {
@@ -342,14 +443,13 @@
         max-height: 85vh;
     }
 
-    /* Custom Close Button (X) */
     .close-player-btn {
         position: absolute;
-        top: -40px; /* Position above the video container */
+        top: -40px; 
         right: 0;
         background: none;
         border: none;
-        color: #fff;
+        color: var(--color-gold);
         font-size: 2.5rem;
         cursor: pointer;
         transition: transform 0.2s, color 0.2s;
@@ -358,39 +458,49 @@
     }
 
     .close-player-btn:hover {
-        color: var(--color-gold);
+        color: #fff;
         transform: rotate(90deg);
     }
 
     /* Responsive adjustments for player */
     @media (max-width: 768px) {
-        .video-player-container {
-            width: 95%;
-            max-height: 80vh;
-        }
-        .close-player-btn {
-            top: -50px;
-            font-size: 2rem;
-        }
+        .video-player-container { width: 95%; max-height: 80vh; }
+        .close-player-btn { top: -50px; font-size: 2rem; }
         .slide-quote { font-size: 1.1rem; }
         .slider-nav { gap: var(--spacing-sm); }
         .wall-grid { grid-template-columns: 1fr; }
+        
+        .hero-title { font-size: 2.5rem; }
+        .testimonials-hero { height: 50vh; }
     }
 </style>
 
-<!-- Page Header -->
-<section class="page-header">
-    <div class="container">
-        <div class="page-header-content">
-            <div class="gradient-line"></div>
-            <h1>Client Stories</h1>
-            <p>Don't just take our word for it. Here is what our collaborators and clients have to say about working with 8een Productions.</p>
-        </div>
+<!-- ============================================
+     HERO SECTION (VIDEO BACKGROUND)
+     ============================================ -->
+<section class="testimonials-hero">
+    <!-- Background Video -->
+    <video class="hero-video-bg" autoplay muted loop playsinline>
+        <!-- Backend variable for video URL -->
+        <source src="{{ hero_video_url }}" type="video/mp4">
+    </video>
+    
+    <!-- Overlay -->
+    <div class="hero-overlay"></div>
+
+    <!-- Content -->
+    <div class="hero-content">
+        <div class="gradient-line" style="margin: 0 auto 1rem;"></div>
+        <h1 class="hero-title">Client Stories</h1>
+        <p class="hero-subtitle">Don't just take our word for it. Here is what our collaborators say about working with 8een Productions.</p>
+        <button class="hero-scroll-btn" onclick="document.getElementById('slider-section').scrollIntoView({behavior: 'smooth'})">
+            <i class="fas fa-chevron-down"></i>
+        </button>
     </div>
 </section>
 
 <!-- Featured Testimonials Slider -->
-<section class="testimonial-slider-section">
+<section class="testimonial-slider-section" id="slider-section">
     <div class="container">
         <div class="text-center">
             <div class="gradient-line" style="margin: 0 auto var(--spacing-md);"></div>
@@ -455,7 +565,6 @@
         </div>
 
         <div class="video-grid">
-            <!-- Changed to div with onclick to trigger the custom player -->
             <div class="video-card" onclick="openCustomPlayer('{{ client_video_1 }}')">
                 <img src="{{ client_video_thumb_1 }}" alt="Video Interview">
                 <div class="play-btn"><i class="fas fa-play"></i></div>
@@ -568,7 +677,6 @@
      ============================================ -->
 <div class="video-player-overlay" id="video-player-overlay" onclick="closeCustomPlayer(event)">
     <div class="video-player-container" onclick="event.stopPropagation()">
-        <!-- The "X" Close Button -->
         <button class="close-player-btn" onclick="closeCustomPlayer()" aria-label="Close Player">
             &times;
         </button>
@@ -664,16 +772,12 @@
             if(url) {
                 video.src = url;
                 overlay.classList.add('active');
-                document.body.style.overflow = 'hidden'; // Prevent background scroll
-                
-                // Play video
+                document.body.style.overflow = 'hidden'; 
                 video.play().catch(e => console.log("Autoplay prevented:", e));
             }
         };
 
         window.closeCustomPlayer = function(event) {
-            // If event exists and the target is not the overlay itself, ignore
-            // (This prevents closing when clicking inside the container if stopPropagation failed)
             if (event && event.target.id !== 'video-player-overlay' && !event.target.classList.contains('close-player-btn')) {
                 return;
             }
@@ -682,13 +786,12 @@
             const video = document.getElementById('dedicated-video');
 
             video.pause();
-            video.currentTime = 0; // Reset video
-            video.src = ''; // Remove source to stop loading
+            video.currentTime = 0; 
+            video.src = ''; 
             overlay.classList.remove('active');
-            document.body.style.overflow = ''; // Restore scroll
+            document.body.style.overflow = ''; 
         };
 
-        // Allow closing with Escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeCustomPlayer();
