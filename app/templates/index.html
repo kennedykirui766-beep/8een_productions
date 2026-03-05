@@ -164,7 +164,7 @@
     .service-card h3 { color: var(--color-gold); font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.5rem; }
     .service-card p { color: var(--color-light-grey); }
 
-    /* --- PORTFOLIO PREVIEW (VIDEO OVERLAY FIX) --- */
+    /* --- PORTFOLIO PREVIEW --- */
     .portfolio-section { background-color: var(--color-dark-grey); }
     
     .portfolio-grid {
@@ -178,52 +178,45 @@
         aspect-ratio: 16/10;
         overflow: hidden;
         border-radius: var(--radius-md);
-        cursor: pointer;
         border: 1px solid var(--color-medium-grey);
-        background-color: #000; /* Fallback */
+        background-color: #000;
     }
 
-    /* 1. VIDEO STYLING: Force it to fill the background */
     .portfolio-video {
         position: absolute;
         top: 0; left: 0;
-        width: 100%; 
-        height: 100%;
-        object-fit: cover; /* Ensures it covers the area without stretching */
-        z-index: 1; /* Sits at the bottom */
+        width: 100%; height: 100%;
+        object-fit: cover;
+        z-index: 1;
     }
 
-    /* 2. OVERLAY STYLING: Transparent background, sits on top */
     .portfolio-item .portfolio-overlay {
         position: absolute;
         inset: 0;
-        z-index: 2; /* Above video */
-        
-        /* REMOVED black background */
-        background: transparent; 
-        
+        z-index: 2;
+        background: transparent;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
         padding: var(--spacing-md);
-        
-        /* Fade in effect for text */
         opacity: 0;
         transition: opacity var(--transition-normal);
+        
+        /* Fix: Make overlay click-through so button is accessible */
+        pointer-events: none; 
     }
 
-    /* Hover State: Show text */
     .portfolio-item:hover .portfolio-overlay {
         opacity: 1;
     }
 
-    /* 3. TEXT READABILITY: Subtle gradient behind text ONLY */
     .portfolio-text-wrapper {
         background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
-        margin: -1.5rem; /* Offset padding to stretch to edges */
+        margin: -1.5rem;
         padding: 1.5rem;
-        padding-top: 3rem; /* Space for gradient fade */
+        padding-top: 3rem;
         border-radius: 0 0 var(--radius-md) var(--radius-md);
+        pointer-events: none; /* Text doesn't need to be clickable */
     }
 
     .portfolio-overlay h3 {
@@ -254,6 +247,12 @@
         opacity: 0;
         transform: translateY(-10px);
         transition: all var(--transition-normal);
+        border: none;
+        cursor: pointer;
+        
+        /* Fix: Make only the button clickable */
+        pointer-events: auto; 
+        z-index: 10;
     }
 
     .portfolio-item:hover .portfolio-overlay .view-btn {
@@ -421,21 +420,19 @@
             <div class="gradient-line" style="margin: 0 auto var(--spacing-md);"></div>
             <h2 class="section-title">Our Work</h2>
             <p class="section-subtitle" style="margin: 0 auto var(--spacing-lg);">
-                A selection of our recent projects across film, music videos, and branded content.
+                Click play to watch in fullscreen.
             </p>
         </div>
 
         <div class="portfolio-grid">
             <!-- Portfolio Item 1 -->
             <div class="portfolio-item">
-                <!-- Video Background -->
                 <video class="portfolio-video" autoplay muted loop playsinline>
-                    <source src="{{short_film_url  }}" type="video/mp4">
+                    <source src="{{ short_film_url }}" type="video/mp4">
                 </video>
                 
-                <!-- Text Overlay (Transparent BG) -->
                 <div class="portfolio-overlay">
-                    <a href="{{ short_film_url }}" class="view-btn"><i class="fas fa-play"></i></a>
+                    <button class="view-btn" data-src="{{ short_film_url }}"><i class="fas fa-play"></i></button>
                     <div class="portfolio-text-wrapper">
                         <h3>Short Film Title</h3>
                         <p>Film Production</p>
@@ -450,7 +447,7 @@
                 </video>
                 
                 <div class="portfolio-overlay">
-                    <a href="{{ track_url }}" class="view-btn"><i class="fas fa-play"></i></a>
+                    <button class="view-btn" data-src="{{ track_url }}"><i class="fas fa-play"></i></button>
                     <div class="portfolio-text-wrapper">
                         <h3>Artist Name - Track</h3>
                         <p>Music Video</p>
@@ -465,7 +462,7 @@
                 </video>
                 
                 <div class="portfolio-overlay">
-                    <a href="{{ brand_url }}" class="view-btn"><i class="fas fa-play"></i></a>
+                    <button class="view-btn" data-src="{{ brand_url }}"><i class="fas fa-play"></i></button>
                     <div class="portfolio-text-wrapper">
                         <h3>Brand Campaign</h3>
                         <p>Commercial</p>
@@ -481,6 +478,12 @@
         </div>
     </div>
 </section>
+
+<!-- ============================================
+     HIDDEN FULLSCREEN PLAYER
+     ============================================ -->
+<!-- Hidden video element used for the fullscreen player -->
+<video id="fullscreen-player" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: #000; display: none;" controls></video>
 
 <!-- ============================================
      CTA SECTION
@@ -506,22 +509,67 @@
 <script>
     console.log('Index page loaded');
     
-    // Pause videos when not in viewport to save resources
-    const videos = document.querySelectorAll('.portfolio-video');
+    // 1. Pause background preview videos when not in view
+    const bgVideos = document.querySelectorAll('.portfolio-video');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.play().catch(e => console.log("Video play prevented:", e));
+                entry.target.play().catch(e => {});
             } else {
                 entry.target.pause();
             }
         });
     }, { threshold: 0.25 });
 
-    videos.forEach(video => {
-        observer.observe(video);
-        // Ensure video loads
-        video.load(); 
+    bgVideos.forEach(video => observer.observe(video));
+
+    // 2. Fullscreen Player Logic
+    const fsPlayer = document.getElementById('fullscreen-player');
+    const playBtns = document.querySelectorAll('.view-btn');
+
+    playBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const src = btn.dataset.src;
+            
+            if (src) {
+                // Set source and unmute for full experience
+                fsPlayer.src = src;
+                fsPlayer.muted = false; 
+
+                // Trigger Fullscreen
+                if (fsPlayer.requestFullscreen) {
+                    fsPlayer.requestFullscreen();
+                } else if (fsPlayer.webkitRequestFullscreen) { /* Safari */
+                    fsPlayer.webkitRequestFullscreen();
+                } else if (fsPlayer.msRequestFullscreen) { /* IE11 */
+                    fsPlayer.msRequestFullscreen();
+                }
+
+                // Play video
+                fsPlayer.style.display = 'block';
+                fsPlayer.play().catch(err => {
+                    console.log("Autoplay with sound might be blocked, user may need to click play.", err);
+                });
+            }
+        });
+    });
+
+    // 3. Handle Exiting Fullscreen
+    document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) {
+            fsPlayer.pause();
+            fsPlayer.src = ''; // Clear source
+            fsPlayer.style.display = 'none';
+        }
+    });
+    // Fallback for webkit browsers
+    document.addEventListener('webkitfullscreenchange', () => {
+        if (!document.webkitFullscreenElement) {
+            fsPlayer.pause();
+            fsPlayer.src = '';
+            fsPlayer.style.display = 'none';
+        }
     });
 </script>
 {% endblock %}
