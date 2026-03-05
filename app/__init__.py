@@ -52,6 +52,7 @@ def create_app():
 
             client_video_thumb_1=app.config.get("CLIENT_VIDEO_THUMB_1"),
             client_video_thumb_2=app.config.get("CLIENT_VIDEO_THUMB_2"),
+            hero_video_url=app.config.get("HERO_VIDEO_URL"),
         )
 
     return app

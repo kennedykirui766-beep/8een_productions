@@ -7,7 +7,78 @@
 <!-- Specific Styles for Portfolio Page -->
 <style>
     /* ============================================
-       OVERRIDES FOR GLOBAL CSS CONFLICTS
+       PORTFOLIO HERO SECTION (VIDEO BG)
+       ============================================ */
+    .portfolio-hero {
+        position: relative;
+        height: 70vh;
+        min-height: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background-color: #000;
+    }
+
+    .hero-video-bg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: 0;
+        transform: translate(-50%, -50%);
+        object-fit: cover;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%);
+        z-index: 1;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        padding: 0 var(--spacing-md);
+    }
+
+    .hero-title {
+        font-family: var(--font-heading);
+        font-size: clamp(3rem, 10vw, 6rem);
+        color: var(--color-gold); /* GOLD Title */
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        margin-bottom: 1rem;
+        text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        color: var(--color-silver);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* ============================================
+       GENERAL THEME OVERRIDES (BLACK & GOLD)
+       ============================================ */
+    
+    .section-title, .modal-title {
+        color: var(--color-gold) !important; /* Force Gold */
+    }
+
+    .gradient-line {
+        background: var(--color-gold-gradient);
+    }
+
+    /* ============================================
+       GRID & ITEM STYLES
        ============================================ */
     
     .portfolio-item {
@@ -37,17 +108,17 @@
     .portfolio-item:active .portfolio-overlay { opacity: 1; }
     .portfolio-item:hover .portfolio-overlay { opacity: 1; }
 
-    .portfolio-overlay h3 { font-size: 1.2rem; margin-bottom: 0.25rem; pointer-events: none; }
+    .portfolio-overlay h3 { font-size: 1.2rem; margin-bottom: 0.25rem; pointer-events: none; color: #fff; }
     .portfolio-overlay p { 
         text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px; 
-        opacity: 0.8; margin: 0; pointer-events: none; 
+        opacity: 0.8; margin: 0; pointer-events: none; color: var(--color-gold); 
     }
     
     /* Price Badge */
     .price-badge {
         position: absolute;
         top: 1rem; right: 1rem;
-        background: var(--color-accent);
+        background: var(--color-gold);
         color: #000;
         padding: 0.2rem 0.6rem;
         font-size: 0.75rem;
@@ -63,7 +134,7 @@
         top: 50%; left: 50%;
         transform: translate(-50%, -50%);
         width: 60px; height: 60px;
-        background: var(--color-white);
+        background: var(--color-gold); /* Gold Button */
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -91,7 +162,7 @@
         min-height: 48px;
         font-size: 16px;
     }
-    .search-input:focus { border-color: var(--color-light-grey); }
+    .search-input:focus { border-color: var(--color-gold); }
     .search-input::placeholder { color: var(--color-grey); }
 
     .controls-wrapper {
@@ -125,9 +196,9 @@
     }
 
     .filter-btn:hover, .filter-btn.active {
-        background: var(--color-white);
+        background: var(--color-gold);
         color: var(--color-black);
-        border-color: var(--color-white);
+        border-color: var(--color-gold);
     }
 
     .portfolio-grid {
@@ -148,7 +219,7 @@
         width: 100%; height: 100%;
         background: var(--color-charcoal);
         display: flex; align-items: center; justify-content: center;
-        color: var(--color-grey); font-size: 3rem;
+        color: var(--color-gold); font-size: 3rem;
         pointer-events: none;
     }
 
@@ -223,7 +294,7 @@
         z-index: 20;
         transition: all 0.2s;
     }
-    .modal-close:hover { background: #fff; color: #000; }
+    .modal-close:hover { background: var(--color-gold); color: #000; }
 
     .modal-media {
         flex: 1;
@@ -252,7 +323,6 @@
     }
     .modal-body.visible { display: block; }
 
-    .modal-title { font-size: 1.8rem; margin-bottom: 0.5rem; }
     .modal-description { color: #aaa; line-height: 1.6; }
 
     /* Video Player Styles */
@@ -275,8 +345,8 @@
         top: 50%; left: 50%;
         transform: translate(-50%, -50%);
         background: rgba(0, 0, 0, 0.5);
-        border: 3px solid rgba(255, 255, 255, 0.8);
-        color: #fff;
+        border: 3px solid var(--color-gold);
+        color: var(--color-gold);
         width: 100px; height: 100px;
         border-radius: 50%;
         cursor: pointer;
@@ -288,8 +358,7 @@
         z-index: 15;
     }
     .play-center-btn:hover { 
-        background: var(--color-accent); 
-        border-color: var(--color-accent); 
+        background: var(--color-gold); 
         color: #000; 
         transform: translate(-50%, -50%) scale(1.1); 
     }
@@ -323,7 +392,7 @@
         border-radius: 50%;
         transition: all 0.2s;
     }
-    .control-btn:hover { background: rgba(255,255,255,0.15); color: var(--color-accent); }
+    .control-btn:hover { background: rgba(255,255,255,0.15); color: var(--color-gold); }
     
     .progress-bar-container {
         flex-grow: 1;
@@ -336,7 +405,7 @@
     }
     .progress-bar-fill {
         height: 100%;
-        background: var(--color-accent);
+        background: var(--color-gold);
         width: 0%;
         border-radius: 4px;
     }
@@ -363,7 +432,7 @@
         cursor: pointer; opacity: 0; transition: all 0.2s;
     }
     .gallery-viewer:hover .gallery-zoom-btn { opacity: 1; }
-    .gallery-zoom-btn:hover { background: var(--color-accent); color: #000; border-color: var(--color-accent); }
+    .gallery-zoom-btn:hover { background: var(--color-gold); color: #000; border-color: var(--color-gold); }
 
     .gallery-nav-btn {
         position: absolute; top: 50%; transform: translateY(-50%);
@@ -389,7 +458,7 @@
         cursor: pointer; opacity: 0.6; transition: all 0.2s; flex-shrink: 0;
     }
     .gallery-thumb:hover { opacity: 1; border-color: #fff; }
-    .gallery-thumb.active { border-color: var(--color-accent); opacity: 1; }
+    .gallery-thumb.active { border-color: var(--color-gold); opacity: 1; }
 
     /* ============================================
        INTERACTIONS (Like, Dislike, Comments)
@@ -416,7 +485,7 @@
         font-size: 0.9rem;
         transition: all 0.2s;
     }
-    .interaction-btn:hover { border-color: #888; color: #fff; }
+    .interaction-btn:hover { border-color: var(--color-gold); color: var(--color-gold); }
     .interaction-btn.active-like { background: rgba(16, 185, 129, 0.15); border-color: #10B981; color: #10B981; }
     .interaction-btn.active-dislike { background: rgba(239, 68, 68, 0.15); border-color: #EF4444; color: #EF4444; }
     .interaction-btn i { font-size: 1rem; }
@@ -442,7 +511,7 @@
         font-size: 0.9rem;
     }
     .comment-submit {
-        background: var(--color-accent);
+        background: var(--color-gold);
         border: none;
         color: #000;
         padding: 0 1.5rem;
@@ -489,7 +558,7 @@
 
     .payment-card {
         background: #111;
-        border: 1px solid #333;
+        border: 1px solid var(--color-gold); /* Gold Border */
         width: 90%;
         max-width: 450px;
         border-radius: 12px;
@@ -504,39 +573,39 @@
 
     .payment-icon {
         width: 80px; height: 80px;
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(212, 175, 55, 0.1); /* Gold tint */
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 auto 1.5rem;
         font-size: 2rem;
-        color: var(--color-accent);
+        color: var(--color-gold);
     }
 
-    .payment-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: #fff; }
+    .payment-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--color-gold); }
     .payment-subtitle { color: #888; margin-bottom: 2rem; font-size: 0.95rem; }
-    .payment-amount { font-size: 3.5rem; font-weight: 800; color: var(--color-accent); margin-bottom: 0.5rem; font-family: 'Space Grotesk', sans-serif; }
-    .payment-currency { font-size: 1.5rem; color: #ccc; font-weight: 400; }
+    .payment-amount { font-size: 3.5rem; font-weight: 800; color: var(--color-gold); margin-bottom: 0.5rem; font-family: 'Space Grotesk', sans-serif; }
+    .payment-currency { font-size: 1.5rem; color: #fff; font-weight: 400; }
 
     /* Form Styles */
     .payment-form { margin-top: 2rem; text-align: left; }
     .form-group { margin-bottom: 1rem; }
-    .form-group label { display: block; font-size: 0.85rem; color: #888; margin-bottom: 0.5rem; }
+    .form-group label { display: block; font-size: 0.85rem; color: var(--color-gold); margin-bottom: 0.5rem; }
     
     .payment-input {
         width: 100%; background: #000; border: 1px solid #333;
         padding: 0.8rem 1rem; border-radius: 6px; color: #fff;
         font-size: 1rem; transition: border-color 0.2s;
     }
-    .payment-input:focus { outline: none; border-color: var(--color-accent); }
+    .payment-input:focus { outline: none; border-color: var(--color-gold); }
 
     .payment-btn {
-        width: 100%; padding: 1rem; background: var(--color-accent);
+        width: 100%; padding: 1rem; background: var(--color-gold);
         color: #000; border: none; border-radius: 6px; font-weight: 700;
         font-size: 1rem; cursor: pointer; transition: all 0.15s ease-in-out; user-select: none;
     }
-    .payment-btn:hover { filter: brightness(1.1); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+    .payment-btn:hover { filter: brightness(1.1); box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
     .payment-btn:active { transform: scale(0.97); filter: brightness(0.9); }
 
     .payment-status { margin-top: 1rem; padding: 1rem; background: #000; border-radius: 6px; display: none; font-size: 0.9rem; }
@@ -576,17 +645,30 @@
         .payment-amount { font-size: 2.5rem; }
         
         .interactions-bar { flex-wrap: wrap; }
+
+        .hero-title { font-size: 2.5rem; }
+        .portfolio-hero { height: 50vh; }
     }
 </style>
 
-<!-- Page Header -->
-<section class="page-header">
-    <div class="container">
-        <div class="page-header-content">
-            <div class="gradient-line"></div>
-            <h1>Our Portfolio</h1>
-            <p>Explore our collection of movies, trailers, and visual galleries.</p>
-        </div>
+<!-- ============================================
+     HERO SECTION (VIDEO BACKGROUND)
+     ============================================ -->
+<section class="portfolio-hero">
+    <!-- Background Video -->
+    <video class="hero-video-bg" autoplay muted loop playsinline>
+        <!-- Use hero_video_url variable from backend -->
+        <source src="{{ hero_video_url }}" type="video/mp4">
+    </video>
+    
+    <!-- Overlay -->
+    <div class="hero-overlay"></div>
+
+    <!-- Content -->
+    <div class="hero-content">
+        <div class="gradient-line" style="margin: 0 auto 1rem;"></div>
+        <h1 class="hero-title">Our Portfolio</h1>
+        <p class="hero-subtitle">Explore our collection of movies, trailers, and visual galleries.</p>
     </div>
 </section>
 
@@ -871,7 +953,7 @@
 
                 if (categoryMatch && searchMatch) {
                     item.style.display = 'block';
-                    item.style.animation = 'none'; void item.offsetHeight;
+                    item.style.animation = 'none'; void item.offsetWidth;
                     item.style.animation = 'fadeInUp 0.6s ease forwards';
                     visibleCount++;
                 } else { item.style.display = 'none'; }
@@ -880,6 +962,8 @@
         }
 
         function handleEmptyState(count, isSearching) {
+            const emptyTitle = document.getElementById('empty-title');
+            const emptySubtext = document.getElementById('empty-subtext');
             if (count === 0) {
                 emptyState.style.display = 'block';
                 if (isSearching) { emptyTitle.textContent = `No results for "${searchInput.value}"`; emptySubtext.textContent = "Try a different keyword."; } 
