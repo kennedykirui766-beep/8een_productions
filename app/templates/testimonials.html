@@ -383,16 +383,19 @@
         </div>
 
         <div class="video-grid">
-            <div class="video-card" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                <img src="https://placehold.co/600x340/1a1a1a/fff?text=Client+Interview+1" alt="Video Interview">
+
+            <div class="video-card" onclick="openVideoModal('{{ client_video_1 }}')">
+                <img src="{{ client_video_thumb_1 }}" alt="Video Interview">
                 <div class="play-btn"><i class="fas fa-play"></i></div>
                 <div class="video-caption">Safaricom Campaign Behind the Scenes</div>
             </div>
-            <div class="video-card" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">
-                <img src="https://placehold.co/600x340/2d2d2d/fff?text=Client+Interview+2" alt="Video Interview">
+
+            <div class="video-card" onclick="openVideoModal('{{ client_video_2 }}')">
+                <img src="{{ client_video_thumb_2 }}" alt="Video Interview">
                 <div class="play-btn"><i class="fas fa-play"></i></div>
                 <div class="video-caption">Artist Feature: Recording Experience</div>
             </div>
+
         </div>
     </div>
 </section>

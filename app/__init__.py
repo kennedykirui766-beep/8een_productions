@@ -46,7 +46,12 @@ def create_app():
             hero_image_url=app.config.get("HERO_IMAGE_URL"),
             short_film_url=app.config.get("SHORT_FILM_URL"),
             track_url=app.config.get("TRACK_URL"),
-            brand_url=app.config.get("BRAND_URL")
+            brand_url=app.config.get("BRAND_URL"),
+            client_video_1=app.config.get("CLIENT_VIDEO_1"),
+            client_video_2=app.config.get("CLIENT_VIDEO_2"),
+
+            client_video_thumb_1=app.config.get("CLIENT_VIDEO_THUMB_1"),
+            client_video_thumb_2=app.config.get("CLIENT_VIDEO_THUMB_2"),
         )
 
     return app
