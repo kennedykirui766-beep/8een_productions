@@ -237,7 +237,6 @@
         gap: var(--spacing-md);
     }
 
-    /* Updated to be a block-level link */
     .video-card {
         position: relative;
         aspect-ratio: 16/9;
@@ -245,9 +244,9 @@
         overflow: hidden;
         cursor: pointer;
         background: var(--color-black);
-        display: block; /* Make the link fill the grid area */
-        text-decoration: none; /* Remove underline */
-        color: inherit; /* Inherit text color */
+        display: block;
+        text-decoration: none;
+        color: inherit;
     }
 
     .video-card img {
@@ -297,8 +296,82 @@
         font-weight: 600;
     }
 
-    /* Responsive */
+    /* ============================================
+       DEDICATED VIDEO PLAYER OVERLAY (NEW PAGE FEEL)
+       ============================================ */
+    .video-player-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.98);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .video-player-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .video-player-container {
+        position: relative;
+        width: 90%;
+        max-width: 1200px;
+        /* Constraint to keep video away from top/bottom edges */
+        max-height: 85vh; 
+        background: #000;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .video-player-container video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+        max-height: 85vh;
+    }
+
+    /* Custom Close Button (X) */
+    .close-player-btn {
+        position: absolute;
+        top: -40px; /* Position above the video container */
+        right: 0;
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 2.5rem;
+        cursor: pointer;
+        transition: transform 0.2s, color 0.2s;
+        z-index: 10;
+        line-height: 1;
+    }
+
+    .close-player-btn:hover {
+        color: var(--color-gold);
+        transform: rotate(90deg);
+    }
+
+    /* Responsive adjustments for player */
     @media (max-width: 768px) {
+        .video-player-container {
+            width: 95%;
+            max-height: 80vh;
+        }
+        .close-player-btn {
+            top: -50px;
+            font-size: 2rem;
+        }
         .slide-quote { font-size: 1.1rem; }
         .slider-nav { gap: var(--spacing-sm); }
         .wall-grid { grid-template-columns: 1fr; }
@@ -372,28 +445,28 @@
     </div>
 </section>
 
-<!-- Video Testimonials (Opens in New Page) -->
+<!-- Video Testimonials -->
 <section class="video-section">
     <div class="container">
         <div class="text-center">
             <div class="gradient-line" style="margin: 0 auto var(--spacing-md);"></div>
             <h2 class="section-title">Video Stories</h2>
-            <p class="section-subtitle" style="margin: 0 auto var(--spacing-lg);">Click to watch full stories on a separate page.</p>
+            <p class="section-subtitle" style="margin: 0 auto var(--spacing-lg);">Click to watch full stories in our dedicated player.</p>
         </div>
 
         <div class="video-grid">
-            <!-- Converted to <a> tag to open in new tab (_blank) -->
-            <a href="{{ client_video_1 }}" class="video-card" target="_blank" title="Play Video">
+            <!-- Changed to div with onclick to trigger the custom player -->
+            <div class="video-card" onclick="openCustomPlayer('{{ client_video_1 }}')">
                 <img src="{{ client_video_thumb_1 }}" alt="Video Interview">
                 <div class="play-btn"><i class="fas fa-play"></i></div>
                 <div class="video-caption">Safaricom Campaign Behind the Scenes</div>
-            </a>
+            </div>
 
-            <a href="{{ client_video_2 }}" class="video-card" target="_blank" title="Play Video">
+            <div class="video-card" onclick="openCustomPlayer('{{ client_video_2 }}')">
                 <img src="{{ client_video_thumb_2 }}" alt="Video Interview">
                 <div class="play-btn"><i class="fas fa-play"></i></div>
                 <div class="video-caption">Artist Feature: Recording Experience</div>
-            </a>
+            </div>
         </div>
     </div>
 </section>
@@ -490,7 +563,21 @@
     </div>
 </section>
 
-<!-- Removed Modal HTML as it is no longer needed -->
+<!-- ============================================
+     DEDICATED VIDEO PLAYER OVERLAY (Hidden)
+     ============================================ -->
+<div class="video-player-overlay" id="video-player-overlay" onclick="closeCustomPlayer(event)">
+    <div class="video-player-container" onclick="event.stopPropagation()">
+        <!-- The "X" Close Button -->
+        <button class="close-player-btn" onclick="closeCustomPlayer()" aria-label="Close Player">
+            &times;
+        </button>
+        <video id="dedicated-video" controls>
+            <source src="" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -508,7 +595,6 @@
         let autoSlideInterval;
 
         if (slideCount > 0) {
-            // Create Dots
             slides.forEach((_, i) => {
                 const dot = document.createElement('div');
                 dot.classList.add('dot');
@@ -522,7 +608,6 @@
 
             function updateSlider() {
                 track.style.transform = `translateX(-${currentIndex * 100}%)`;
-                
                 document.querySelectorAll('.dot').forEach((dot, i) => {
                     dot.classList.toggle('active', i === currentIndex);
                 });
@@ -551,7 +636,6 @@
             nextBtn.addEventListener('click', () => { nextSlide(); resetAutoSlide(); });
             prevBtn.addEventListener('click', () => { prevSlide(); resetAutoSlide(); });
 
-            // Swipe Support
             let touchStartX = 0;
             let touchEndX = 0;
 
@@ -571,7 +655,48 @@
         }
 
         // ============================================
-        // WALL CARDS ANIMATION
+        // DEDICATED VIDEO PLAYER LOGIC
+        // ============================================
+        window.openCustomPlayer = function(url) {
+            const overlay = document.getElementById('video-player-overlay');
+            const video = document.getElementById('dedicated-video');
+            
+            if(url) {
+                video.src = url;
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent background scroll
+                
+                // Play video
+                video.play().catch(e => console.log("Autoplay prevented:", e));
+            }
+        };
+
+        window.closeCustomPlayer = function(event) {
+            // If event exists and the target is not the overlay itself, ignore
+            // (This prevents closing when clicking inside the container if stopPropagation failed)
+            if (event && event.target.id !== 'video-player-overlay' && !event.target.classList.contains('close-player-btn')) {
+                return;
+            }
+
+            const overlay = document.getElementById('video-player-overlay');
+            const video = document.getElementById('dedicated-video');
+
+            video.pause();
+            video.currentTime = 0; // Reset video
+            video.src = ''; // Remove source to stop loading
+            overlay.classList.remove('active');
+            document.body.style.overflow = ''; // Restore scroll
+        };
+
+        // Allow closing with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeCustomPlayer();
+            }
+        });
+
+        // ============================================
+        // ANIMATIONS
         // ============================================
         const cards = document.querySelectorAll('.wall-card');
         const observer = new IntersectionObserver((entries) => {
