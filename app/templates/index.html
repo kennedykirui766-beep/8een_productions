@@ -161,10 +161,10 @@
         color: var(--color-black);
         border-color: var(--color-gold);
     }
-    .service-card h3 { color: var(--color-gold); font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.5rem; }
-    .service-card p { color: var(--color-light-grey); }
+    .service-card h3 { font-family: var(--font-heading); font-size: 1.5rem; letter-spacing: 1px; margin-bottom: var(--spacing-xs); color: var(--color-gold); }
+    .service-card p { color: var(--color-light-grey); font-size: 0.95rem; line-height: 1.7; }
 
-    /* --- PORTFOLIO PREVIEW (VIDEO OVERLAY FIX) --- */
+    /* --- PORTFOLIO PREVIEW (FIXED VIDEO OVERLAY) --- */
     .portfolio-section { background-color: var(--color-dark-grey); }
     
     .portfolio-grid {
@@ -174,56 +174,56 @@
     }
 
     .portfolio-item {
-        position: relative;
+        position: relative; /* Context for absolute children */
         aspect-ratio: 16/10;
         overflow: hidden;
         border-radius: var(--radius-md);
         cursor: pointer;
         border: 1px solid var(--color-medium-grey);
-        background-color: #000; /* Fallback */
+        background-color: #000; /* Fallback if video fails */
     }
 
-    /* 1. VIDEO STYLING: Force it to fill the background */
+    /* 1. VIDEO STYLING: Ensures it acts as the background */
     .portfolio-video {
         position: absolute;
         top: 0; left: 0;
         width: 100%; 
         height: 100%;
-        object-fit: cover; /* Ensures it covers the area without stretching */
-        z-index: 1; /* Sits at the bottom */
+        object-fit: cover; /* Stretches to fill */
+        z-index: 1; /* Bottom layer */
+        display: block; /* Removes default inline spacing */
+        background-color: #000;
     }
 
-    /* 2. OVERLAY STYLING: Transparent background, sits on top */
+    /* 2. OVERLAY STYLING: Transparent background */
     .portfolio-item .portfolio-overlay {
         position: absolute;
-        inset: 0;
-        z-index: 2; /* Above video */
+        top: 0; left: 0; right: 0; bottom: 0;
+        z-index: 2; /* Top layer */
         
-        /* REMOVED black background */
-        background: transparent; 
+        /* REMOVE BLACK BACKGROUND - FORCE TRANSPARENT */
+        background: transparent !important; 
         
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-        padding: var(--spacing-md);
+        padding: 0; /* Remove padding, let wrapper handle it */
         
-        /* Fade in effect for text */
         opacity: 0;
         transition: opacity var(--transition-normal);
     }
 
-    /* Hover State: Show text */
     .portfolio-item:hover .portfolio-overlay {
         opacity: 1;
     }
 
-    /* 3. TEXT READABILITY: Subtle gradient behind text ONLY */
+    /* 3. TEXT WRAPPER: Gradient for readability */
     .portfolio-text-wrapper {
-        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
-        margin: -1.5rem; /* Offset padding to stretch to edges */
-        padding: 1.5rem;
-        padding-top: 3rem; /* Space for gradient fade */
-        border-radius: 0 0 var(--radius-md) var(--radius-md);
+        margin-top: auto; /* Push to bottom */
+        padding: var(--spacing-md);
+        /* Gradient only behind text, video visible above */
+        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+        width: 100%;
     }
 
     .portfolio-overlay h3 {
@@ -232,28 +232,32 @@
         letter-spacing: 1px;
         margin-bottom: 0.25rem;
         color: var(--color-gold);
-        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
-
+    
     .portfolio-overlay p {
         color: var(--color-white);
+        text-shadow: 0 1px 3px rgba(0,0,0,0.8);
         font-size: 0.9rem;
-        text-shadow: 0 1px 5px rgba(0,0,0,0.5);
     }
 
     .portfolio-overlay .view-btn {
         position: absolute;
         top: var(--spacing-sm);
         right: var(--spacing-sm);
-        width: 50px; height: 50px;
+        width: 50px;
+        height: 50px;
         background-color: var(--color-gold);
         color: var(--color-black);
         border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 1.2rem;
         opacity: 0;
         transform: translateY(-10px);
         transition: all var(--transition-normal);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
     .portfolio-item:hover .portfolio-overlay .view-btn {
@@ -263,8 +267,9 @@
 
     /* --- CTA SECTION --- */
     .cta-section { background-color: var(--color-black); text-align: center; border-top: 1px solid var(--color-gold-dark); }
-    .cta-section h2 { color: var(--color-gold); font-family: var(--font-heading); font-size: clamp(2rem, 6vw, 4rem); margin-bottom: var(--spacing-md); }
-    .cta-section p { color: var(--color-light-grey); max-width: 600px; margin: 0 auto var(--spacing-lg); }
+    .cta-section h2 { font-family: var(--font-heading); font-size: clamp(2rem, 6vw, 4rem); letter-spacing: 2px; margin-bottom: var(--spacing-md); color: var(--color-gold); }
+    .cta-section p { color: var(--color-light-grey); max-width: 600px; margin: 0 auto var(--spacing-lg); font-size: 1.1rem; }
+    .cta-buttons { display: flex; justify-content: center; gap: var(--spacing-sm); flex-wrap: wrap; }
 
     /* --- RESPONSIVE --- */
     @media (max-width: 1024px) {
@@ -274,6 +279,7 @@
         .hero-description { margin-left: auto; margin-right: auto; }
         .hero-buttons { justify-content: center; }
     }
+
     @media (max-width: 768px) {
         .stats-grid { grid-template-columns: 1fr; }
         .stat-item { display: flex; justify-content: space-between; align-items: center; }
@@ -332,8 +338,13 @@
                     telling youth-driven, emotionally rich, and visually powerful stories for 
                     the modern world.
                 </p>
+                <p>
+                    We believe every story deserves more than just a camera — it deserves 
+                    intention, emotion, and craft.
+                </p>
                 <a href="{{ url_for('main.about') }}" class="btn btn-outline">
-                    <i class="fas fa-arrow-right"></i> Learn More
+                    <i class="fas fa-arrow-right"></i>
+                    Learn More
                 </a>
 
                 <div class="stats-grid">
@@ -377,26 +388,31 @@
                 <h3>Film Production</h3>
                 <p>Full-scale production from script to screen.</p>
             </div>
+
             <div class="service-card">
                 <div class="service-icon"><i class="fas fa-music"></i></div>
                 <h3>Music Videos</h3>
                 <p>Visually compelling stories that translate sound into visual art.</p>
             </div>
+
             <div class="service-card">
                 <div class="service-icon"><i class="fas fa-cut"></i></div>
                 <h3>Post-Production</h3>
                 <p>Professional editing, color grading, and sound design.</p>
             </div>
+
             <div class="service-card">
                 <div class="service-icon"><i class="fas fa-camera"></i></div>
                 <h3>Photography</h3>
                 <p>Creative shoots for artists, brands, and campaigns.</p>
             </div>
+
             <div class="service-card">
                 <div class="service-icon"><i class="fas fa-pen-fancy"></i></div>
                 <h3>Scriptwriting</h3>
                 <p>Developing engaging screenplays and creative concepts.</p>
             </div>
+
             <div class="service-card">
                 <div class="service-icon"><i class="fas fa-share-alt"></i></div>
                 <h3>Social Content</h3>
@@ -413,7 +429,7 @@
 </section>
 
 <!-- ============================================
-     PORTFOLIO PREVIEW SECTION
+     PORTFOLIO PREVIEW SECTION (VIDEO TOP)
      ============================================ -->
 <section class="section portfolio-section" id="portfolio">
     <div class="container">
@@ -421,19 +437,20 @@
             <div class="gradient-line" style="margin: 0 auto var(--spacing-md);"></div>
             <h2 class="section-title">Our Work</h2>
             <p class="section-subtitle" style="margin: 0 auto var(--spacing-lg);">
-                A selection of our recent projects across film, music videos, and branded content.
+                A selection of our recent projects.
             </p>
         </div>
 
         <div class="portfolio-grid">
             <!-- Portfolio Item 1 -->
             <div class="portfolio-item">
-                <!-- Video Background -->
+                <!-- Video Layer -->
+                <!-- NOTE: Ensure your backend passes valid .mp4 URLs to these variables -->
                 <video class="portfolio-video" autoplay muted loop playsinline>
                     <source src="{{ video_1_src }}" type="video/mp4">
                 </video>
                 
-                <!-- Text Overlay (Transparent BG) -->
+                <!-- Text Overlay (Transparent Background) -->
                 <div class="portfolio-overlay">
                     <a href="{{ short_film_url }}" class="view-btn"><i class="fas fa-play"></i></a>
                     <div class="portfolio-text-wrapper">
@@ -506,22 +523,20 @@
 <script>
     console.log('Index page loaded');
     
-    // Pause videos when not in viewport to save resources
+    // Logic to pause videos when not in view
     const videos = document.querySelectorAll('.portfolio-video');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.play().catch(e => console.log("Video play prevented:", e));
+                entry.target.play().catch(e => {});
             } else {
                 entry.target.pause();
             }
         });
-    }, { threshold: 0.25 });
+    }, { threshold: 0.3 });
 
     videos.forEach(video => {
         observer.observe(video);
-        // Ensure video loads
-        video.load(); 
     });
 </script>
 {% endblock %}
