@@ -20,7 +20,7 @@ class Config:
     MPESA_CALLBACK_URL = os.getenv("MPESA_CALLBACK_URL")
     LOGO_URL = "https://res.cloudinary.com/dvctsb0sm/image/upload/v1772306934/file_00000000b2a4722f9b60f61ab86bc14c_ijpfr6.png"
     ABOUT_IMAGE_URL = "https://res.cloudinary.com/dvctsb0sm/image/upload/v1772266168/about.jpg_yicnh1.jpg"
-    HERO_SECTION_URL = "https://res.cloudinary.com/dvctsb0sm/image/upload/v1772703139/hero_section.jpg_fk1jux.jpg"
+    HERO_IMAGE_URL = "https://res.cloudinary.com/dvctsb0sm/image/upload/v1772703139/hero_section.jpg_fk1jux.jpg"
     
 
 
