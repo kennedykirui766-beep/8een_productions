@@ -4,8 +4,7 @@
 
 {% block nav_home %}active{% endblock %}
 
-{% block content %}
-
+{% block extra_styles %}
 <style>
     /* ============================================
        INDEX PAGE SPECIFIC STYLES (CINEMATIC HERO)
@@ -18,12 +17,12 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        /* Cinematic Background Image */
-        background-image: url('https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=2059&auto=format&fit=crop');
+        /* Background settings remain here for consistency */
+        background-color: #000; /* Fallback color */
         background-size: cover;
         background-position: center center;
         background-repeat: no-repeat;
-        background-attachment: fixed; /* Subtle parallax effect */
+        background-attachment: fixed;
         overflow: hidden;
     }
 
@@ -362,11 +361,14 @@
         }
     }
 </style>
+{% endblock %}
 
+{% block content %}
 <!-- ============================================
      CINEMATIC HERO SECTION
      ============================================ -->
-<section class="hero" id="home"style="background-image: url('{{ hero_image_url }}'); background-size: cover; background-position: center;">
+<!-- Added inline style for dynamic background image URL -->
+<section class="hero" id="home" style="background-image: url('{{ hero_section_url }}'); background-size: cover; background-position: center;">
     <div class="container">
         <div class="hero-content">
             <span class="hero-label"><i class="fas fa-film"></i> Film & Creative Studio</span>
@@ -458,80 +460,46 @@
         </div>
 
         <div class="services-grid">
-            <!-- Service 1 -->
             <div class="service-card">
-                <div class="service-icon">
-                    <i class="fas fa-film"></i>
-                </div>
+                <div class="service-icon"><i class="fas fa-film"></i></div>
                 <h3>Film Production</h3>
-                <p>
-                    We develop and produce short films, web series, and narrative projects 
-                    from concept to final delivery.
-                </p>
+                <p>Full-scale production from script to screen for narratives and documentaries.</p>
             </div>
 
-            <!-- Service 2 -->
             <div class="service-card">
-                <div class="service-icon">
-                    <i class="fas fa-music"></i>
-                </div>
-                <h3>Music Video Direction</h3>
-                <p>
-                    We create visually compelling music videos that translate sound into 
-                    story, helping artists build strong visual identities.
-                </p>
+                <div class="service-icon"><i class="fas fa-music"></i></div>
+                <h3>Music Videos</h3>
+                <p>Visually compelling stories that translate sound into visual art.</p>
             </div>
 
-            <!-- Service 3 -->
             <div class="service-card">
-                <div class="service-icon">
-                    <i class="fas fa-cut"></i>
-                </div>
-                <h3>Video Editing</h3>
-                <p>
-                    Professional editing, color grading, sound design, and 
-                    optimized exports for digital platforms.
-                </p>
+                <div class="service-icon"><i class="fas fa-cut"></i></div>
+                <h3>Post-Production</h3>
+                <p>Professional editing, color grading, and sound design.</p>
             </div>
 
-            <!-- Service 4 -->
             <div class="service-card">
-                <div class="service-icon">
-                    <i class="fas fa-camera"></i>
-                </div>
+                <div class="service-icon"><i class="fas fa-camera"></i></div>
                 <h3>Photography</h3>
-                <p>
-                    Creative photography for artists, brands, and digital campaigns.
-                </p>
+                <p>Creative shoots for artists, brands, and campaigns.</p>
             </div>
 
-            <!-- Service 5 -->
             <div class="service-card">
-                <div class="service-icon">
-                    <i class="fas fa-pen-fancy"></i>
-                </div>
+                <div class="service-icon"><i class="fas fa-pen-fancy"></i></div>
                 <h3>Scriptwriting</h3>
-                <p>
-                    Story development for films, series, skits, and branded content.
-                </p>
+                <p>Developing engaging screenplays and creative concepts.</p>
             </div>
 
-            <!-- Service 6 -->
             <div class="service-card">
-                <div class="service-icon">
-                    <i class="fas fa-share-alt"></i>
-                </div>
-                <h3>Social Media Content</h3>
-                <p>
-                    Short-form video content designed for online engagement and impact.
-                </p>
+                <div class="service-icon"><i class="fas fa-share-alt"></i></div>
+                <h3>Social Content</h3>
+                <p>Short-form videos optimized for digital platforms.</p>
             </div>
         </div>
 
         <div class="text-center" style="margin-top: var(--spacing-lg);">
             <a href="{{ url_for('main.services') }}" class="btn btn-primary">
-                <i class="fas fa-arrow-right"></i>
-                View All Services
+                <i class="fas fa-arrow-right"></i> View All Services
             </a>
         </div>
     </div>
@@ -551,37 +519,28 @@
         </div>
 
         <div class="portfolio-grid">
-            <!-- Portfolio Item 1 -->
             <div class="portfolio-item">
-                <div class="portfolio-placeholder">
-                    <i class="fas fa-video"></i>
-                </div>
+                <div class="portfolio-placeholder"><i class="fas fa-video"></i></div>
                 <div class="portfolio-overlay">
-                    <a href="portfolio.html" class="view-btn"><i class="fas fa-arrow-right"></i></a>
+                    <a href="#" class="view-btn"><i class="fas fa-arrow-right"></i></a>
                     <h3>Short Film Title</h3>
                     <p>Film Production</p>
                 </div>
             </div>
 
-            <!-- Portfolio Item 2 -->
             <div class="portfolio-item">
-                <div class="portfolio-placeholder">
-                    <i class="fas fa-music"></i>
-                </div>
+                <div class="portfolio-placeholder"><i class="fas fa-music"></i></div>
                 <div class="portfolio-overlay">
-                    <a href="portfolio.html" class="view-btn"><i class="fas fa-arrow-right"></i></a>
+                    <a href="#" class="view-btn"><i class="fas fa-arrow-right"></i></a>
                     <h3>Artist Name - Track</h3>
                     <p>Music Video</p>
                 </div>
             </div>
 
-            <!-- Portfolio Item 3 -->
             <div class="portfolio-item">
-                <div class="portfolio-placeholder">
-                    <i class="fas fa-briefcase"></i>
-                </div>
+                <div class="portfolio-placeholder"><i class="fas fa-briefcase"></i></div>
                 <div class="portfolio-overlay">
-                    <a href="portfolio.html" class="view-btn"><i class="fas fa-arrow-right"></i></a>
+                    <a href="#" class="view-btn"><i class="fas fa-arrow-right"></i></a>
                     <h3>Brand Campaign</h3>
                     <p>Commercial</p>
                 </div>
@@ -590,8 +549,7 @@
 
         <div class="text-center" style="margin-top: var(--spacing-lg);">
             <a href="{{ url_for('projects.all_projects') }}" class="btn btn-outline">
-                <i class="fas fa-th-large"></i>
-                View Full Portfolio
+                <i class="fas fa-th-large"></i> View Full Portfolio
             </a>
         </div>
     </div>
@@ -605,23 +563,22 @@
         <h2>Ready to Tell Your Story?</h2>
         <p>
             Whether you're an artist, brand, or creative visionary, we're here to bring 
-            your ideas to life with cinematic excellence and authentic storytelling.
+            your ideas to life with cinematic excellence.
         </p>
         <div class="cta-buttons">
             <a href="{{ url_for('main.contact') }}" class="btn btn-primary">
-                <i class="fas fa-envelope"></i>
-                Start a Project
+                <i class="fas fa-envelope"></i> Start a Project
             </a>
             <a href="{{ url_for('main.about') }}" class="btn btn-outline">
-                <i class="fas fa-info-circle"></i>
-                Learn About Us
+                <i class="fas fa-info-circle"></i> Learn About Us
             </a>
         </div>
     </div>
 </section>
+{% endblock %}
 
+{% block extra_scripts %}
 <script>
-    // Index page specific scripts
     console.log('Index page loaded');
 </script>
 {% endblock %}
