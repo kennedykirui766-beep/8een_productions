@@ -7,10 +7,81 @@
 {% block content %}
 <style>
     /* ============================================
+       HERO SECTION (VIDEO BACKGROUND)
+       ============================================ */
+    .contact-hero {
+        position: relative;
+        height: 70vh;
+        min-height: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background-color: #000;
+    }
+
+    .hero-video-bg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: 0;
+        transform: translate(-50%, -50%);
+        object-fit: cover;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.9) 100%);
+        z-index: 1;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        padding: 0 var(--spacing-md);
+    }
+
+    .hero-title {
+        font-family: var(--font-heading);
+        font-size: clamp(3rem, 10vw, 6rem);
+        color: var(--color-gold); /* GOLD Title */
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        margin-bottom: 1rem;
+        text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        color: var(--color-silver);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* ============================================
+       THEME OVERRIDES (BLACK & GOLD)
+       ============================================ */
+    
+    .section-title {
+        color: var(--color-gold) !important;
+    }
+    
+    .gradient-line {
+        background: var(--color-gold-gradient);
+    }
+
+    /* ============================================
        CONTACT PAGE SPECIFIC STYLES
        ============================================ */
     .contact-section {
-        background-color: var(--color-dark-grey);
+        background-color: var(--color-black);
     }
 
     .contact-grid {
@@ -24,6 +95,7 @@
         font-size: 2rem;
         letter-spacing: 2px;
         margin-bottom: var(--spacing-md);
+        color: var(--color-gold); /* Gold Header */
     }
 
     .contact-info p {
@@ -50,12 +122,19 @@
         width: 50px;
         height: 50px;
         background-color: var(--color-charcoal);
+        border: 1px solid var(--color-medium-grey);
         border-radius: var(--radius-sm);
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--color-white);
+        color: var(--color-gold); /* Gold Icons */
         font-size: 1.2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .contact-item:hover i {
+        background-color: var(--color-gold);
+        color: #000;
     }
 
     .social-links {
@@ -67,26 +146,30 @@
         width: 50px;
         height: 50px;
         background-color: var(--color-charcoal);
+        border: 1px solid var(--color-medium-grey);
         border-radius: var(--radius-sm);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 1.3rem;
-        color: var(--color-white);
+        color: var(--color-gold); /* Gold Icons */
         transition: all var(--transition-normal);
     }
 
     .social-link:hover {
-        background-color: var(--color-white);
+        background-color: var(--color-gold);
         color: var(--color-black);
+        border-color: var(--color-gold);
         transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
     }
 
     /* Contact Form */
     .contact-form {
-        background-color: var(--color-charcoal);
+        background-color: var(--color-dark-grey);
         padding: var(--spacing-lg);
         border-radius: var(--radius-md);
+        border: 1px solid var(--color-charcoal);
     }
 
     .form-group {
@@ -100,7 +183,7 @@
         text-transform: uppercase;
         letter-spacing: 1px;
         margin-bottom: 0.5rem;
-        color: var(--color-silver);
+        color: var(--color-gold); /* Gold Labels */
     }
 
     .form-group input,
@@ -110,7 +193,7 @@
         padding: 1rem;
         font-family: var(--font-body);
         font-size: 1rem;
-        background-color: var(--color-dark-grey);
+        background-color: var(--color-black);
         border: 1px solid var(--color-medium-grey);
         border-radius: var(--radius-sm);
         color: var(--color-white);
@@ -121,7 +204,7 @@
     .form-group textarea:focus,
     .form-group select:focus {
         outline: none;
-        border-color: var(--color-white);
+        border-color: var(--color-gold); /* Gold Focus */
     }
 
     .form-group input::placeholder,
@@ -137,7 +220,7 @@
     .form-group select {
         cursor: pointer;
         appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a0a0a0' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23D4AF37' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E"); /* Gold Arrow */
         background-repeat: no-repeat;
         background-position: right 1rem center;
     }
@@ -159,29 +242,27 @@
 
     .form-submit .btn {
         width: 100%;
+        background-color: var(--color-gold);
+        color: #000;
+        font-weight: 700;
+        border: none;
+    }
+    
+    .form-submit .btn:hover {
+        background-color: #fff;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
     }
 
     /* Map Section */
     .map-section {
         background-color: var(--color-black);
+        padding: var(--spacing-xl) 0;
     }
 
-    .map-placeholder {
-        aspect-ratio: 21/9;
-        background: linear-gradient(135deg, var(--color-charcoal), var(--color-medium-grey));
+    .map-container {
+        border: 1px solid var(--color-charcoal);
         border-radius: var(--radius-md);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: var(--spacing-sm);
-        font-size: 1rem;
-        color: var(--color-light-grey);
-    }
-
-    .map-placeholder i {
-        font-size: 3rem;
-        color: var(--color-grey);
+        overflow: hidden;
     }
 
     /* FAQ Section */
@@ -199,6 +280,12 @@
         background-color: var(--color-charcoal);
         padding: var(--spacing-md);
         border-radius: var(--radius-md);
+        border: 1px solid transparent;
+        transition: border-color 0.3s ease;
+    }
+    
+    .faq-item:hover {
+        border-color: var(--color-gold);
     }
 
     .faq-item h4 {
@@ -206,6 +293,7 @@
         font-size: 1.3rem;
         letter-spacing: 1px;
         margin-bottom: var(--spacing-xs);
+        color: var(--color-gold); /* Gold FAQ Titles */
     }
 
     .faq-item p {
@@ -222,6 +310,9 @@
     }
 
     @media (max-width: 768px) {
+        .hero-title { font-size: 2.5rem; }
+        .contact-hero { height: 50vh; }
+        
         .contact-grid {
             grid-template-columns: 1fr;
         }
@@ -242,8 +333,8 @@
             justify-content: center;
         }
 
-        .map-placeholder {
-            aspect-ratio: 16/9;
+        .map-container iframe {
+            height: 300px;
         }
     }
 
@@ -251,15 +342,23 @@
 </style>
 
 <!-- ============================================
-     PAGE HEADER
+     HERO SECTION (VIDEO BACKGROUND)
      ============================================ -->
-<section class="page-header">
-    <div class="container">
-        <div class="page-header-content">
-            <div class="gradient-line"></div>
-            <h1>Contact Us</h1>
-            <p>Let's bring your vision to life. Get in touch to start your project.</p>
-        </div>
+<section class="contact-hero">
+    <!-- Background Video -->
+    <video class="hero-video-bg" autoplay muted loop playsinline>
+        <!-- Backend variable for video URL -->
+        <source src="{{ hero_video_url }}" type="video/mp4">
+    </video>
+    
+    <!-- Overlay -->
+    <div class="hero-overlay"></div>
+
+    <!-- Content -->
+    <div class="hero-content">
+        <div class="gradient-line" style="margin: 0 auto 1rem;"></div>
+        <h1 class="hero-title">Contact Us</h1>
+        <p class="hero-subtitle">Let's bring your vision to life. Get in touch to start your project.</p>
     </div>
 </section>
 

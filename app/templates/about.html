@@ -6,13 +6,85 @@
 
 {% block nav_about %}active{% endblock %}
 
-{% block extra_styles %}
+{% block content %}
+
 <style>
+    /* ============================================
+       HERO SECTION (VIDEO BACKGROUND)
+       ============================================ */
+    .about-hero {
+        position: relative;
+        height: 70vh;
+        min-height: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background-color: #000;
+    }
+
+    .hero-video-bg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: 0;
+        transform: translate(-50%, -50%);
+        object-fit: cover;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.9) 100%);
+        z-index: 1;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        padding: 0 var(--spacing-md);
+    }
+
+    .hero-title {
+        font-family: var(--font-heading);
+        font-size: clamp(3rem, 10vw, 6rem);
+        color: var(--color-gold); /* GOLD Title */
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        margin-bottom: 1rem;
+        text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        color: var(--color-silver);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* ============================================
+       THEME OVERRIDES (BLACK & GOLD)
+       ============================================ */
+    
+    .section-title {
+        color: var(--color-gold) !important; /* Force Gold */
+    }
+    
+    .gradient-line {
+        background: var(--color-gold-gradient);
+    }
+
     /* ============================================
        ABOUT PAGE SPECIFIC STYLES
        ============================================ */
     .about-intro {
-        background-color: var(--color-dark-grey);
+        background-color: var(--color-black);
     }
 
     .about-intro-grid {
@@ -37,12 +109,13 @@
         align-items: center;
         justify-content: center;
         font-size: 4rem;
-        color: var(--color-grey);
+        color: var(--color-gold); /* Gold Icon */
+        border: 1px solid var(--color-charcoal);
     }
 
     /* Vision & Mission */
     .vision-mission {
-        background-color: var(--color-black);
+        background-color: var(--color-dark-grey);
     }
 
     .vm-grid {
@@ -52,10 +125,15 @@
     }
 
     .vm-card {
-        background-color: var(--color-dark-grey);
+        background-color: var(--color-charcoal);
         padding: var(--spacing-lg);
         border-radius: var(--radius-md);
-        border-left: 4px solid var(--color-white);
+        border-left: 4px solid var(--color-gold); /* Gold Border */
+        transition: transform 0.3s ease;
+    }
+
+    .vm-card:hover {
+        transform: translateY(-5px);
     }
 
     .vm-card h3 {
@@ -66,10 +144,11 @@
         display: flex;
         align-items: center;
         gap: var(--spacing-sm);
+        color: var(--color-white);
     }
 
     .vm-card h3 i {
-        color: var(--color-light-grey);
+        color: var(--color-gold); /* Gold Icon */
     }
 
     .vm-card p {
@@ -80,7 +159,7 @@
 
     /* Values Section */
     .values-section {
-        background-color: var(--color-dark-grey);
+        background-color: var(--color-black);
     }
 
     .values-grid {
@@ -92,27 +171,36 @@
     .value-card {
         text-align: center;
         padding: var(--spacing-md);
-        background-color: var(--color-charcoal);
+        background-color: var(--color-dark-grey);
         border-radius: var(--radius-md);
         transition: all var(--transition-normal);
+        border: 1px solid transparent;
     }
 
     .value-card:hover {
         transform: translateY(-5px);
-        background-color: var(--color-medium-grey);
+        border-color: var(--color-gold); /* Gold Border on Hover */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
 
     .value-icon {
         width: 80px;
         height: 80px;
-        background-color: var(--color-dark-grey);
+        background-color: transparent;
+        border: 2px solid var(--color-gold); /* Gold Border */
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 2rem;
-        color: var(--color-white);
+        color: var(--color-gold); /* Gold Icon */
         margin: 0 auto var(--spacing-sm);
+        transition: all 0.3s ease;
+    }
+
+    .value-card:hover .value-icon {
+        background-color: var(--color-gold);
+        color: #000;
     }
 
     .value-card h3 {
@@ -120,6 +208,7 @@
         font-size: 1.5rem;
         letter-spacing: 1px;
         margin-bottom: var(--spacing-xs);
+        color: var(--color-white);
     }
 
     .value-card p {
@@ -129,7 +218,7 @@
 
     /* Founder Section */
     .founder-section {
-        background-color: var(--color-black);
+        background-color: var(--color-dark-grey);
     }
 
     .founder-grid {
@@ -147,7 +236,8 @@
         align-items: center;
         justify-content: center;
         font-size: 4rem;
-        color: var(--color-grey);
+        color: var(--color-gold);
+        border: 1px solid var(--color-charcoal);
     }
 
     .founder-content h3 {
@@ -155,6 +245,7 @@
         font-size: 2.5rem;
         letter-spacing: 2px;
         margin-bottom: var(--spacing-xs);
+        color: var(--color-gold); /* Gold Name */
     }
 
     .founder-content .role {
@@ -180,23 +271,27 @@
         width: 45px;
         height: 45px;
         background-color: var(--color-charcoal);
+        border: 1px solid var(--color-medium-grey);
         border-radius: var(--radius-sm);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 1.2rem;
-        color: var(--color-white);
+        color: var(--color-gold);
         transition: all var(--transition-normal);
     }
 
     .founder-social a:hover {
-        background-color: var(--color-white);
+        background-color: var(--color-gold);
         color: var(--color-black);
+        border-color: var(--color-gold);
     }
 
     /* Stats */
     .stats-section {
-        background-color: var(--color-charcoal);
+        background-color: var(--color-black);
+        border-top: 1px solid var(--color-charcoal);
+        border-bottom: 1px solid var(--color-charcoal);
     }
 
     .stats-grid {
@@ -207,12 +302,13 @@
 
     .stat-item {
         text-align: center;
+        padding: var(--spacing-md) 0;
     }
 
     .stat-number {
         font-family: var(--font-heading);
         font-size: 4rem;
-        color: var(--color-white);
+        color: var(--color-gold); /* Gold Numbers */
         line-height: 1;
     }
 
@@ -221,6 +317,7 @@
         text-transform: uppercase;
         letter-spacing: 2px;
         font-size: 0.9rem;
+        margin-top: 0.5rem;
     }
 
     /* Responsive */
@@ -248,6 +345,9 @@
     }
 
     @media (max-width: 768px) {
+        .hero-title { font-size: 2.5rem; }
+        .about-hero { height: 50vh; }
+
         .vm-grid {
             grid-template-columns: 1fr;
         }
@@ -261,19 +361,26 @@
         }
     }
 </style>
-{% endblock %}
 
-{% block content %}
+
 <!-- ============================================
-     PAGE HEADER
+     HERO SECTION (VIDEO BACKGROUND)
      ============================================ -->
-<section class="page-header">
-    <div class="container">
-        <div class="page-header-content">
-            <div class="gradient-line"></div>
-            <h1>About Us</h1>
-            <p>Where street stories meet cinematic excellence.</p>
-        </div>
+<section class="about-hero">
+    <!-- Background Video -->
+    <video class="hero-video-bg" autoplay muted loop playsinline>
+        <!-- Backend variable for video URL -->
+        <source src="{{ hero_video_url }}" type="video/mp4">
+    </video>
+    
+    <!-- Overlay -->
+    <div class="hero-overlay"></div>
+
+    <!-- Content -->
+    <div class="hero-content">
+        <div class="gradient-line" style="margin: 0 auto 1rem;"></div>
+        <h1 class="hero-title">About Us</h1>
+        <p class="hero-subtitle">Where street stories meet cinematic excellence.</p>
     </div>
 </section>
 
