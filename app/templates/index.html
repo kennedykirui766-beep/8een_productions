@@ -17,8 +17,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        /* Background settings remain here for consistency */
-        background-color: #000; /* Fallback color */
+        background-color: #000;
         background-size: cover;
         background-position: center center;
         background-repeat: no-repeat;
@@ -26,28 +25,24 @@
         overflow: hidden;
     }
 
-    /* Dark Overlay for Text Readability */
     .hero::before {
         content: '';
         position: absolute;
         top: 0; left: 0; width: 100%; height: 100%;
-        /* Gradient overlay: Darker on left for text, lighter on right */
         background: linear-gradient(to right, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.4) 100%);
         z-index: 1;
     }
 
-    /* Hero Content Positioning */
     .hero-content {
         position: relative;
         z-index: 2;
-        text-align: left; /* Align left for cinematic feel */
+        text-align: left;
         max-width: 800px;
     }
 
-    /* Big Gold Title */
     .hero-title {
         font-family: var(--font-heading);
-        font-size: clamp(4rem, 12vw, 10rem); /* Very Large */
+        font-size: clamp(4rem, 12vw, 10rem);
         line-height: 0.9;
         letter-spacing: 4px;
         color: var(--color-gold);
@@ -57,7 +52,7 @@
 
     .hero-title span {
         display: block;
-        font-size: 0.4em; /* Smaller sub-text */
+        font-size: 0.4em;
         color: var(--color-white);
         letter-spacing: 8px;
     }
@@ -111,7 +106,6 @@
         line-height: 1.8;
     }
 
-    /* Stats: Gold Numbers */
     .stats-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -199,7 +193,7 @@
         line-height: 1.7;
     }
 
-    /* --- PORTFOLIO PREVIEW --- */
+    /* --- PORTFOLIO PREVIEW (VIDEO OVERLAY STYLE) --- */
     .portfolio-section {
         background-color: var(--color-dark-grey);
     }
@@ -217,37 +211,54 @@
         border-radius: var(--radius-md);
         cursor: pointer;
         border: 1px solid var(--color-medium-grey);
+        background-color: #000;
     }
 
-    .portfolio-placeholder {
+    /* 1. Video is the background (The "Overlay") */
+    .portfolio-video {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(135deg, var(--color-charcoal), var(--color-medium-grey));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-        color: var(--color-gold);
-        transition: transform var(--transition-slow);
+        object-fit: cover;
+        z-index: 1; /* Bottom layer */
+        transition: transform 0.5s ease;
     }
 
-    .portfolio-item:hover .portfolio-placeholder {
+    /* Scale video on hover */
+    .portfolio-item:hover .portfolio-video {
         transform: scale(1.05);
     }
 
+    /* 2. Overlay for Text - No Black Background, just text styling */
     .portfolio-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, transparent 100%);
-        opacity: 0;
-        transition: opacity var(--transition-normal);
+        z-index: 2;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
         padding: var(--spacing-md);
+        /* Removed the black gradient background */
+        background: transparent; 
     }
 
-    .portfolio-item:hover .portfolio-overlay {
+    /* Subtle gradient ONLY at the bottom for text readability */
+    .portfolio-text-wrapper {
+        position: relative;
+        padding-top: 40%; /* Push text to bottom area */
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+        margin: calc(var(--spacing-md) * -1);
+        margin-top: auto;
+        padding: var(--spacing-md);
+        transform: translateY(20px);
+        opacity: 0;
+        transition: all 0.4s ease;
+    }
+
+    .portfolio-item:hover .portfolio-text-wrapper {
+        transform: translateY(0);
         opacity: 1;
     }
 
@@ -255,8 +266,16 @@
         font-family: var(--font-heading);
         font-size: 1.5rem;
         letter-spacing: 1px;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
         color: var(--color-gold);
+        /* Text shadow for readability over video */
+        text-shadow: 0 2px 10px rgba(0,0,0,0.8); 
+    }
+
+    .portfolio-overlay p {
+        color: var(--color-white);
+        font-size: 0.9rem;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.8);
     }
 
     .portfolio-overlay .view-btn {
@@ -272,13 +291,13 @@
         align-items: center;
         justify-content: center;
         font-size: 1.2rem;
-        transform: translateY(-20px);
         opacity: 0;
         transition: all var(--transition-normal);
+        z-index: 3;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
 
     .portfolio-item:hover .portfolio-overlay .view-btn {
-        transform: translateY(0);
         opacity: 1;
     }
 
@@ -317,55 +336,24 @@
             grid-template-columns: 1fr;
             gap: var(--spacing-md);
         }
-
-        .about-image {
-            order: -1;
-        }
-        
-        .hero-content {
-            text-align: center;
-            padding: 0 var(--spacing-sm);
-        }
-        
-        .hero-description {
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .hero-buttons {
-            justify-content: center;
-        }
+        .about-image { order: -1; }
+        .hero-content { text-align: center; padding: 0 var(--spacing-sm); }
+        .hero-description { margin-left: auto; margin-right: auto; }
+        .hero-buttons { justify-content: center; }
     }
 
     @media (max-width: 768px) {
-        .stats-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .stat-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .portfolio-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .cta-buttons {
-            flex-direction: column;
-        }
-
-        .cta-buttons .btn {
-            width: 100%;
-        }
+        .stats-grid { grid-template-columns: 1fr; }
+        .stat-item { display: flex; justify-content: space-between; align-items: center; }
+        .portfolio-grid { grid-template-columns: 1fr; }
+        .cta-buttons { flex-direction: column; }
+        .cta-buttons .btn { width: 100%; }
     }
 </style>
 
 <!-- ============================================
      CINEMATIC HERO SECTION
      ============================================ -->
-<!-- Added inline style for dynamic background image URL -->
 <section class="hero" id="home" style="background-image: url('{{ hero_image_url }}'); background-size: cover; background-position: center;">
     <div class="container">
         <div class="hero-content">
@@ -504,7 +492,7 @@
 </section>
 
 <!-- ============================================
-     PORTFOLIO PREVIEW SECTION
+     PORTFOLIO PREVIEW SECTION (VIDEO TOP)
      ============================================ -->
 <section class="section portfolio-section" id="portfolio">
     <div class="container">
@@ -517,30 +505,51 @@
         </div>
 
         <div class="portfolio-grid">
+            <!-- Portfolio Item 1 -->
             <div class="portfolio-item">
-                <div class="portfolio-placeholder"><i class="fas fa-video"></i></div>
+                <!-- Video Layer (Replaces placeholder) -->
+                <!-- Ensure backend passes video file URLs (e.g. .mp4) to these variables -->
+                <video class="portfolio-video" autoplay muted loop playsinline>
+                    <source src="{{ video_1_src }}" type="video/mp4">
+                </video>
+                
+                <!-- Content Overlay -->
                 <div class="portfolio-overlay">
-                    <a href="{{ short_film_url }}" class="view-btn"><i class="fas fa-arrow-right"></i></a>
-                    <h3>Short Film Title</h3>
-                    <p>Film Production</p>
+                    <a href="{{ short_film_url }}" class="view-btn"><i class="fas fa-play"></i></a>
+                    <div class="portfolio-text-wrapper">
+                        <h3>Short Film Title</h3>
+                        <p>Film Production</p>
+                    </div>
                 </div>
             </div>
 
+            <!-- Portfolio Item 2 -->
             <div class="portfolio-item">
-                <div class="portfolio-placeholder"><i class="fas fa-music"></i></div>
+                <video class="portfolio-video" autoplay muted loop playsinline>
+                    <source src="{{ video_2_src }}" type="video/mp4">
+                </video>
+                
                 <div class="portfolio-overlay">
-                    <a href="{{ track_url }}" class="view-btn"><i class="fas fa-arrow-right"></i></a>
-                    <h3>Artist Name - Track</h3>
-                    <p>Music Video</p>
+                    <a href="{{ track_url }}" class="view-btn"><i class="fas fa-play"></i></a>
+                    <div class="portfolio-text-wrapper">
+                        <h3>Artist Name - Track</h3>
+                        <p>Music Video</p>
+                    </div>
                 </div>
             </div>
 
+            <!-- Portfolio Item 3 -->
             <div class="portfolio-item">
-                <div class="portfolio-placeholder"><i class="fas fa-briefcase"></i></div>
+                <video class="portfolio-video" autoplay muted loop playsinline>
+                    <source src="{{ video_3_src }}" type="video/mp4">
+                </video>
+                
                 <div class="portfolio-overlay">
-                    <a href="{{ brand_url }}" class="view-btn"><i class="fas fa-arrow-right"></i></a>
-                    <h3>Brand Campaign</h3>
-                    <p>Commercial</p>
+                    <a href="{{ brand_url }}" class="view-btn"><i class="fas fa-play"></i></a>
+                    <div class="portfolio-text-wrapper">
+                        <h3>Brand Campaign</h3>
+                        <p>Commercial</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -576,5 +585,21 @@
 
 <script>
     console.log('Index page loaded');
+    
+    // Optional: Pause videos when not in viewport to save resources
+    const videos = document.querySelectorAll('.portfolio-video');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.play();
+            } else {
+                entry.target.pause();
+            }
+        });
+    }, { threshold: 0.25 }); // Play when 25% visible
+
+    videos.forEach(video => {
+        observer.observe(video);
+    });
 </script>
 {% endblock %}
