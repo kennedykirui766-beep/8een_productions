@@ -21,7 +21,9 @@ class Config:
     LOGO_URL = "https://res.cloudinary.com/dvctsb0sm/image/upload/v1772306934/file_00000000b2a4722f9b60f61ab86bc14c_ijpfr6.png"
     ABOUT_IMAGE_URL = "https://res.cloudinary.com/dvctsb0sm/image/upload/v1772266168/about.jpg_yicnh1.jpg"
     HERO_IMAGE_URL = "https://res.cloudinary.com/dvctsb0sm/image/upload/v1772703139/hero_section.jpg_fk1jux.jpg"
-    
+    SHORT_FILM_URL ="https://res.cloudinary.com/dvctsb0sm/video/upload/v1772710297/5129-183300007_medium_wwue5k.mp4"
+    TRACK_URL ="https://res.cloudinary.com/dvctsb0sm/video/upload/v1772710385/36746-412873626_medium_xbjoxb.mp4"
+    BRAND_URL ="https://res.cloudinary.com/dvctsb0sm/video/upload/v1772710421/276047_medium_aycbtb.mp4"
 
 
 cloudinary.config(

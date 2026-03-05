@@ -43,7 +43,10 @@ def create_app():
         return dict(
             logo_url=app.config.get("LOGO_URL"),
             about_image_url=app.config.get("ABOUT_IMAGE_URL"),
-            hero_image_url=app.config.get("HERO_IMAGE_URL")
+            hero_image_url=app.config.get("HERO_IMAGE_URL"),
+            short_film_url=app.config.get("SHORT_FILM_URL"),
+            track_url=app.config.get("TRACK_URL"),
+            brand_url=app.config.get("BRAND_URL")
         )
 
     return app
