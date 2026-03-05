@@ -8,14 +8,96 @@
 
 <style>
     /* ============================================
-       PORTFOLIO & SERVICE STYLES
+       HERO SECTION (VIDEO BACKGROUND)
+       ============================================ */
+    .services-hero {
+        position: relative;
+        height: 70vh;
+        min-height: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background-color: #000;
+    }
+
+    .hero-video-bg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: 0;
+        transform: translate(-50%, -50%);
+        object-fit: cover;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.9) 100%);
+        z-index: 1;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        padding: 0 var(--spacing-md);
+    }
+
+    .hero-title {
+        font-family: var(--font-heading);
+        font-size: clamp(3rem, 10vw, 6rem);
+        color: var(--color-gold); /* GOLD Title */
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        margin-bottom: 1rem;
+        text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        color: var(--color-silver);
+        max-width: 600px;
+        margin: 0 auto 2rem;
+        line-height: 1.6;
+    }
+
+    .hero-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem 2.5rem;
+        background-color: var(--color-gold); /* Gold Button */
+        color: var(--color-black);
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 1px;
+        border-radius: var(--radius-sm);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    }
+
+    .hero-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+        background-color: #fff;
+    }
+
+    /* ============================================
+       SERVICES & PORTFOLIO STYLES
        ============================================ */
     
     /* Intro Section */
     .services-intro {
-        background-color: var(--color-dark-grey);
+        background-color: var(--color-black);
         text-align: center;
         padding: var(--spacing-lg) 0;
+        border-bottom: 1px solid var(--color-charcoal);
     }
     .services-intro p {
         color: var(--color-light-grey);
@@ -23,6 +105,14 @@
         margin: 0 auto;
         font-size: 1.1rem;
         line-height: 1.8;
+    }
+
+    /* Section Titles */
+    .section-title {
+        color: var(--color-gold) !important; 
+        font-family: var(--font-heading);
+        text-transform: uppercase;
+        letter-spacing: 2px;
     }
 
     /* Portfolio Grid Layout */
@@ -45,6 +135,12 @@
         border-radius: var(--radius-md);
         cursor: pointer;
         background-color: var(--color-charcoal);
+        border: 1px solid var(--color-medium-grey);
+        transition: border-color 0.3s ease;
+    }
+
+    .portfolio-item:hover {
+        border-color: var(--color-gold);
     }
 
     .portfolio-item img,
@@ -105,7 +201,7 @@
         transform: translate(-50%, -50%) scale(0.8);
         width: 60px;
         height: 60px;
-        background-color: var(--color-white);
+        background-color: var(--color-gold); /* Gold Button */
         color: var(--color-black);
         border-radius: 50%;
         display: flex;
@@ -114,7 +210,7 @@
         font-size: 1.5rem;
         opacity: 0;
         transition: all 0.3s ease;
-        box-shadow: 0 0 20px rgba(255,255,255,0.3);
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
     }
 
     .portfolio-item:hover .view-btn {
@@ -129,13 +225,15 @@
         margin-bottom: 0.25rem;
         transform: translateY(20px);
         transition: transform 0.3s ease;
+        color: #fff;
     }
 
     .portfolio-overlay p {
-        color: var(--color-light-grey);
+        color: var(--color-gold); /* Gold Subtitle */
         font-size: 0.9rem;
         transform: translateY(20px);
         transition: transform 0.3s ease 0.05s;
+        text-transform: uppercase;
     }
 
     .portfolio-item:hover .portfolio-overlay h3,
@@ -148,7 +246,7 @@
         width: 100%; height: 100%;
         background: linear-gradient(135deg, var(--color-charcoal), var(--color-dark-grey));
         display: flex; align-items: center; justify-content: center;
-        font-size: 3rem; color: var(--color-grey);
+        font-size: 3rem; color: var(--color-gold);
     }
 
     /* Empty State */
@@ -175,27 +273,33 @@
         position: relative;
         width: 90%;
         max-width: 1000px;
-        background: var(--color-dark-grey);
+        background: #000;
         border-radius: var(--radius-md);
         overflow: hidden;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        box-shadow: 0 0 40px rgba(212, 175, 55, 0.1); /* Gold tint shadow */
         transform: scale(0.9);
         transition: transform 0.3s ease;
+        border: 1px solid var(--color-charcoal);
     }
     .modal.active .modal-content { transform: scale(1); }
 
     .modal-close {
         position: absolute;
         top: 1rem; right: 1rem;
-        background: rgba(0,0,0,0.5);
-        border: none; color: white;
-        width: 40px; height: 40px;
+        background: rgba(0,0,0,0.8);
+        border: 1px solid var(--color-gold);
+        color: var(--color-gold);
+        width: 44px; height: 44px;
         border-radius: 50%;
         cursor: pointer;
         z-index: 10;
-        transition: background 0.2s;
+        transition: all 0.2s;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-    .modal-close:hover { background: var(--color-danger); }
+    .modal-close:hover { background: var(--color-gold); color: #000; }
 
     /* Video Modal Specifics */
     .video-wrapper {
@@ -209,20 +313,20 @@
         width: 100%; height: 100%;
     }
     .modal-info {
-        padding: 1rem;
-        background: #111;
+        padding: 1.5rem;
+        background: #0a0a0a;
         border-top: 1px solid var(--color-charcoal);
     }
     .modal-info h4 {
         font-family: var(--font-heading);
         letter-spacing: 1px;
-        font-size: 1.2rem;
-        color: var(--color-white);
+        font-size: 1.4rem;
+        color: var(--color-gold); /* Gold Title */
     }
     .modal-info p {
         color: var(--color-light-grey);
         font-size: 0.9rem;
-        margin-top: 0.25rem;
+        margin-top: 0.5rem;
     }
 
     /* Gallery Modal Specifics */
@@ -231,6 +335,7 @@
         text-align: center;
         max-height: 90vh;
         overflow-y: auto;
+        background: #000;
     }
     .gallery-wrapper img {
         max-width: 100%;
@@ -239,6 +344,7 @@
         border-radius: var(--radius-sm);
         box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         display: block;
+        border: 2px solid var(--color-charcoal);
     }
     .gallery-nav {
         display: flex; justify-content: center; gap: 1rem;
@@ -246,18 +352,26 @@
         align-items: center;
     }
     .gallery-nav button {
-        background: var(--color-charcoal); border: none;
-        color: white; padding: 0.5rem 1.5rem;
+        background: transparent; 
+        border: 1px solid var(--color-gold);
+        color: var(--color-gold); 
+        padding: 0.5rem 1.5rem;
         border-radius: var(--radius-sm); cursor: pointer;
-        transition: background 0.2s;
+        transition: all 0.2s;
+        font-weight: 600;
     }
-    .gallery-nav button:hover { background: var(--color-medium-grey); }
+    .gallery-nav button:hover { 
+        background: var(--color-gold); 
+        color: #000; 
+    }
+    .gallery-nav span { color: #888; }
 
     /* Responsive */
     @media (max-width: 768px) {
-        .portfolio-grid {
-            grid-template-columns: 1fr;
-        }
+        .hero-title { font-size: 2.5rem; }
+        .services-hero { height: 50vh; }
+        
+        .portfolio-grid { grid-template-columns: 1fr; }
         .modal-content {
             width: 100%;
             height: 100%;
@@ -265,25 +379,36 @@
             border-radius: 0;
         }
         .video-wrapper {
-            height: 56.25vw; /* Maintain aspect ratio on mobile */
+            height: 56.25vw;
             padding-top: 0;
         }
-        .video-wrapper video {
-            position: relative;
-        }
+        .video-wrapper video { position: relative; }
+        
+        .gallery-wrapper { padding: 1rem; }
     }
 </style>
 
 <!-- ============================================
-     PAGE HEADER
+     HERO SECTION (VIDEO BACKGROUND)
      ============================================ -->
-<section class="page-header">
-    <div class="container">
-        <div class="page-header-content">
-            <div class="gradient-line"></div>
-            <h1>Our Work</h1>
-            <p>Watch our latest movies, trailers, and browse photo galleries.</p>
-        </div>
+<section class="services-hero">
+    <!-- Background Video -->
+    <video class="hero-video-bg" autoplay muted loop playsinline>
+        <!-- Backend should pass hero_video_url -->
+        <source src="{{ hero_video_url }}" type="video/mp4">
+    </video>
+    
+    <!-- Overlay -->
+    <div class="hero-overlay"></div>
+
+    <!-- Content -->
+    <div class="hero-content">
+        <div class="gradient-line" style="margin: 0 auto 1rem;"></div>
+        <h1 class="hero-title">Our Work</h1>
+        <p class="hero-subtitle">Watch our latest movies, trailers, and browse photo galleries.</p>
+        <a href="#portfolio" class="hero-btn">
+            <i class="fas fa-play"></i> Explore Now
+        </a>
     </div>
 </section>
 
@@ -302,8 +427,13 @@
 <!-- ============================================
      PORTFOLIO SHOWCASE
      ============================================ -->
-<section class="section portfolio-section">
+<section class="section portfolio-section" id="portfolio">
     <div class="container">
+        
+        <div class="text-center" style="margin-bottom: var(--spacing-lg);">
+            <h2 class="section-title">Projects</h2>
+        </div>
+
         <div class="portfolio-grid" id="portfolio-grid">
             
             {# Movies Loop #}
@@ -444,7 +574,7 @@
     <div class="modal-content">
         <button class="modal-close" onclick="closeModal('galleryModal')"><i class="fas fa-times"></i></button>
         <div class="gallery-wrapper">
-            <h3 id="galleryTitle" style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 1rem;">Gallery</h3>
+            <h3 id="galleryTitle" style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 1rem; color: var(--color-gold);">Gallery</h3>
             <img id="galleryImage" src="" alt="Gallery Image">
             <div class="gallery-nav">
                 <button onclick="prevGalleryImage()"><i class="fas fa-arrow-left"></i> Prev</button>
