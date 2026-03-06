@@ -40,7 +40,7 @@ def register():
         flash('Account created! Please log in.', 'success')
         return redirect(url_for('auth.login'))
 
-    return render_template('auth/register.html')
+    return render_template('register.html')
 
 # ---- LOGIN ----
 @auth_bp.route("/login", methods=["GET", "POST"])
@@ -67,7 +67,7 @@ def login():
 
         flash("Invalid username or password", "danger")
 
-    return render_template('auth/login.html')
+    return render_template('login.html')
 
 
 # ---- LOGOUT ----
