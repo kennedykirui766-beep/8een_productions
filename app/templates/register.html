@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<style>
+    /* Reusing Auth Styles from login.html */
+    .auth-section {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--spacing-lg) var(--spacing-sm);
+        background-color: var(--color-black);
+        background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(212, 175, 55, 0.03)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+    }
+
+    .auth-card {
+        width: 100%;
+        max-width: 440px;
+        background-color: var(--color-dark-grey);
+        border: 1px solid var(--color-medium-grey);
+        border-top: 4px solid var(--color-gold);
+        border-radius: var(--radius-md);
+        padding: var(--spacing-lg);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        position: relative;
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .auth-header h1 {
+        font-family: var(--font-heading);
+        font-size: 2.5rem;
+        color: var(--color-gold);
+        margin-bottom: 0.5rem;
+        letter-spacing: 2px;
+    }
+
+    .auth-header p {
+        color: var(--color-light-grey);
+        font-size: 0.95rem;
+    }
+
+    .auth-form .form-group {
+        margin-bottom: var(--spacing-md);
+        position: relative;
+    }
+
+    .input-group { position: relative; }
+
+    .input-group i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--color-grey);
+        transition: color 0.3s ease;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 1rem 1rem 1rem 45px;
+        background-color: var(--color-black);
+        border: 1px solid var(--color-medium-grey);
+        border-radius: var(--radius-sm);
+        color: var(--color-white);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--color-gold);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+
+    .form-control:focus + i { color: var(--color-gold); }
+    .form-control::placeholder { color: var(--color-grey); }
+
+    .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--color-grey);
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+    .password-toggle:hover { color: var(--color-gold); }
+
+    .btn-auth {
+        width: 100%;
+        padding: 1rem;
+        background: var(--color-gold);
+        color: var(--color-black);
+        border: none;
+        border-radius: var(--radius-sm);
+        font-weight: 700;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: var(--spacing-sm);
+    }
+
+    .btn-auth:hover {
+        background: var(--color-gold-light);
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: var(--spacing-lg);
+        color: var(--color-light-grey);
+        font-size: 0.95rem;
+        border-top: 1px solid var(--color-charcoal);
+        padding-top: var(--spacing-md);
+    }
+    .auth-footer a {
+        color: var(--color-gold);
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    /* Password Strength Indicator (Visual only) */
+    .password-strength {
+        height: 3px;
+        margin-top: 8px;
+        border-radius: 2px;
+        background-color: var(--color-charcoal);
+        overflow: hidden;
+    }
+    .strength-bar {
+        height: 100%;
+        width: 0%;
+        transition: all 0.3s;
+    }
+
+    @media (max-width: 480px) {
+        .auth-card { padding: var(--spacing-md); }
+        .auth-header h1 { font-size: 2rem; }
+    }
+</style>
+
+<section class="auth-section">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Create Account</h1>
+            <p>Join the studio community</p>
+        </div>
+
+        <form class="auth-form" method="POST" action="{{ url_for('auth.register') }}" novalidate>
+            <!-- Username -->
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" name="username" class="form-control" placeholder="Choose Username" required minlength="3">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                    <i class="fas fa-lock"></i>
+                    <button type="button" class="password-toggle" onclick="togglePassword('password', this)">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="password-strength">
+                    <div class="strength-bar" id="strengthBar"></div>
+                </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="password" id="confirm" name="confirm" class="form-control" placeholder="Confirm Password" required>
+                    <i class="fas fa-check-double"></i>
+                    <button type="button" class="password-toggle" onclick="togglePassword('confirm', this)">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-auth">
+                <i class="fas fa-user-plus"></i> Register
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Already have an account? <a href="{{ url_for('auth.login') }}">Sign In</a>
+        </div>
+    </div>
+</section>
+
+<script>
+    function togglePassword(inputId, btn) {
+        const input = document.getElementById(inputId);
+        const icon = btn.querySelector('i');
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    // Simple Password Strength Visual
+    const passwordInput = document.getElementById('password');
+    const strengthBar = document.getElementById('strengthBar');
+
+    if(passwordInput) {
+        passwordInput.addEventListener('input', function() {
+            const value = this.value;
+            let strength = 0;
+            if (value.length >= 6) strength = 33;
+            if (value.length >= 8 && /[A-Z]/.test(value)) strength = 66;
+            if (value.length >= 8 && /[0-9]/.test(value) && /[A-Z]/.test(value)) strength = 100;
+
+            strengthBar.style.width = strength + '%';
+            
+            if (strength <= 33) strengthBar.style.backgroundColor = '#ef4444'; // Red
+            else if (strength <= 66) strengthBar.style.backgroundColor = '#f59e0b'; // Yellow
+            else strengthBar.style.backgroundColor = 'var(--color-gold)'; // Gold
+        });
+    }
+</script>
+{% endblock %}

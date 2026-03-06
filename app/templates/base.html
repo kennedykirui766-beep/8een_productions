@@ -744,6 +744,14 @@
                 <a href="{{ url_for('main.testimonials') }}" class="nav-link"><i class="fas fa-quote-left"></i> Testimonials</a>
                 <a href="{{ url_for('main.contact') }}" class="nav-link"><i class="fas fa-envelope"></i> Contact</a>
                 <a href="{{ url_for('main.about') }}" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
+                
+                <!-- Auth Links Added Here -->
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.logout') }}" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="nav-link"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="nav-link"><i class="fas fa-user-plus"></i> Register</a>
+                {% endif %}
             </nav>
         </div>
     </header>

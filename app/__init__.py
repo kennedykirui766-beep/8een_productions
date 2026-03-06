@@ -31,11 +31,14 @@ def create_app():
     from app.routes.project_routes import project_bp
     from app.routes.admin_routes import admin_bp
     from app.routes.payment_routes import payment_bp
+    from app.routes.auth import auth_bp
+    
 
     app.register_blueprint(main_bp)
     app.register_blueprint(project_bp, url_prefix="/projects")
     app.register_blueprint(admin_bp)
     app.register_blueprint(payment_bp)
+    app.register_blueprint(auth_bp, url_prefix='/auth')
 
     # ✅ Global template variables for logo and images
     @app.context_processor
