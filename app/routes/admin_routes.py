@@ -10,6 +10,11 @@ admin_bp = Blueprint("admin", __name__, url_prefix="/secure-admin-8een")
 
 @admin_bp.route("/login", methods=["GET", "POST"])
 def login():
+
+    # If admin already logged in
+    if current_user.is_authenticated and current_user.is_admin:
+        return redirect(url_for("admin.dashboard"))
+
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
