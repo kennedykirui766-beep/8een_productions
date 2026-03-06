@@ -54,7 +54,7 @@ def login():
 
         flash("Invalid username or password")
 
-    return render_template("auth/login.html")
+    return render_template('login.html')
 
 
 # ---- LOGOUT ----

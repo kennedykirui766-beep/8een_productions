@@ -50,26 +50,34 @@
         position: relative;
     }
 
-    .input-group { position: relative; }
+    .input-group { 
+        position: relative; 
+        width: 100%;
+    }
 
-    .input-group i {
+    /* Icon Styling - Left Side */
+    .input-group > i {
         position: absolute;
-        left: 15px;
+        left: 1rem; /* 16px from left */
         top: 50%;
         transform: translateY(-50%);
         color: var(--color-grey);
         transition: color 0.3s ease;
+        z-index: 2; /* Sit above input background */
+        pointer-events: none; /* Let clicks pass through to input */
     }
 
     .form-control {
         width: 100%;
-        padding: 1rem 1rem 1rem 45px;
+        /* Padding: Top/Bottom 1rem, Right 3rem (space for eye icon), Left 3rem (space for user/lock icon) */
+        padding: 1rem 3rem 1rem 3rem; 
         background-color: var(--color-black);
         border: 1px solid var(--color-medium-grey);
         border-radius: var(--radius-sm);
         color: var(--color-white);
         font-size: 1rem;
         transition: all 0.3s ease;
+        box-sizing: border-box; /* Ensure padding doesn't increase width */
     }
 
     .form-control:focus {
@@ -78,12 +86,20 @@
         box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
     }
 
-    .form-control:focus + i { color: var(--color-gold); }
-    .form-control::placeholder { color: var(--color-grey); }
+    /* Highlight icon on focus */
+    .form-control:focus ~ i { 
+        color: var(--color-gold); 
+    }
+    
+    .form-control::placeholder { 
+        color: var(--color-grey); 
+        opacity: 0.7;
+    }
 
+    /* Password Toggle - Right Side */
     .password-toggle {
         position: absolute;
-        right: 15px;
+        right: 1rem; /* 16px from right */
         top: 50%;
         transform: translateY(-50%);
         background: none;
@@ -91,8 +107,15 @@
         color: var(--color-grey);
         cursor: pointer;
         transition: color 0.3s;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
     }
     .password-toggle:hover { color: var(--color-gold); }
+    /* Ensure toggle icon color changes properly */
+    .password-toggle i { transition: color 0.3s; }
 
     .btn-auth {
         width: 100%;
@@ -151,6 +174,10 @@
     @media (max-width: 480px) {
         .auth-card { padding: var(--spacing-md); }
         .auth-header h1 { font-size: 2rem; }
+        /* Adjust padding slightly for smaller screens if needed */
+        .form-control { padding: 0.9rem 2.5rem 0.9rem 2.5rem; }
+        .input-group > i { left: 0.8rem; }
+        .password-toggle { right: 0.8rem; }
     }
 </style>
 
@@ -165,6 +192,7 @@
             <!-- Username -->
             <div class="form-group">
                 <div class="input-group">
+                    <!-- Added specific class for icon if needed, but general selector works -->
                     <input type="text" name="username" class="form-control" placeholder="Choose Username" required minlength="3">
                     <i class="fas fa-user"></i>
                 </div>

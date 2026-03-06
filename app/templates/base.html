@@ -745,10 +745,17 @@
                 <a href="{{ url_for('main.contact') }}" class="nav-link"><i class="fas fa-envelope"></i> Contact</a>
                 <a href="{{ url_for('main.about') }}" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
                 
-                <!-- Auth Links Added Here -->
+                <!-- Auth Links Logic: Separate Admin vs User -->
                 {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('auth.logout') }}" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    {% if current_user.is_admin %}
+                        <!-- Admin User: Show Admin Panel, Hide Public Logout -->
+                        <a href="{{ url_for('admin.index') }}" class="nav-link"><i class="fas fa-user-shield"></i> Admin Panel</a>
+                    {% else %}
+                        <!-- Normal User: Show Logout -->
+                        <a href="{{ url_for('auth.logout') }}" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    {% endif %}
                 {% else %}
+                    <!-- Guest: Show Login/Register -->
                     <a href="{{ url_for('auth.login') }}" class="nav-link"><i class="fas fa-sign-in-alt"></i> Login</a>
                     <a href="{{ url_for('auth.register') }}" class="nav-link"><i class="fas fa-user-plus"></i> Register</a>
                 {% endif %}
