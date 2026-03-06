@@ -47,7 +47,7 @@ def register():
 def login():
 
     if current_user.is_authenticated and not current_user.is_admin:
-        return redirect(url_for("main.index"))
+        return redirect(url_for("main.home"))
 
     if request.method == "POST":
         username = request.form.get("username")
@@ -63,7 +63,7 @@ def login():
                 return redirect(url_for("admin.login"))
 
             login_user(user)
-            return redirect(url_for("main.index"))
+            return redirect(url_for("main.home"))
 
         flash("Invalid username or password", "danger")
 
