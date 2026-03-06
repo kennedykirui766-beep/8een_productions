@@ -35,25 +35,26 @@ def register():
 
 
 # ---- LOGIN ----
-@auth_bp.route('/login', methods=['GET', 'POST'])
+@auth_bp.route("/login", methods=["GET", "POST"])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
-
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
 
         user = User.query.filter_by(username=username).first()
-        if user and user.check_password(password):
-            login_user(user)
-            flash('Logged in successfully!', 'success')
-            return redirect(url_for('main.home'))
-        else:
-            flash('Invalid credentials', 'danger')
-            return redirect(url_for('auth.login'))
 
-    return render_template('login.html')
+        if user and user.check_password(password):
+
+            if user.is_admin:
+                flash("Admins must login from the admin panel.")
+                return redirect(url_for("admin.login"))
+
+            login_user(user)
+            return redirect(url_for("main.index"))
+
+        flash("Invalid username or password")
+
+    return render_template("auth/login.html")
 
 
 # ---- LOGOUT ----
