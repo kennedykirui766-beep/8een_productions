@@ -457,7 +457,15 @@ def payments():
 @admin_bp.route("/users")
 @login_required
 def users():
-    return render_template("admin/users.html")
+    # Only allow admins to access
+    if not current_user.is_admin:
+        flash("Access denied", "danger")
+        return redirect(url_for("main.home"))
+
+    # Fetch all normal users (exclude admins)
+    user_list = User.query.filter_by(is_admin=False).all()
+
+    return render_template("admin/users.html", users=user_list)
 
 
 
@@ -552,8 +560,15 @@ def settings():
 @admin_bp.route("/logout")
 @login_required
 def logout():
+
+    if not current_user.is_admin:
+        flash("Access denied", "danger")
+        return redirect(url_for("main.home"))
+
     logout_user()
-    return redirect(url_for("main.home"))
+    flash("Admin logged out", "info")
+
+    return redirect(url_for("admin.login"))
 
 
 
