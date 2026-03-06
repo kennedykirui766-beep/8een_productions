@@ -226,7 +226,7 @@
                     <div style="display: flex; gap: 1rem; align-items: center;">
                         <div class="search-bar">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="searchInput" placeholder="Search by name or email..." onkeyup="filterUsers()">
+                            <input type="text" id="searchInput" placeholder="Search by username..." onkeyup="filterUsers()">
                         </div>
                         <button class="btn btn-primary btn-sm" onclick="openModal()">
                             <i class="fas fa-plus"></i> Add User
@@ -246,7 +246,40 @@
                             </tr>
                         </thead>
                         <tbody id="userTableBody">
-                            <!-- Dynamic content here -->
+                            {% if users %}
+                                {% for user in users %}
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-avatar-sm">{{ user.username[:1]|upper }}</div>
+                                            <div>
+                                                <div style="font-weight:500">{{ user.username }}</div>
+                                                <div style="font-size:0.8rem; color:var(--admin-text-muted)">ID: {{ user.id }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>User</td> <!-- Assuming role is not in DB yet or default -->
+                                    <td>KES 0.00</td> <!-- Placeholder as relation not in route -->
+                                    <td>{{ user.created_at.strftime('%b %d, %Y') if user.created_at else 'N/A' }}</td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>
+                                        <div style="display:flex; gap:0.5rem;">
+                                            <button class="btn btn-sm btn-danger" onclick="alert('Ban feature coming soon')"><i class="fas fa-ban"></i> Ban</button>
+                                            <button class="btn btn-sm btn-outline" onclick="alert('Delete feature coming soon')"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6">
+                                        <div class="empty-state">
+                                            <i class="fas fa-users-slash"></i>
+                                            <p>No users found.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
                         </tbody>
                     </table>
                 </div>
@@ -286,16 +319,6 @@
 
     <script>
         // ============================================
-        // DATA INITIALIZATION
-        // ============================================
-        
-        if (!localStorage.getItem('users')) localStorage.setItem('users', JSON.stringify([]));
-        if (!localStorage.getItem('orders')) localStorage.setItem('orders', JSON.stringify([]));
-
-        let users = JSON.parse(localStorage.getItem('users'));
-        let orders = JSON.parse(localStorage.getItem('orders'));
-
-        // ============================================
         // DOM ELEMENTS
         // ============================================
         const tableBody = document.getElementById('userTableBody');
@@ -306,121 +329,33 @@
         // CORE FUNCTIONS
         // ============================================
 
-        function calculateSpend(userEmail) {
-            return orders
-                .filter(o => o.user === userEmail && o.status === 'Completed')
-                .reduce((sum, o) => sum + parseFloat(o.amount), 0);
-        }
-
-        function renderUsers(data) {
-            tableBody.innerHTML = '';
-
-            if (data.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="6">
-                            <div class="empty-state">
-                                <i class="fas fa-users-slash"></i>
-                                <p>No users found. Click "Add User" to get started.</p>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            data.forEach((user, index) => {
-                const spent = calculateSpend(user.email);
-                const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
-                const statusBadge = user.status === 'Active' 
-                    ? '<span class="badge badge-success">Active</span>' 
-                    : '<span class="badge badge-warning">Banned</span>';
-
-                const actionBtns = user.status === 'Active'
-                    ? `<button class="btn btn-sm btn-danger" onclick="toggleBan(${index})"><i class="fas fa-ban"></i> Ban</button>`
-                    : `<button class="btn btn-sm btn-success" onclick="toggleBan(${index})"><i class="fas fa-check"></i> Unban</button>`;
-
-                tableBody.innerHTML += `
-                    <tr>
-                        <td>
-                            <div class="user-cell">
-                                <div class="user-avatar-sm">${initials}</div>
-                                <div>
-                                    <div style="font-weight:500">${user.name}</div>
-                                    <div style="font-size:0.8rem; color:var(--admin-text-muted)">${user.email}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>${user.role}</td>
-                        <td>KES ${spent.toLocaleString()}</td>
-                        <td>${user.joined}</td>
-                        <td>${statusBadge}</td>
-                        <td>
-                            <div style="display:flex; gap:0.5rem;">
-                                ${actionBtns}
-                                <button class="btn btn-sm btn-outline" onclick="deleteUser(${index})"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
+        // Updated to filter DOM rows instead of JS array
         function filterUsers() {
             const term = searchInput.value.toLowerCase();
-            const filtered = users.filter(u => 
-                u.name.toLowerCase().includes(term) || 
-                u.email.toLowerCase().includes(term)
-            );
-            renderUsers(filtered);
+            const rows = tableBody.getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                // Get text content from the row
+                const text = row.textContent.toLowerCase();
+                
+                // Check if row matches search term
+                if (text.includes(term)) {
+                    row.style.display = ""; // Show row
+                } else {
+                    row.style.display = "none"; // Hide row
+                }
+            }
         }
 
         // ============================================
-        // ACTIONS
+        // ACTIONS (Placeholders as no backend route provided)
         // ============================================
 
         function handleAddUser(e) {
             e.preventDefault();
-            const name = document.getElementById('newName').value;
-            const email = document.getElementById('newEmail').value;
-            const role = document.getElementById('newRole').value;
-
-            // Check duplicate
-            if (users.some(u => u.email === email)) {
-                alert("A user with this email already exists.");
-                return;
-            }
-
-            const newUser = {
-                name: name,
-                email: email,
-                role: role,
-                status: "Active",
-                joined: new Date().toISOString().split('T')[0] // YYYY-MM-DD
-            };
-
-            users.push(newUser);
-            localStorage.setItem('users', JSON.stringify(users));
-            
-            renderUsers(users);
+            alert("Create User functionality requires a backend route.");
             closeModal();
-            document.getElementById('addUserForm').reset();
-        }
-
-        function toggleBan(index) {
-            const user = users[index];
-            user.status = user.status === 'Active' ? 'Banned' : 'Active';
-            users[index] = user;
-            localStorage.setItem('users', JSON.stringify(users));
-            renderUsers(users);
-        }
-
-        function deleteUser(index) {
-            if(confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
-                users.splice(index, 1);
-                localStorage.setItem('users', JSON.stringify(users));
-                renderUsers(users);
-            }
         }
 
         // ============================================
@@ -448,11 +383,6 @@
         menuToggle.addEventListener('click', () => sidebar.classList.contains('active') ? closeSidebar() : openSidebar());
         overlay.addEventListener('click', closeSidebar);
         window.addEventListener('resize', () => { if (window.innerWidth > 768 && sidebar.classList.contains('active')) closeSidebar(); });
-
-        // ============================================
-        // INIT
-        // ============================================
-        renderUsers(users);
 
     </script>
 </body>
