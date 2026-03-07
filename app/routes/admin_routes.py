@@ -515,12 +515,12 @@ def analytics():
 
     # -------- MONTHLY REVENUE --------
     raw_monthly = db.session.query(
-        func.strftime("%Y-%m", Payment.created_at),
+        func.to_char(Payment.created_at, "YYYY-MM"),
         func.sum(Payment.amount)
     ).filter(Payment.status == "paid")\
-     .group_by(func.strftime("%Y-%m", Payment.created_at))\
-     .order_by(func.strftime("%Y-%m", Payment.created_at))\
-     .all()
+    .group_by(func.to_char(Payment.created_at, "YYYY-MM"))\
+    .order_by(func.to_char(Payment.created_at, "YYYY-MM"))\
+    .all()
 
     monthly_revenue = [
         {"month": row[0], "amount": float(row[1] or 0)}
