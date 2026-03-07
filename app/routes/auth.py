@@ -80,19 +80,18 @@ def login():
     return render_template('login.html')
 
 
-# ---- LOGOUT ----
+# ---- LOGOUT (Normal Users Only) ----
 @auth_bp.route('/logout')
 @login_required
 def logout():
-
+    # Block admins from using this route
     if current_user.is_admin:
+        flash("Admins must logout from the admin panel.", "warning")
         return redirect(url_for('admin.dashboard'))
 
     logout_user()
     flash('You have been logged out', 'info')
-
-    return redirect(url_for('index.html'))
-
+    return redirect(url_for('main.home'))
 
 # ---- FORGOT PASSWORD ----
 @auth_bp.route("/forgot-password", methods=["GET", "POST"])
