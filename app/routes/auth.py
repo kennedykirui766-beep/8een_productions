@@ -15,6 +15,7 @@ def register():
 
     if request.method == 'POST':
         username = request.form.get('username')
+        email = request.form.get('email')   # ADDED
         password = request.form.get('password')
         confirm = request.form.get('confirm')
 
@@ -31,7 +32,12 @@ def register():
             flash('Username already exists', 'danger')
             return redirect(url_for('auth.register'))
 
-        new_user = User(username=username)
+        # Check email already exists  ADDED
+        if User.query.filter_by(email=email).first():
+            flash('Email already registered', 'danger')
+            return redirect(url_for('auth.register'))
+
+        new_user = User(username=username, email=email)   # UPDATED
         new_user.set_password(password)
 
         db.session.add(new_user)
@@ -42,6 +48,8 @@ def register():
 
     return render_template('register.html')
 
+
+# ---- LOGIN ----
 # ---- LOGIN ----
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -50,10 +58,12 @@ def login():
         return redirect(url_for("main.home"))
 
     if request.method == "POST":
-        username = request.form.get("username")
+        # Changed to get 'email'
+        email = request.form.get("email")
         password = request.form.get("password")
 
-        user = User.query.filter_by(username=username).first()
+        # Query by email
+        user = User.query.filter_by(email=email).first()
 
         if user and user.check_password(password):
 
@@ -65,7 +75,7 @@ def login():
             login_user(user)
             return redirect(url_for("main.home"))
 
-        flash("Invalid username or password", "danger")
+        flash("Invalid email or password", "danger")
 
     return render_template('login.html')
 
@@ -84,13 +94,14 @@ def logout():
     return redirect(url_for('index.html'))
 
 
+# ---- FORGOT PASSWORD ----
 @auth_bp.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
 
     if request.method == "POST":
-        username = request.form.get("username")
+        email = request.form.get("email")  # CHANGED from username to email
 
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(email=email).first()  # UPDATED
 
         if user and not user.is_admin:
             token = user.get_reset_token()
@@ -103,11 +114,12 @@ def forgot_password():
             flash("Password reset link has been generated. Check server logs.", "info")
             return redirect(url_for("auth.login"))
 
-        flash("User not found or not allowed.", "danger")
+        flash("Email not found or not allowed.", "danger")
 
     return render_template("forgot_password.html")
 
 
+# ---- RESET PASSWORD ----
 @auth_bp.route("/reset-password/<token>", methods=["GET", "POST"])
 def reset_password(token):
 

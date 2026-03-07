@@ -58,13 +58,13 @@
     /* Icon Styling - Left Side */
     .input-group > i {
         position: absolute;
-        left: 1rem; /* 16px from left */
+        left: 1rem; 
         top: 50%;
         transform: translateY(-50%);
         color: var(--color-grey);
         transition: color 0.3s ease;
-        z-index: 2; /* Sit above input background */
-        pointer-events: none; /* Let clicks pass through to input */
+        z-index: 2; 
+        pointer-events: none; 
     }
 
     .form-control {
@@ -77,7 +77,7 @@
         color: var(--color-white);
         font-size: 1rem;
         transition: all 0.3s ease;
-        box-sizing: border-box; /* Ensure padding doesn't increase width */
+        box-sizing: border-box; 
     }
 
     .form-control:focus {
@@ -99,7 +99,7 @@
     /* Password Toggle - Right Side */
     .password-toggle {
         position: absolute;
-        right: 1rem; /* 16px from right */
+        right: 1rem; 
         top: 50%;
         transform: translateY(-50%);
         background: none;
@@ -114,7 +114,6 @@
         z-index: 2;
     }
     .password-toggle:hover { color: var(--color-gold); }
-    /* Ensure toggle icon color changes properly */
     .password-toggle i { transition: color 0.3s; }
 
     .btn-auth {
@@ -174,7 +173,6 @@
     @media (max-width: 480px) {
         .auth-card { padding: var(--spacing-md); }
         .auth-header h1 { font-size: 2rem; }
-        /* Adjust padding slightly for smaller screens if needed */
         .form-control { padding: 0.9rem 2.5rem 0.9rem 2.5rem; }
         .input-group > i { left: 0.8rem; }
         .password-toggle { right: 0.8rem; }
@@ -192,9 +190,16 @@
             <!-- Username -->
             <div class="form-group">
                 <div class="input-group">
-                    <!-- Added specific class for icon if needed, but general selector works -->
                     <input type="text" name="username" class="form-control" placeholder="Choose Username" required minlength="3">
                     <i class="fas fa-user"></i>
+                </div>
+            </div>
+
+            <!-- Email Address (Added) -->
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="email" name="email" class="form-control" placeholder="Email Address" required>
+                    <i class="fas fa-envelope"></i>
                 </div>
             </div>
 
