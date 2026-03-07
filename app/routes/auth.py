@@ -105,7 +105,7 @@ def forgot_password():
 
         flash("User not found or not allowed.", "danger")
 
-    return render_template("auth/forgot_password.html")
+    return render_template("forgot_password.html")
 
 
 @auth_bp.route("/reset-password/<token>", methods=["GET", "POST"])
