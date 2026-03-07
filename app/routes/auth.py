@@ -50,7 +50,6 @@ def register():
 
 
 # ---- LOGIN ----
-# ---- LOGIN ----
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
 
