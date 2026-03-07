@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db
 from app.models import User
+from flask_mail import Message
+from app import mail
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -93,23 +95,30 @@ def logout():
     return redirect(url_for('main.home'))
 
 # ---- FORGOT PASSWORD ----
+  # import the Mail instance
+
 @auth_bp.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
 
     if request.method == "POST":
-        email = request.form.get("email")  # CHANGED from username to email
-
-        user = User.query.filter_by(email=email).first()  # UPDATED
+        email = request.form.get("email").strip().lower()
+        user = User.query.filter_by(email=email).first()
 
         if user and not user.is_admin:
             token = user.get_reset_token()
-
             reset_link = url_for("auth.reset_password", token=token, _external=True)
 
-            # Normally you would send email here
-            print("Reset link:", reset_link)
+            # Create the email message
+            msg = Message(
+                subject="Password Reset Request",
+                recipients=[user.email],
+                body=f"Hi {user.username},\n\nTo reset your password, click the link below:\n\n{reset_link}\n\nIf you didn't request this, ignore this email.",
+            )
 
-            flash("Password reset link has been generated. Check server logs.", "info")
+            # Send the email
+            mail.send(msg)
+
+            flash("Password reset link has been sent to your email.", "info")
             return redirect(url_for("auth.login"))
 
         flash("Email not found or not allowed.", "danger")
