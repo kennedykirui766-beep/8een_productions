@@ -82,3 +82,48 @@ def logout():
     flash('You have been logged out', 'info')
 
     return redirect(url_for('index.html'))
+
+
+@auth_bp.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+
+    if request.method == "POST":
+        username = request.form.get("username")
+
+        user = User.query.filter_by(username=username).first()
+
+        if user and not user.is_admin:
+            token = user.get_reset_token()
+
+            reset_link = url_for("auth.reset_password", token=token, _external=True)
+
+            # Normally you would send email here
+            print("Reset link:", reset_link)
+
+            flash("Password reset link has been generated. Check server logs.", "info")
+            return redirect(url_for("auth.login"))
+
+        flash("User not found or not allowed.", "danger")
+
+    return render_template("auth/forgot_password.html")
+
+
+@auth_bp.route("/reset-password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+
+    user = User.verify_reset_token(token)
+
+    if not user or user.is_admin:
+        flash("Invalid or expired token.", "danger")
+        return redirect(url_for("auth.login"))
+
+    if request.method == "POST":
+        password = request.form.get("password")
+
+        user.set_password(password)
+        db.session.commit()
+
+        flash("Your password has been updated. You can now login.", "success")
+        return redirect(url_for("auth.login"))
+
+    return render_template("auth/reset_password.html")

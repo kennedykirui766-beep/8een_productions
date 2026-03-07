@@ -243,7 +243,7 @@
                     <input type="checkbox" name="remember">
                     <span>Remember Me</span>
                 </label>
-                <a href="#" class="forgot-link" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password?</a>
+                <a href="{{ url_for('auth.forgot_password') }}" class="forgot-link" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password?</a>
             </div>
 
             <button type="submit" class="btn-auth">
