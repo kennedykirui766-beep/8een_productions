@@ -3,19 +3,32 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from config import Config
+from flask_mail import Mail
 
+# --- Initialize extensions (create instances) ---
 db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
 login_manager.login_view = "admin.login"
+mail = Mail()  # <-- THIS IS NEW: create the Mail instance
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    # Mail settings (example: Gmail)
+    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    app.config['MAIL_PORT'] = 587
+    app.config['MAIL_USE_TLS'] = True
+    app.config['MAIL_USERNAME'] = 'your_email@gmail.com'
+    app.config['MAIL_PASSWORD'] = 'your_email_password_or_app_password'
+    app.config['MAIL_DEFAULT_SENDER'] = 'your_email@gmail.com'
+
+    # --- Initialize extensions with the app ---
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
+    mail.init_app(app)  # <-- initialize the instance, NOT the class
 
     # Import models
     from app.models.user import User
@@ -32,21 +45,12 @@ def create_app():
     from app.routes.admin_routes import admin_bp
     from app.routes.payment_routes import payment_bp
     from app.routes.auth import auth_bp
-    from flask_mail import Mail
-    
 
     app.register_blueprint(main_bp)
     app.register_blueprint(project_bp, url_prefix="/projects")
     app.register_blueprint(admin_bp)
     app.register_blueprint(payment_bp)
-    app.config['MAIL_SERVER'] = 'smtp.gmail.com'       # Example: Gmail SMTP
-    app.config['MAIL_PORT'] = 587
-    app.config['MAIL_USE_TLS'] = True
-    app.config['MAIL_USERNAME'] = 'your_email@gmail.com'
-    app.config['MAIL_PASSWORD'] = 'your_email_password_or_app_password'
-    app.config['MAIL_DEFAULT_SENDER'] = 'your_email@gmail.com'
-    
-    Mail.init_app(app)
+    app.register_blueprint(auth_bp)  # don't forget this
 
     # ✅ Global template variables for logo and images
     @app.context_processor
@@ -60,7 +64,6 @@ def create_app():
             brand_url=app.config.get("BRAND_URL"),
             client_video_1=app.config.get("CLIENT_VIDEO_1"),
             client_video_2=app.config.get("CLIENT_VIDEO_2"),
-
             client_video_thumb_1=app.config.get("CLIENT_VIDEO_THUMB_1"),
             client_video_thumb_2=app.config.get("CLIENT_VIDEO_THUMB_2"),
             hero_video_url=app.config.get("HERO_VIDEO_URL"),

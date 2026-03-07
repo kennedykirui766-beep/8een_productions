@@ -4,6 +4,7 @@ from app import db
 from app.models import User
 from flask_mail import Message
 from app import mail
+from flask_mail import Message
 
 auth_bp = Blueprint('auth', __name__)
 
