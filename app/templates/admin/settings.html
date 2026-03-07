@@ -197,18 +197,35 @@
         
         <nav class="sidebar-nav">
             <div class="nav-section">Main</div>
-            <a class="nav-link" href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
-            
+            <a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}" href="{{ url_for('admin.dashboard') }}">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+
             <div class="nav-section">Management</div>
-            <a class="nav-link" href="projects.html"><i class="fas fa-film"></i> Projects</a>
-            <a class="nav-link" href="payments.html"><i class="fas fa-credit-card"></i> Payments</a>
-            <a class="nav-link" href="users.html"><i class="fas fa-users"></i> Users</a>
+            <a class="nav-link" href="{{ url_for('admin.projects') }}">
+                <i class="fas fa-film"></i> Projects
+            </a>
+            <a class="nav-link" href="{{ url_for('admin.payments') }}">
+                <i class="fas fa-credit-card"></i> Payments
+            </a>
+            <a class="nav-link" href="{{ url_for('admin.users') }}">
+                <i class="fas fa-users"></i> Users
+            </a>
 
             <div class="nav-section">Insights</div>
-            <a class="nav-link" href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a>
+            <a class="nav-link" href="{{ url_for('admin.analytics') }}">
+                <i class="fas fa-chart-line"></i> Analytics
+            </a>
 
             <div class="nav-section">System</div>
-            <a class="nav-link active" href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+            <!-- Added Messages Link Here -->
+            <a class="nav-link {% if request.endpoint == 'admin.view_contacts' %}active{% endif %}" href="{{ url_for('admin.view_contacts') }}">
+                <i class="fas fa-envelope"></i> Messages
+            </a>
+            <!-- Updated Settings Link with active logic -->
+            <a class="nav-link {% if request.endpoint == 'admin.settings' %}active{% endif %}" href="{{ url_for('admin.settings') }}">
+                <i class="fas fa-cog"></i> Settings
+            </a>
         </nav>
     </aside>
 
