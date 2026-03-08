@@ -1,1 +1,2 @@
-from .email import normalize_phone
+# app/utils/__init__.py
+from .phone import normalize_phone
