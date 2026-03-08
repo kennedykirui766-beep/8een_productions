@@ -1,0 +1,28 @@
+import requests
+import os
+
+def send_email(to_email, subject, html_content):
+
+    url = "https://api.brevo.com/v3/smtp/email"
+
+    headers = {
+        "accept": "application/json",
+        "api-key": os.environ.get("BREVO_API_KEY"),
+        "content-type": "application/json"
+    }
+
+    data = {
+        "sender": {
+            "name": "8een_production",
+            "email": "kennedykirui76@gmail.com"
+        },
+        "to": [
+            {"email": to_email}
+        ],
+        "subject": subject,
+        "htmlContent": html_content
+    }
+
+    response = requests.post(url, json=data, headers=headers)
+
+    return response.status_code, response.text

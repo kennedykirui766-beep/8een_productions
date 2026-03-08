@@ -117,7 +117,16 @@ def forgot_password():
             )
 
             # Send the email
-            mail.send(msg)
+            from app.utils.email import send_email
+
+            send_email(
+                user.email,
+                "Password Reset",
+                f"""
+                <p>Click the link below to reset your password:</p>
+                <a href="{reset_link}">{reset_link}</a>
+                """
+            )
 
             flash("Password reset link has been sent to your email.", "info")
             return redirect(url_for("auth.login"))
