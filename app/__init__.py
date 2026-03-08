@@ -32,6 +32,9 @@ def create_app():
         os.environ.get('MAIL_USERNAME')
     )
 
+    # important to prevent worker timeout
+    app.config['MAIL_TIMEOUT'] = 10
+
     # --- Initialize extensions with the app ---
     db.init_app(app)
     migrate.init_app(app, db)
