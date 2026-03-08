@@ -139,7 +139,6 @@ def forgot_password():
 # ---- RESET PASSWORD ----
 @auth_bp.route("/reset-password/<token>", methods=["GET", "POST"])
 def reset_password(token):
-
     user = User.verify_reset_token(token)
 
     if not user or user.is_admin:
@@ -148,12 +147,16 @@ def reset_password(token):
 
     if request.method == "POST":
         password = request.form.get("password")
+        confirm = request.form.get("confirm")
+
+        if password != confirm:
+            flash("Passwords do not match.", "warning")
+            return render_template("reset_password.html", token=token)
 
         user.set_password(password)
         db.session.commit()
 
         flash("Your password has been updated. You can now login.", "success")
         return redirect(url_for("auth.login"))
-    
 
-    return render_template("reset_password.html")
+    return render_template("reset_password.html", token=token)
