@@ -19,13 +19,18 @@ def create_app():
     # Mail settings (example: Gmail)
     import os
 
-    app.config['MAIL_SERVER'] = 'smtp-relay.brevo.com'
+    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
     app.config['MAIL_PORT'] = 587
     app.config['MAIL_USE_TLS'] = True
     app.config['MAIL_USE_SSL'] = False
-    app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')       # Brevo login email
-    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')       # Brevo SMTP key
-    app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER')  # verified sender
+
+    app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+
+    app.config['MAIL_DEFAULT_SENDER'] = (
+        '8een_production',
+        os.environ.get('MAIL_USERNAME')
+    )
 
     # --- Initialize extensions with the app ---
     db.init_app(app)
