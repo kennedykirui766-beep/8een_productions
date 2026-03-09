@@ -475,7 +475,9 @@ def analytics():
     if not current_user.is_admin:
         abort(403)
 
-    # Total revenue (paid only)
+    # -----------------------------
+    # Existing total / counts remain the same
+    # -----------------------------
     total_revenue = db.session.query(func.sum(Payment.amount))\
         .filter(Payment.status == "paid")\
         .scalar() or 0
@@ -485,7 +487,9 @@ def analytics():
     total_pending = Payment.query.filter_by(status="pending").count()
     total_transactions = Payment.query.count()
 
-    # Revenue grouped by item type
+    # -----------------------------
+    # Revenue by type (for table)
+    # -----------------------------
     raw_revenue_by_type = db.session.query(
         Payment.item_type,
         func.sum(Payment.amount)
@@ -498,8 +502,9 @@ def analytics():
         for row in raw_revenue_by_type
     ]
 
-
-    # -------- DAILY REVENUE --------
+    # -----------------------------
+    # DAILY REVENUE (JS-friendly)
+    # -----------------------------
     raw_daily = db.session.query(
         func.date(Payment.created_at),
         func.sum(Payment.amount)
@@ -508,12 +513,12 @@ def analytics():
      .order_by(func.date(Payment.created_at))\
      .all()
 
-    daily_revenue = [
-        {"date": row[0], "amount": float(row[1] or 0)}
-        for row in raw_daily
-    ]
+    # Convert to list of tuples: (date_string, amount)
+    daily_revenue = [(row[0].strftime("%Y-%m-%d"), float(row[1] or 0)) for row in raw_daily]
 
-    # -------- MONTHLY REVENUE --------
+    # -----------------------------
+    # MONTHLY REVENUE (JS-friendly)
+    # -----------------------------
     raw_monthly = db.session.query(
         func.to_char(Payment.created_at, "YYYY-MM"),
         func.sum(Payment.amount)
@@ -522,15 +527,17 @@ def analytics():
     .order_by(func.to_char(Payment.created_at, "YYYY-MM"))\
     .all()
 
-    monthly_revenue = [
-        {"month": row[0], "amount": float(row[1] or 0)}
-        for row in raw_monthly
-    ]
+    monthly_revenue = [(row[0], float(row[1] or 0)) for row in raw_monthly]
 
+    # -----------------------------
+    # REVENUE BY TYPE (JS-friendly for chart)
+    # -----------------------------
+    category_data_js = [(row["type"], row["amount"]) for row in revenue_by_type]
+
+    # -----------------------------
     # Success rate
-    success_rate = 0
-    if total_transactions > 0:
-        success_rate = (total_paid / total_transactions) * 100
+    # -----------------------------
+    success_rate = (total_paid / total_transactions * 100) if total_transactions > 0 else 0
 
     return render_template(
         "admin/analytics.html",
@@ -539,9 +546,10 @@ def analytics():
         total_failed=total_failed,
         total_pending=total_pending,
         total_transactions=total_transactions,
-        revenue_by_type=revenue_by_type,
-        daily_revenue=daily_revenue,
-        monthly_revenue=monthly_revenue,
+        revenue_by_type=revenue_by_type,    # Table uses dicts
+        daily_revenue=daily_revenue,        # JS line chart
+        monthly_revenue=monthly_revenue,    # JS line chart
+        category_data_js=category_data_js,  # JS doughnut chart
         success_rate=round(success_rate, 2)
     )
 
