@@ -4,9 +4,7 @@
 
 {% block content %}
 <style>
-    /* ============================================
-       AUTH PAGES STYLES (BLACK & GOLD)
-       ============================================ */
+    /* Auth Page Styles */
     .auth-section {
         min-height: 80vh;
         display: flex;
@@ -14,227 +12,105 @@
         justify-content: center;
         padding: var(--spacing-lg) var(--spacing-sm);
         background-color: var(--color-black);
-        /* Subtle grid pattern background */
         background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(212, 175, 55, 0.03)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
     }
 
     .auth-card {
-        width: 100%;
-        max-width: 440px;
+        width: 100%; max-width: 440px;
         background-color: var(--color-dark-grey);
         border: 1px solid var(--color-medium-grey);
         border-top: 4px solid var(--color-gold);
         border-radius: var(--radius-md);
         padding: var(--spacing-lg);
         box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-        position: relative;
-        overflow: hidden;
+        position: relative; overflow: hidden;
     }
+    .auth-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--color-gold-gradient); }
 
-    .auth-card::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0; height: 4px;
-        background: var(--color-gold-gradient);
-    }
+    .auth-header { text-align: center; margin-bottom: var(--spacing-lg); }
+    .auth-header h1 { font-family: var(--font-heading); font-size: 2.5rem; color: var(--color-gold); margin-bottom: 0.5rem; letter-spacing: 2px; }
+    .auth-header p { color: var(--color-light-grey); font-size: 0.95rem; }
 
-    .auth-header {
-        text-align: center;
-        margin-bottom: var(--spacing-lg);
-    }
+    .auth-form .form-group { margin-bottom: var(--spacing-md); position: relative; }
+    .input-group { position: relative; }
 
-    .auth-header h1 {
-        font-family: var(--font-heading);
-        font-size: 2.5rem;
-        color: var(--color-gold);
-        margin-bottom: 0.5rem;
-        letter-spacing: 2px;
-    }
-
-    .auth-header p {
-        color: var(--color-light-grey);
-        font-size: 0.95rem;
-    }
-
-    /* Form Styling */
-    .auth-form .form-group {
-        margin-bottom: var(--spacing-md);
-        position: relative;
-    }
-
-    .input-group {
-        position: relative;
-    }
-
-    /* Icon Styling - Fixed Pixel Positioning */
+    /* Icon Styling */
     .input-group > i {
         position: absolute;
-        left: 16px; /* Fixed 16px from left */
-        top: 50%;
+        left: 16px; top: 50%;
         transform: translateY(-50%);
         color: var(--color-grey);
         transition: color 0.3s ease;
         pointer-events: none;
-        font-size: 16px; /* Fixed font size */
-        width: 16px;    /* Fixed width */
-        text-align: center; /* Center icon in its 16px box */
+        font-size: 16px;
         z-index: 2;
     }
 
-    .form-control {
+    /* HIGH SPECIFICITY SELECTOR TO OVERRIDE BASE.HTML */
+    .auth-form .form-group .form-control {
+        display: block;
         width: 100%;
-        /* 
-           Padding Calculation (Pixels):
-           Left: 46px (16px left + 16px icon width + 14px gap)
-           Right: 16px (default)
-        */
-        padding: 14px 16px 14px 46px; 
+        box-sizing: border-box;
+        /* Padding: 16px (left icon pos) + 16px (icon w) + 18px (gap) = 50px */
+        padding: 14px 16px 14px 50px; 
         background-color: var(--color-black);
         border: 1px solid var(--color-medium-grey);
         border-radius: var(--radius-sm);
         color: var(--color-white);
         font-size: 1rem;
         transition: all 0.3s ease;
-        box-sizing: border-box; /* Essential */
     }
 
-    /* Specific override for Password field to make room for Eye icon */
-    input[name="password"] {
-        padding-right: 46px;
+    /* Specific override for Password field */
+    .auth-form .form-group input[name="password"] {
+        padding-right: 50px; /* Make room for eye icon */
     }
 
-    .form-control:focus {
-        outline: none;
-        border-color: var(--color-gold);
-        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
-    }
-
-    .form-control:focus ~ i:first-of-type {
-        color: var(--color-gold);
-    }
-
-    .form-control::placeholder {
-        color: var(--color-grey);
-    }
+    .form-control:focus ~ i:first-of-type { color: var(--color-gold); }
+    .form-control:focus { outline: none; border-color: var(--color-gold); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1); }
+    .form-control::placeholder { color: var(--color-grey); }
 
     /* Password Toggle */
     .password-toggle {
-        position: absolute;
-        right: 16px; /* Fixed 16px from right */
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        color: var(--color-grey);
-        cursor: pointer;
-        transition: color 0.3s;
-        z-index: 2;
-        width: 20px;
-        font-size: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        position: absolute; right: 16px; top: 50%;
+        transform: translateY(-50%); background: none; border: none;
+        color: var(--color-grey); cursor: pointer; transition: color 0.3s;
+        z-index: 2; font-size: 16px;
     }
     .password-toggle:hover { color: var(--color-gold); }
 
-    /* Remember & Forgot */
-    .form-options {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: var(--spacing-lg);
-        font-size: 0.9rem;
-    }
-
-    .custom-checkbox {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        cursor: pointer;
-        color: var(--color-light-grey);
-    }
-
-    .custom-checkbox input {
-        accent-color: var(--color-gold);
-        width: 16px;
-        height: 16px;
-    }
-
-    .forgot-link {
-        color: var(--color-gold);
-        text-decoration: none;
-        transition: opacity 0.3s;
-    }
+    .form-options { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg); font-size: 0.9rem; }
+    .custom-checkbox { display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--color-light-grey); }
+    .custom-checkbox input { accent-color: var(--color-gold); width: 16px; height: 16px; }
+    .forgot-link { color: var(--color-gold); text-decoration: none; transition: opacity 0.3s; }
     .forgot-link:hover { opacity: 0.8; text-decoration: underline; }
 
-    /* Buttons */
     .btn-auth {
-        width: 100%;
-        padding: 1rem;
-        background: var(--color-gold);
-        color: var(--color-black);
-        border: none;
-        border-radius: var(--radius-sm);
-        font-weight: 700;
-        font-size: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
+        width: 100%; padding: 1rem; background: var(--color-gold);
+        color: var(--color-black); border: none; border-radius: var(--radius-sm); font-weight: 700;
+        font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
+        transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px;
     }
+    .btn-auth:hover { background: var(--color-gold-light); box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); transform: translateY(-2px); }
 
-    .btn-auth:hover {
-        background: var(--color-gold-light);
-        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-        transform: translateY(-2px);
-    }
-
-    /* Divider */
-    .divider {
-        display: flex;
-        align-items: center;
-        margin: var(--spacing-md) 0;
-        color: var(--color-medium-grey);
-    }
-    .divider::before, .divider::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background-color: var(--color-medium-grey);
-    }
+    .divider { display: flex; align-items: center; margin: var(--spacing-md) 0; color: var(--color-medium-grey); }
+    .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background-color: var(--color-medium-grey); }
     .divider span { padding: 0 1rem; font-size: 0.85rem; }
 
-    /* Footer Link */
-    .auth-footer {
-        text-align: center;
-        margin-top: var(--spacing-md);
-        color: var(--color-light-grey);
-        font-size: 0.95rem;
-    }
-    .auth-footer a {
-        color: var(--color-gold);
-        font-weight: 600;
-        text-decoration: none;
-    }
+    .auth-footer { text-align: center; margin-top: var(--spacing-md); color: var(--color-light-grey); font-size: 0.95rem; }
+    .auth-footer a { color: var(--color-gold); font-weight: 600; text-decoration: none; }
     .auth-footer a:hover { text-decoration: underline; }
 
-    /* Responsive */
     @media (max-width: 480px) {
-        .auth-card {
-            padding: var(--spacing-md);
-        }
+        .auth-card { padding: var(--spacing-md); }
         .auth-header h1 { font-size: 2rem; }
         .form-options { flex-direction: column; gap: 1rem; align-items: flex-start; }
         
-        /* Slightly reduced padding for mobile */
-        .form-control { padding: 12px 14px 12px 42px; }
-        input[name="password"] { padding-right: 42px; }
-        .input-group > i { left: 12px; font-size: 14px; width: 14px; }
-        .password-toggle { right: 12px; font-size: 14px; }
+        .auth-form .form-group .form-control { padding: 12px 14px 12px 45px; }
+        .auth-form .form-group input[name="password"] { padding-right: 45px; }
+        
+        .input-group > i { left: 12px; font-size: 14px; }
+        .password-toggle { right: 12px; }
     }
 </style>
 
@@ -271,7 +147,7 @@
                     <input type="checkbox" name="remember">
                     <span>Remember Me</span>
                 </label>
-                <a href="{{ url_for('auth.forgot_password') }}" class="forgot-link" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password?</a>
+                <a href="{{ url_for('auth.forgot_password') }}" class="forgot-link">Forgot Password?</a>
             </div>
 
             <button type="submit" class="btn-auth">
@@ -287,38 +163,14 @@
     </div>
 </section>
 
-<!-- Forgot Password Modal (Simple Version) -->
-<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="background: var(--color-dark-grey); border: 1px solid var(--color-medium-grey); color: var(--color-white);">
-      <div class="modal-header" style="border-bottom: 1px solid var(--color-medium-grey);">
-        <h5 class="modal-title" id="forgotModalLabel" style="color: var(--color-gold);">Reset Password</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p style="color: var(--color-light-grey);">If you've forgotten your password, please contact the administrator or use the email associated with your account to reset it.</p>
-        <p style="color: var(--color-light-grey);">Feature coming soon.</p>
-      </div>
-      <div class="modal-footer" style="border-top: 1px solid var(--color-medium-grey);">
-        <button type="button" class="btn btn-sm" style="background: var(--color-charcoal); color: var(--color-white);" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
     function togglePassword(inputId, btn) {
         const input = document.getElementById(inputId);
         const icon = btn.querySelector('i');
-        
         if (input.type === 'password') {
-            input.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
+            input.type = 'text'; icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash');
         } else {
-            input.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
+            input.type = 'password'; icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye');
         }
     }
 </script>
