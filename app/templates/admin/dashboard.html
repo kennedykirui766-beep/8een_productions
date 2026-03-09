@@ -283,6 +283,10 @@
             <a class="nav-link" href="{{ url_for('admin.users') }}">
                 <i class="fas fa-users"></i> Users
             </a>
+            <!-- Added Activity Log Link -->
+            <a class="nav-link" href="{{ url_for('admin.view_user_activities') }}">
+                <i class="fas fa-history"></i> Activity Log
+            </a>
 
             <div class="nav-section">Insights</div>
             <a class="nav-link" href="{{ url_for('admin.analytics') }}">
@@ -290,11 +294,9 @@
             </a>
 
             <div class="nav-section">System</div>
-            <!-- Added Messages Link Here -->
             <a class="nav-link {% if request.endpoint == 'admin.view_contacts' %}active{% endif %}" href="{{ url_for('admin.view_contacts') }}">
                 <i class="fas fa-envelope"></i> Messages
             </a>
-            <!-- Updated Settings Link with active logic -->
             <a class="nav-link {% if request.endpoint == 'admin.settings' %}active{% endif %}" href="{{ url_for('admin.settings') }}">
                 <i class="fas fa-cog"></i> Settings
             </a>

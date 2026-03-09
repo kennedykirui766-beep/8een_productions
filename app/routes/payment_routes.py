@@ -5,17 +5,20 @@ from datetime import datetime
 import base64
 import requests
 
-payment_bp = Blueprint("payment", __name__)  # Blueprint name = 'payment'
+# ACTIVITY LOGGER
+from app.utils.activity_logger import log_activity
+
+payment_bp = Blueprint("payment", __name__)
 
 # Helper: normalize phone
 def normalize_phone(phone):
-    # Example: remove spaces, add country code if missing
     phone = phone.replace(" ", "")
     if phone.startswith("0"):
         phone = "254" + phone[1:]
     if len(phone) != 12 or not phone.isdigit():
         return None
     return phone
+
 
 # Helper: get MPESA access token
 def get_mpesa_access_token():
@@ -28,6 +31,7 @@ def get_mpesa_access_token():
 
 @payment_bp.route("/pay", methods=["POST"])
 def initiate_payment():
+
     data = request.get_json()
     phone_input = data.get("phone")
     item_id = data.get("item_id")
@@ -39,6 +43,15 @@ def initiate_payment():
     movie = Movie.query.get_or_404(item_id)
     amount = movie.price
 
+    # ACTIVITY LOG (payment started)
+    log_activity(
+        action="start_payment",
+        target_type="movie",
+        target_id=movie.id,
+        payment_type="mpesa",
+        page="/pay"
+    )
+
     access_token = get_mpesa_access_token()
     shortcode = current_app.config["MPESA_SHORTCODE"]
     passkey = current_app.config["MPESA_PASSKEY"]
@@ -47,6 +60,7 @@ def initiate_payment():
 
     stk_url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
     headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+
     payload = {
         "BusinessShortCode": shortcode,
         "Password": password,
@@ -65,6 +79,7 @@ def initiate_payment():
     res_data = response.json()
 
     if "CheckoutRequestID" in res_data:
+
         payment = Payment(
             checkout_request_id=res_data["CheckoutRequestID"],
             merchant_request_id=res_data["MerchantRequestID"],
@@ -74,12 +89,13 @@ def initiate_payment():
             item_id=movie.id,
             status="pending"
         )
+
         db.session.add(payment)
         db.session.commit()
+
         return jsonify({"success": True, "checkout_request_id": res_data["CheckoutRequestID"]})
 
     return jsonify({"success": False, "error": res_data})
-
 
 
 # -----------------------------
@@ -88,6 +104,7 @@ def initiate_payment():
 @payment_bp.route("/mpesa/callback", methods=["POST"])
 def mpesa_callback():
     try:
+
         data = request.get_json()
         callback = data["Body"]["stkCallback"]
 
@@ -95,23 +112,58 @@ def mpesa_callback():
         result_code = callback["ResultCode"]
 
         payment = Payment.query.filter_by(checkout_request_id=checkout_request_id).first()
+
         if not payment:
             return jsonify({"ResultCode": 0, "ResultDesc": "Accepted"})
 
         payment.result_code = result_code
 
         if result_code == 0:
+
             metadata = callback["CallbackMetadata"]["Item"]
+
             amount = next(item["Value"] for item in metadata if item["Name"] == "Amount")
             phone = next(item["Value"] for item in metadata if item["Name"] == "PhoneNumber")
+
             if float(amount) == float(payment.amount) and str(phone) == payment.phone_number:
+
                 payment.status = "paid"
+
+                # ACTIVITY LOG (successful payment)
+                log_activity(
+                    action="payment_success",
+                    target_type="movie",
+                    target_id=payment.item_id,
+                    payment_type="mpesa",
+                    page="/mpesa/callback"
+                )
+
             else:
+
                 payment.status = "failed"
+
+                # ACTIVITY LOG (payment validation failed)
+                log_activity(
+                    action="payment_failed",
+                    target_type="movie",
+                    target_id=payment.item_id,
+                    payment_type="mpesa"
+                )
+
         else:
+
             payment.status = "failed"
 
+            # ACTIVITY LOG (payment cancelled or failed)
+            log_activity(
+                action="payment_failed",
+                target_type="movie",
+                target_id=payment.item_id,
+                payment_type="mpesa"
+            )
+
         db.session.commit()
+
         return jsonify({"ResultCode": 0, "ResultDesc": "Accepted"})
 
     except Exception as e:
@@ -123,5 +175,9 @@ def mpesa_callback():
 # -----------------------------
 @payment_bp.route("/payment/status/<checkout_request_id>", methods=["GET"])
 def payment_status(checkout_request_id):
-    payment = Payment.query.filter_by(checkout_request_id=checkout_request_id).first_or_404()
+
+    payment = Payment.query.filter_by(
+        checkout_request_id=checkout_request_id
+    ).first_or_404()
+
     return jsonify({"status": payment.status})

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management | 8EEN Productions</title>
+    <title>User Activity Log | 8EEN Productions</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -112,39 +112,14 @@
 
         /* User Cell Custom */
         .user-cell { display: flex; align-items: center; gap: 12px; }
-        .user-avatar-sm { width: 36px; height: 36px; border-radius: 50%; background: var(--admin-border); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
-
-        /* --- Buttons --- */
-        .btn {
-            padding: 0.5rem 1rem; border-radius: 6px; border: none;
-            cursor: pointer; font-size: 0.85rem; font-weight: 500;
-            transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
-            text-decoration: none;
-        }
-        .btn-primary { background: var(--admin-text); color: var(--admin-bg); }
-        .btn-primary:hover { opacity: 0.9; }
-        .btn-danger { background: rgba(239, 68, 68, 0.15); color: var(--admin-danger); }
-        .btn-danger:hover { background: var(--admin-danger); color: white; }
-        .btn-success { background: rgba(16, 185, 129, 0.15); color: var(--admin-success); }
-        .btn-outline { background: transparent; border: 1px solid var(--admin-border); color: var(--admin-text-muted); }
-        .btn-outline:hover { background: var(--admin-hover); color: var(--admin-text); }
-        .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+        .user-avatar-sm { width: 36px; height: 36px; border-radius: 50%; background: var(--admin-border); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
 
         /* --- Badges --- */
         .badge { padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
         .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--admin-success); }
         .badge-warning { background: rgba(245, 158, 11, 0.15); color: var(--admin-warning); }
-
-        /* --- Modal --- */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s; }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal { background: var(--admin-card); border: 1px solid var(--admin-border); width: 100%; max-width: 500px; border-radius: 12px; transform: translateY(-20px); transition: transform 0.3s; padding: 2rem; position: relative; }
-        .modal-overlay.active .modal { transform: translateY(0); }
-        .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--admin-text-muted); font-size: 1.2rem; cursor: pointer; }
-        .modal h3 { margin-bottom: 1.5rem; font-size: 1.25rem; }
-        .form-group { margin-bottom: 1.25rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--admin-text-muted); }
-        .form-control { width: 100%; background: var(--admin-bg); border: 1px solid var(--admin-border); padding: 0.75rem; border-radius: 6px; color: var(--admin-text); }
+        .badge-info { background: rgba(59, 130, 246, 0.15); color: var(--admin-info); }
+        .badge-danger { background: rgba(239, 68, 68, 0.15); color: var(--admin-danger); }
 
         /* --- Empty State --- */
         .empty-state { text-align: center; padding: 4rem 2rem; color: var(--admin-text-muted); }
@@ -227,7 +202,7 @@
                 <button class="menu-toggle" id="menu-toggle">
                     <span></span><span></span><span></span>
                 </button>
-                <h2>User Management</h2>
+                <h2>User Activity Log</h2>
             </div>
             <div class="header-right">
                 <div class="user-profile">
@@ -241,15 +216,12 @@
             
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Registered Users</h3>
+                    <h3 class="card-title">Recent Activities</h3>
                     <div style="display: flex; gap: 1rem; align-items: center;">
                         <div class="search-bar">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="searchInput" placeholder="Search by username..." onkeyup="filterUsers()">
+                            <input type="text" id="searchInput" placeholder="Search by user or action..." onkeyup="filterTable()">
                         </div>
-                        <button class="btn btn-primary btn-sm" onclick="openModal()">
-                            <i class="fas fa-plus"></i> Add User
-                        </button>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -257,44 +229,61 @@
                         <thead>
                             <tr>
                                 <th>User</th>
-                                <th>Role</th>
-                                <th>Total Spent</th>
-                                <th>Joined</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                                <th>Action</th>
+                                <th>Description</th>
+                                <th>IP Address</th>
+                                <th>Time</th>
                             </tr>
                         </thead>
-                        <tbody id="userTableBody">
-                            {% if users %}
-                                {% for user in users %}
+                        <tbody id="activityTableBody">
+                            {% if activities %}
+                                {% for activity in activities %}
                                 <tr>
                                     <td>
                                         <div class="user-cell">
-                                            <div class="user-avatar-sm">{{ user.username[:1]|upper }}</div>
+                                            <div class="user-avatar-sm">
+                                                {% if activity.user %}
+                                                    {{ activity.user.username[:1]|upper }}
+                                                {% else %}
+                                                    <i class="fas fa-user-slash" style="font-size: 0.8rem; color: var(--admin-danger);"></i>
+                                                {% endif %}
+                                            </div>
                                             <div>
-                                                <div style="font-weight:500">{{ user.username }}</div>
-                                                <div style="font-size:0.8rem; color:var(--admin-text-muted)">ID: {{ user.id }}</div>
+                                                <div style="font-weight:500">
+                                                    {% if activity.user %}
+                                                        {{ activity.user.username }}
+                                                    {% else %}
+                                                        <span style="color: var(--admin-danger)">Deleted User</span>
+                                                    {% endif %}
+                                                </div>
+                                                <div style="font-size:0.8rem; color:var(--admin-text-muted)">
+                                                    ID: {{ activity.user_id }}
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>User</td> <!-- Assuming role is not in DB yet or default -->
-                                    <td>KES 0.00</td> <!-- Placeholder as relation not in route -->
-                                    <td>{{ user.created_at.strftime('%b %d, %Y') if user.created_at else 'N/A' }}</td>
-                                    <td><span class="badge badge-success">Active</span></td>
                                     <td>
-                                        <div style="display:flex; gap:0.5rem;">
-                                            <button class="btn btn-sm btn-danger" onclick="alert('Ban feature coming soon')"><i class="fas fa-ban"></i> Ban</button>
-                                            <button class="btn btn-sm btn-outline" onclick="alert('Delete feature coming soon')"><i class="fas fa-trash"></i></button>
-                                        </div>
+                                        <span class="badge 
+                                            {% if 'login' in activity.action|lower %}badge-success
+                                            {% elif 'logout' in activity.action|lower %}badge-info
+                                            {% elif 'register' in activity.action|lower %}badge-success
+                                            {% elif 'delete' in activity.action|lower %}badge-danger
+                                            {% elif 'update' in activity.action|lower %}badge-warning
+                                            {% else %}badge-info{% endif %}">
+                                            {{ activity.action }}
+                                        </span>
                                     </td>
+                                    <td>{{ activity.description }}</td>
+                                    <td><code style="color: var(--admin-text-muted); background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px;">{{ activity.ip_address or 'N/A' }}</code></td>
+                                    <td>{{ activity.created_at.strftime('%b %d, %Y %H:%M') }}</td>
                                 </tr>
                                 {% endfor %}
                             {% else %}
                                 <tr>
-                                    <td colspan="6">
+                                    <td colspan="5">
                                         <div class="empty-state">
-                                            <i class="fas fa-users-slash"></i>
-                                            <p>No users found.</p>
+                                            <i class="fas fa-history"></i>
+                                            <p>No user activity recorded yet.</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -307,88 +296,7 @@
         </div>
     </main>
 
-    <!-- ADD USER MODAL -->
-    <div class="modal-overlay" id="userModal">
-        <div class="modal">
-            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
-            <h3>Add New User</h3>
-            <form id="addUserForm" onsubmit="handleAddUser(event)">
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="newName" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" id="newEmail" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>Role</label>
-                    <select id="newRole" class="form-control">
-                        <option value="User">User</option>
-                        <option value="Admin">Admin</option>
-                    </select>
-                </div>
-                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                    <button type="button" class="btn btn-outline" style="flex:1" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary" style="flex:1">Create User</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <script>
-        // ============================================
-        // DOM ELEMENTS
-        // ============================================
-        const tableBody = document.getElementById('userTableBody');
-        const userModal = document.getElementById('userModal');
-        const searchInput = document.getElementById('searchInput');
-
-        // ============================================
-        // CORE FUNCTIONS
-        // ============================================
-
-        // Updated to filter DOM rows instead of JS array
-        function filterUsers() {
-            const term = searchInput.value.toLowerCase();
-            const rows = tableBody.getElementsByTagName('tr');
-
-            for (let i = 0; i < rows.length; i++) {
-                const row = rows[i];
-                // Get text content from the row
-                const text = row.textContent.toLowerCase();
-                
-                // Check if row matches search term
-                if (text.includes(term)) {
-                    row.style.display = ""; // Show row
-                } else {
-                    row.style.display = "none"; // Hide row
-                }
-            }
-        }
-
-        // ============================================
-        // ACTIONS (Placeholders as no backend route provided)
-        // ============================================
-
-        function handleAddUser(e) {
-            e.preventDefault();
-            alert("Create User functionality requires a backend route.");
-            closeModal();
-        }
-
-        // ============================================
-        // MODAL CONTROLS
-        // ============================================
-
-        function openModal() {
-            userModal.classList.add('active');
-        }
-
-        function closeModal() {
-            userModal.classList.remove('active');
-        }
-
         // ============================================
         // SIDEBAR LOGIC
         // ============================================
@@ -403,6 +311,25 @@
         overlay.addEventListener('click', closeSidebar);
         window.addEventListener('resize', () => { if (window.innerWidth > 768 && sidebar.classList.contains('active')) closeSidebar(); });
 
+        // ============================================
+        // TABLE FILTER
+        // ============================================
+        function filterTable() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('activityTableBody');
+            const tr = table.getElementsByTagName('tr');
+
+            for (let i = 0; i < tr.length; i++) {
+                // Search in User, Action, Description
+                const txtValue = tr[i].textContent || tr[i].innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
     </script>
 </body>
 </html>

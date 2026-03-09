@@ -18,7 +18,7 @@ def register():
 
     if request.method == 'POST':
         username = request.form.get('username')
-        email = request.form.get('email')   # ADDED
+        email = request.form.get('email')
         password = request.form.get('password')
         confirm = request.form.get('confirm')
 
@@ -26,7 +26,6 @@ def register():
             flash('Passwords do not match', 'danger')
             return redirect(url_for('auth.register'))
 
-        # Prevent creating admin from public register
         if User.query.filter_by(username=username, is_admin=True).first():
             flash('Username not allowed', 'danger')
             return redirect(url_for('auth.register'))
@@ -35,16 +34,23 @@ def register():
             flash('Username already exists', 'danger')
             return redirect(url_for('auth.register'))
 
-        # Check email already exists  ADDED
         if User.query.filter_by(email=email).first():
             flash('Email already registered', 'danger')
             return redirect(url_for('auth.register'))
 
-        new_user = User(username=username, email=email)   # UPDATED
+        new_user = User(username=username, email=email)
         new_user.set_password(password)
 
         db.session.add(new_user)
         db.session.commit()
+
+        # ✅ ADDED ACTIVITY LOG
+        from app.utils.activity_logger import log_activity
+        log_activity(
+            action="register",
+            target_type="auth",
+            page="/register"
+        )
 
         flash('Account created! Please log in.', 'success')
         return redirect(url_for('auth.login'))
@@ -60,21 +66,28 @@ def login():
         return redirect(url_for("main.home"))
 
     if request.method == "POST":
-        # Changed to get 'email'
+
         email = request.form.get("email")
         password = request.form.get("password")
 
-        # Query by email
         user = User.query.filter_by(email=email).first()
 
         if user and user.check_password(password):
 
-            # Admin must login from admin panel
             if user.is_admin:
                 flash("Admins must login from the admin panel.", "danger")
                 return redirect(url_for("admin.login"))
 
             login_user(user)
+
+            # ✅ ADDED ACTIVITY LOG
+            from app.utils.activity_logger import log_activity
+            log_activity(
+                action="login",
+                target_type="auth",
+                page="/login"
+            )
+
             return redirect(url_for("main.home"))
 
         flash("Invalid email or password", "danger")
@@ -86,12 +99,21 @@ def login():
 @auth_bp.route('/logout')
 @login_required
 def logout():
-    # Block admins from using this route
+
     if current_user.is_admin:
         flash("Admins must logout from the admin panel.", "warning")
         return redirect(url_for('admin.dashboard'))
 
+    # ✅ ADDED ACTIVITY LOG BEFORE LOGOUT
+    from app.utils.activity_logger import log_activity
+    log_activity(
+        action="logout",
+        target_type="auth",
+        page="/logout"
+    )
+
     logout_user()
+
     flash('You have been logged out', 'info')
     return redirect(url_for('main.home'))
 

@@ -5,6 +5,7 @@ from app.models.user import User
 from app import db
 from app.models import Payment, Movie, Contact
 from app.utils import normalize_phone
+from app.models.user_activity import UserActivity
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/secure-admin-8een")
 
@@ -738,3 +739,25 @@ def delete_contact(contact_id):
     db.session.commit()
     flash('Message deleted successfully.', 'success')
     return redirect(url_for('admin.view_contacts'))
+
+
+
+
+
+# ----------------------
+# View all user activities (admin only)
+# ----------------------
+@admin_bp.route("/admin/user-activities")
+@login_required
+def view_user_activities():
+    # Only allow admins
+    if not current_user.is_admin:
+        return "Unauthorized", 403
+
+    # Get all activities, newest first
+    activities = UserActivity.query.order_by(UserActivity.created_at.desc()).all()
+
+    return render_template(
+        "user_activities.html",
+        activities=activities
+    )

@@ -1,11 +1,10 @@
 from flask import Blueprint, render_template
 from app.models.project import Movie, Trailer, Gallery  # import the correct classes
-from flask import send_from_directory
-from flask import Blueprint, render_template, request, jsonify, send_from_directory
+from flask import send_from_directory, request, jsonify
 from flask_login import login_required, current_user
 from app import db
 from app.models.reaction import PortfolioActivity  # adjust path if different
-
+from datetime import datetime
 
 project_bp = Blueprint(
     "projects",
@@ -14,21 +13,48 @@ project_bp = Blueprint(
 )
 
 # ----------------------
+# Helper function to log user activity
+# ----------------------
+def log_user_activity(user, item_id, item_type, activity_type):
+    if user.is_authenticated:
+        activity = PortfolioActivity(
+            user_id=user.id,
+            item_id=item_id,
+            item_type=item_type,
+            activity_type=activity_type,
+            created_at=datetime.utcnow()
+        )
+        db.session.add(activity)
+        db.session.commit()
+
+# ----------------------
 # View a single movie/gallery/trailer
 # ----------------------
 @project_bp.route("/projects/movie/<int:id>")
 def view_movie(id):
     movie = Movie.query.get_or_404(id)
+
+    # Track user view
+    log_user_activity(current_user, id, "movie", "view")
+
     return render_template("project_detail.html", project=movie)
 
 @project_bp.route("/projects/trailer/<int:id>")
 def view_trailer(id):
     trailer = Trailer.query.get_or_404(id)
+
+    # Track user view
+    log_user_activity(current_user, id, "trailer", "view")
+
     return render_template("project_detail.html", project=trailer)
 
 @project_bp.route("/projects/gallery/<int:id>")
 def view_gallery(id):
     gallery = Gallery.query.get_or_404(id)
+
+    # Track user view
+    log_user_activity(current_user, id, "gallery", "view")
+
     return render_template("project_detail.html", project=gallery)
 
 
@@ -52,10 +78,9 @@ def all_projects():
         galleries=galleries
     )
 
-
-
-
-
+# ----------------------
+# Existing API routes (like, dislike, comment)
+# ----------------------
 @project_bp.route("/api/portfolio/interactions")
 def get_interactions():
     item_id = request.args.get("item_id")
@@ -68,7 +93,6 @@ def get_interactions():
 
     likes = sum(1 for a in activities if a.activity_type == "like")
     dislikes = sum(1 for a in activities if a.activity_type == "dislike")
-
     comments = [a for a in activities if a.activity_type == "comment"]
 
     user_liked = False
@@ -96,8 +120,7 @@ def get_interactions():
             for c in comments
         ]
     })
-    
-    
+
 @project_bp.route("/api/portfolio/interact", methods=["POST"])
 @login_required
 def interact():
@@ -137,7 +160,6 @@ def interact():
     db.session.commit()
 
     return jsonify({"success": True})
-
 
 @project_bp.route("/api/portfolio/comment", methods=["POST"])
 @login_required
