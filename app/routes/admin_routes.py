@@ -758,6 +758,6 @@ def view_user_activities():
     activities = UserActivity.query.order_by(UserActivity.created_at.desc()).all()
 
     return render_template(
-        "user_activities.html",
+        "admin/user_activities.html",
         activities=activities
     )
