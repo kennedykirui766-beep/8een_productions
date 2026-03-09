@@ -4,7 +4,7 @@
 
 {% block content %}
 <style>
-    /* Reusing Auth Styles from login.html */
+    /* Reusing Auth Styles */
     .auth-section {
         min-height: 80vh;
         display: flex;
@@ -27,173 +27,87 @@
         position: relative;
     }
 
-    .auth-header {
-        text-align: center;
-        margin-bottom: var(--spacing-lg);
-    }
+    .auth-header { text-align: center; margin-bottom: var(--spacing-lg); }
+    .auth-header h1 { font-family: var(--font-heading); font-size: 2.5rem; color: var(--color-gold); margin-bottom: 0.5rem; letter-spacing: 2px; }
+    .auth-header p { color: var(--color-light-grey); font-size: 0.95rem; }
 
-    .auth-header h1 {
-        font-family: var(--font-heading);
-        font-size: 2.5rem;
-        color: var(--color-gold);
-        margin-bottom: 0.5rem;
-        letter-spacing: 2px;
-    }
+    .auth-form .form-group { margin-bottom: var(--spacing-md); position: relative; }
 
-    .auth-header p {
-        color: var(--color-light-grey);
-        font-size: 0.95rem;
-    }
+    .input-group { position: relative; width: 100%; }
 
-    .auth-form .form-group {
-        margin-bottom: var(--spacing-md);
-        position: relative;
-    }
-
-    .input-group { 
-        position: relative; 
-        width: 100%;
-    }
-
-    /* Icon Styling - Left Side (Fixed Pixel Positioning) */
+    /* Icon Styling - Fixed Positioning */
     .input-group > i {
         position: absolute;
-        left: 16px; /* Fixed 16px from left */
+        left: 16px; 
         top: 50%;
         transform: translateY(-50%);
         color: var(--color-grey);
         transition: color 0.3s ease;
         z-index: 2; 
         pointer-events: none; 
-        font-size: 16px; /* Fixed size */
-        width: 16px;
-        text-align: center;
+        font-size: 16px;
     }
 
-    .form-control {
+    /* HIGH SPECIFICITY SELECTOR TO OVERRIDE BASE.HTML */
+    .auth-form .form-group .form-control {
+        display: block;
         width: 100%;
-        /* 
-           Padding Logic (Pixels for precision):
-           Top/Bottom: 14px
-           Left: 46px (Clears the 16px icon + 16px width + 14px gap)
-           Right: 16px (Default for non-password fields)
-        */
-        padding: 14px 16px 14px 46px; 
+        box-sizing: border-box;
+        /* Left Padding: 16px (icon left) + 16px (icon width) + 18px (gap) = 50px */
+        padding: 14px 16px 14px 50px; 
         background-color: var(--color-black);
         border: 1px solid var(--color-medium-grey);
         border-radius: var(--radius-sm);
         color: var(--color-white);
         font-size: 1rem;
         transition: all 0.3s ease;
-        box-sizing: border-box; /* Critical for padding calculation */
     }
 
-    /* Specific override for Password fields that have the Eye button on the right */
-    input[name="password"],
-    input[name="confirm"] {
-        padding-right: 46px; /* Make room for the eye icon on the right */
+    /* Specific override for Password fields */
+    .auth-form .form-group input[name="password"],
+    .auth-form .form-group input[name="confirm"] {
+        padding-right: 50px; /* Make room for eye icon */
     }
 
-    .form-control:focus {
+    .auth-form .form-group .form-control:focus {
         outline: none;
         border-color: var(--color-gold);
         box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
     }
 
-    /* Highlight icon on focus */
-    .form-control:focus ~ i:first-of-type { 
-        color: var(--color-gold); 
-    }
-    
-    .form-control::placeholder { 
-        color: var(--color-grey); 
-        opacity: 0.7;
-    }
+    .form-control:focus ~ i:first-of-type { color: var(--color-gold); }
+    .form-control::placeholder { color: var(--color-grey); opacity: 0.7; }
 
-    /* Password Toggle - Right Side */
+    /* Password Toggle */
     .password-toggle {
-        position: absolute;
-        right: 16px; /* Fixed 16px from right */
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        color: var(--color-grey);
-        cursor: pointer;
-        transition: color 0.3s;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 2;
-        width: 20px;
+        position: absolute; right: 16px; top: 50%;
+        transform: translateY(-50%); background: none; border: none;
+        color: var(--color-grey); cursor: pointer; transition: color 0.3s;
+        padding: 0; display: flex; align-items: center; justify-content: center; z-index: 2;
     }
     .password-toggle:hover { color: var(--color-gold); }
-    .password-toggle i { transition: color 0.3s; font-size: 16px; }
 
     .btn-auth {
-        width: 100%;
-        padding: 1rem;
-        background: var(--color-gold);
-        color: var(--color-black);
-        border: none;
-        border-radius: var(--radius-sm);
-        font-weight: 700;
-        font-size: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        margin-top: var(--spacing-sm);
+        width: 100%; padding: 1rem; background: var(--color-gold); color: var(--color-black);
+        border: none; border-radius: var(--radius-sm); font-weight: 700; font-size: 1rem;
+        text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s ease;
+        display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: var(--spacing-sm);
     }
+    .btn-auth:hover { background: var(--color-gold-light); box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); transform: translateY(-2px); }
 
-    .btn-auth:hover {
-        background: var(--color-gold-light);
-        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-        transform: translateY(-2px);
-    }
+    .auth-footer { text-align: center; margin-top: var(--spacing-lg); color: var(--color-light-grey); font-size: 0.95rem; border-top: 1px solid var(--color-charcoal); padding-top: var(--spacing-md); }
+    .auth-footer a { color: var(--color-gold); font-weight: 600; text-decoration: none; }
 
-    .auth-footer {
-        text-align: center;
-        margin-top: var(--spacing-lg);
-        color: var(--color-light-grey);
-        font-size: 0.95rem;
-        border-top: 1px solid var(--color-charcoal);
-        padding-top: var(--spacing-md);
-    }
-    .auth-footer a {
-        color: var(--color-gold);
-        font-weight: 600;
-        text-decoration: none;
-    }
-
-    /* Password Strength Indicator */
-    .password-strength {
-        height: 3px;
-        margin-top: 8px;
-        border-radius: 2px;
-        background-color: var(--color-charcoal);
-        overflow: hidden;
-    }
-    .strength-bar {
-        height: 100%;
-        width: 0%;
-        transition: all 0.3s;
-    }
+    .password-strength { height: 3px; margin-top: 8px; border-radius: 2px; background-color: var(--color-charcoal); overflow: hidden; }
+    .strength-bar { height: 100%; width: 0%; transition: all 0.3s; }
 
     @media (max-width: 480px) {
         .auth-card { padding: var(--spacing-md); }
         .auth-header h1 { font-size: 2rem; }
-        
-        /* Slightly reduce padding on mobile if needed */
-        .form-control { padding: 12px 14px 12px 42px; }
-        input[name="password"], input[name="confirm"] { padding-right: 42px; }
-        
-        .input-group > i { left: 12px; font-size: 14px; width: 14px; }
+        .auth-form .form-group .form-control { padding: 12px 14px 12px 45px; }
+        .auth-form .form-group input[name="password"], 
+        .auth-form .form-group input[name="confirm"] { padding-right: 45px; }
+        .input-group > i { left: 12px; font-size: 14px; }
         .password-toggle { right: 12px; }
     }
 </style>
@@ -262,35 +176,25 @@
     function togglePassword(inputId, btn) {
         const input = document.getElementById(inputId);
         const icon = btn.querySelector('i');
-        
         if (input.type === 'password') {
-            input.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
+            input.type = 'text'; icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash');
         } else {
-            input.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
+            input.type = 'password'; icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye');
         }
     }
 
-    // Simple Password Strength Visual
     const passwordInput = document.getElementById('password');
     const strengthBar = document.getElementById('strengthBar');
-
     if(passwordInput) {
         passwordInput.addEventListener('input', function() {
-            const value = this.value;
-            let strength = 0;
+            const value = this.value; let strength = 0;
             if (value.length >= 6) strength = 33;
             if (value.length >= 8 && /[A-Z]/.test(value)) strength = 66;
             if (value.length >= 8 && /[0-9]/.test(value) && /[A-Z]/.test(value)) strength = 100;
-
             strengthBar.style.width = strength + '%';
-            
-            if (strength <= 33) strengthBar.style.backgroundColor = '#ef4444'; // Red
-            else if (strength <= 66) strengthBar.style.backgroundColor = '#f59e0b'; // Yellow
-            else strengthBar.style.backgroundColor = 'var(--color-gold)'; // Gold
+            if (strength <= 33) strengthBar.style.backgroundColor = '#ef4444';
+            else if (strength <= 66) strengthBar.style.backgroundColor = '#f59e0b';
+            else strengthBar.style.backgroundColor = 'var(--color-gold)';
         });
     }
 </script>
