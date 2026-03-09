@@ -115,6 +115,81 @@
         letter-spacing: 2px;
     }
 
+    /* --- NEW: SERVICES LIST SECTION --- */
+    .services-list-section {
+        background-color: var(--color-dark-grey);
+        padding: var(--spacing-xl) 0;
+    }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: var(--spacing-md);
+    }
+
+    .service-card {
+        background-color: var(--color-black);
+        border: 1px solid var(--color-charcoal);
+        padding: 2rem;
+        border-radius: var(--radius-md);
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 3px;
+        background: var(--color-gold-gradient);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .service-card:hover {
+        border-color: var(--color-gold);
+        transform: translateY(-5px);
+    }
+
+    .service-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .service-icon {
+        width: 70px; height: 70px;
+        margin: 0 auto 1.5rem auto;
+        background: rgba(212, 175, 55, 0.1);
+        border: 1px solid var(--color-gold-dark);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        color: var(--color-gold);
+        transition: all 0.3s ease;
+    }
+
+    .service-card:hover .service-icon {
+        background: var(--color-gold);
+        color: var(--color-black);
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    }
+
+    .service-card h3 {
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        color: var(--color-white);
+        margin-bottom: 1rem;
+        letter-spacing: 1px;
+    }
+
+    .service-card p {
+        color: var(--color-light-grey);
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
     /* Portfolio Grid Layout */
     .portfolio-section {
         background-color: var(--color-black);
@@ -372,6 +447,8 @@
         .services-hero { height: 50vh; }
         
         .portfolio-grid { grid-template-columns: 1fr; }
+        .services-grid { grid-template-columns: 1fr; }
+        
         .modal-content {
             width: 100%;
             height: 100%;
@@ -419,8 +496,66 @@
     <div class="container">
         <p>
             Welcome to our showcase. Here you can watch full movies, check out our latest trailers, 
-            and browse through photo galleries from our productions. All content here is free to view.
+            and browse through photo galleries. All content here is free to view.
         </p>
+    </div>
+</section>
+
+<!-- ============================================
+     SERVICES LIST SECTION (NEW)
+     ============================================ -->
+<section class="section services-list-section" id="services">
+    <div class="container">
+        <div class="text-center" style="margin-bottom: var(--spacing-lg);">
+            <h2 class="section-title">Services</h2>
+            <p style="color: var(--color-light-grey); max-width: 600px; margin: 0 auto;">
+                We offer a full range of creative services to bring your vision to life.
+            </p>
+        </div>
+
+        <div class="services-grid">
+            <!-- Service 1 -->
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-film"></i></div>
+                <h3>Film Production</h3>
+                <p>We develop and produce short films, web series, and narrative projects from concept to final delivery, including script development, casting, directing, shooting, and post-production.</p>
+            </div>
+
+            <!-- Service 2 -->
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-music"></i></div>
+                <h3>Music Video Direction</h3>
+                <p>We create visually compelling music videos that translate sound into story, helping artists build strong visual identities.</p>
+            </div>
+
+            <!-- Service 3 -->
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-cut"></i></div>
+                <h3>Video Editing & Post</h3>
+                <p>Professional editing, color grading, sound design, subtitles, and optimized exports for digital platforms.</p>
+            </div>
+
+            <!-- Service 4 -->
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-camera"></i></div>
+                <h3>Photography</h3>
+                <p>Creative photography for artists, brands, and digital campaigns, including promotional shoots and behind-the-scenes visuals.</p>
+            </div>
+
+            <!-- Service 5 -->
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-pen-fancy"></i></div>
+                <h3>Scriptwriting</h3>
+                <p>Story development for films, series, skits, and branded content, turning ideas into emotionally engaging screenplays.</p>
+            </div>
+
+            <!-- Service 6 -->
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-hashtag"></i></div>
+                <h3>Social Media Content</h3>
+                <p>Short-form video content designed for online engagement, including reels, TikTok videos, and promotional skits.</p>
+            </div>
+        </div>
     </div>
 </section>
 
