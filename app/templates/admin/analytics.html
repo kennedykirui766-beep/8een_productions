@@ -201,16 +201,14 @@
             </a>
 
             <div class="nav-section">Insights</div>
-            <a class="nav-link" href="{{ url_for('admin.analytics') }}">
+            <a class="nav-link active" href="{{ url_for('admin.analytics') }}">
                 <i class="fas fa-chart-line"></i> Analytics
             </a>
 
             <div class="nav-section">System</div>
-            <!-- Added Messages Link Here -->
             <a class="nav-link {% if request.endpoint == 'admin.view_contacts' %}active{% endif %}" href="{{ url_for('admin.view_contacts') }}">
                 <i class="fas fa-envelope"></i> Messages
             </a>
-            <!-- Updated Settings Link with active logic -->
             <a class="nav-link {% if request.endpoint == 'admin.settings' %}active{% endif %}" href="{{ url_for('admin.settings') }}">
                 <i class="fas fa-cog"></i> Settings
             </a>
@@ -281,7 +279,7 @@
             <div class="charts-grid">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Revenue Over Time</h3>
+                        <h3 class="card-title">Revenue over Time</h3>
                         <select id="revenueFilter" class="form-control" onchange="updateRevenueChart(this.value)">
                             <option value="monthly">Monthly</option>
                             <option value="daily">Daily (All Time)</option>
@@ -333,14 +331,14 @@
                                 </thead>
                                 <tbody>
                                     {% if revenue_by_type %}
-                                        {% for item_type, amount in revenue_by_type %}
+                                        {# Iterating over list of dicts: item.type and item.amount #}
+                                        {% for item in revenue_by_type %}
                                         <tr>
-                                            <td style="text-transform: capitalize;">{{ item_type }}</td>
-                                            <td><strong>KES {{ amount|float|round(2) }}</strong></td>
+                                            <td style="text-transform: capitalize;">{{ item.type }}</td>
+                                            <td><strong>KES {{ item.amount | round(2) }}</strong></td>
                                             <td>
                                                 {% if total_revenue > 0 %}
-                                                    {{ "%.1f"|format((amount|float / total_revenue|float) * 100) }}%
-
+                                                    {{ "%.1f"|format((item.amount / total_revenue) * 100) }}%
                                                 {% else %}
                                                     0%
                                                 {% endif %}
