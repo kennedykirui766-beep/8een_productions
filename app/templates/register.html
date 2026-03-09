@@ -55,29 +55,43 @@
         width: 100%;
     }
 
-    /* Icon Styling - Left Side */
+    /* Icon Styling - Left Side (Fixed Pixel Positioning) */
     .input-group > i {
         position: absolute;
-        left: 1rem; 
+        left: 16px; /* Fixed 16px from left */
         top: 50%;
         transform: translateY(-50%);
         color: var(--color-grey);
         transition: color 0.3s ease;
         z-index: 2; 
         pointer-events: none; 
+        font-size: 16px; /* Fixed size */
+        width: 16px;
+        text-align: center;
     }
 
     .form-control {
         width: 100%;
-        /* Padding: Top/Bottom 1rem, Right 3rem (space for eye icon), Left 3rem (space for user/lock icon) */
-        padding: 1rem 3rem 1rem 3rem; 
+        /* 
+           Padding Logic (Pixels for precision):
+           Top/Bottom: 14px
+           Left: 46px (Clears the 16px icon + 16px width + 14px gap)
+           Right: 16px (Default for non-password fields)
+        */
+        padding: 14px 16px 14px 46px; 
         background-color: var(--color-black);
         border: 1px solid var(--color-medium-grey);
         border-radius: var(--radius-sm);
         color: var(--color-white);
         font-size: 1rem;
         transition: all 0.3s ease;
-        box-sizing: border-box; 
+        box-sizing: border-box; /* Critical for padding calculation */
+    }
+
+    /* Specific override for Password fields that have the Eye button on the right */
+    input[name="password"],
+    input[name="confirm"] {
+        padding-right: 46px; /* Make room for the eye icon on the right */
     }
 
     .form-control:focus {
@@ -87,7 +101,7 @@
     }
 
     /* Highlight icon on focus */
-    .form-control:focus ~ i { 
+    .form-control:focus ~ i:first-of-type { 
         color: var(--color-gold); 
     }
     
@@ -99,7 +113,7 @@
     /* Password Toggle - Right Side */
     .password-toggle {
         position: absolute;
-        right: 1rem; 
+        right: 16px; /* Fixed 16px from right */
         top: 50%;
         transform: translateY(-50%);
         background: none;
@@ -112,9 +126,10 @@
         align-items: center;
         justify-content: center;
         z-index: 2;
+        width: 20px;
     }
     .password-toggle:hover { color: var(--color-gold); }
-    .password-toggle i { transition: color 0.3s; }
+    .password-toggle i { transition: color 0.3s; font-size: 16px; }
 
     .btn-auth {
         width: 100%;
@@ -156,7 +171,7 @@
         text-decoration: none;
     }
 
-    /* Password Strength Indicator (Visual only) */
+    /* Password Strength Indicator */
     .password-strength {
         height: 3px;
         margin-top: 8px;
@@ -173,9 +188,13 @@
     @media (max-width: 480px) {
         .auth-card { padding: var(--spacing-md); }
         .auth-header h1 { font-size: 2rem; }
-        .form-control { padding: 0.9rem 2.5rem 0.9rem 2.5rem; }
-        .input-group > i { left: 0.8rem; }
-        .password-toggle { right: 0.8rem; }
+        
+        /* Slightly reduce padding on mobile if needed */
+        .form-control { padding: 12px 14px 12px 42px; }
+        input[name="password"], input[name="confirm"] { padding-right: 42px; }
+        
+        .input-group > i { left: 12px; font-size: 14px; width: 14px; }
+        .password-toggle { right: 12px; }
     }
 </style>
 
@@ -195,7 +214,7 @@
                 </div>
             </div>
 
-            <!-- Email Address (Added) -->
+            <!-- Email Address -->
             <div class="form-group">
                 <div class="input-group">
                     <input type="email" name="email" class="form-control" placeholder="Email Address" required>

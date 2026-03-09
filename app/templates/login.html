@@ -66,26 +66,41 @@
         position: relative;
     }
 
-    .input-group i {
+    /* Icon Styling - Fixed Pixel Positioning */
+    .input-group > i {
         position: absolute;
-        left: 1rem; /* 16px */
+        left: 16px; /* Fixed 16px from left */
         top: 50%;
         transform: translateY(-50%);
         color: var(--color-grey);
         transition: color 0.3s ease;
         pointer-events: none;
+        font-size: 16px; /* Fixed font size */
+        width: 16px;    /* Fixed width */
+        text-align: center; /* Center icon in its 16px box */
+        z-index: 2;
     }
 
     .form-control {
         width: 100%;
-        padding: 1rem 1rem 1rem 3rem; /* Space for icon */
+        /* 
+           Padding Calculation (Pixels):
+           Left: 46px (16px left + 16px icon width + 14px gap)
+           Right: 16px (default)
+        */
+        padding: 14px 16px 14px 46px; 
         background-color: var(--color-black);
         border: 1px solid var(--color-medium-grey);
         border-radius: var(--radius-sm);
         color: var(--color-white);
         font-size: 1rem;
         transition: all 0.3s ease;
-        box-sizing: border-box;
+        box-sizing: border-box; /* Essential */
+    }
+
+    /* Specific override for Password field to make room for Eye icon */
+    input[name="password"] {
+        padding-right: 46px;
     }
 
     .form-control:focus {
@@ -94,7 +109,7 @@
         box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
     }
 
-    .form-control:focus ~ i {
+    .form-control:focus ~ i:first-of-type {
         color: var(--color-gold);
     }
 
@@ -105,7 +120,7 @@
     /* Password Toggle */
     .password-toggle {
         position: absolute;
-        right: 1rem;
+        right: 16px; /* Fixed 16px from right */
         top: 50%;
         transform: translateY(-50%);
         background: none;
@@ -114,6 +129,11 @@
         cursor: pointer;
         transition: color 0.3s;
         z-index: 2;
+        width: 20px;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .password-toggle:hover { color: var(--color-gold); }
 
@@ -209,6 +229,12 @@
         }
         .auth-header h1 { font-size: 2rem; }
         .form-options { flex-direction: column; gap: 1rem; align-items: flex-start; }
+        
+        /* Slightly reduced padding for mobile */
+        .form-control { padding: 12px 14px 12px 42px; }
+        input[name="password"] { padding-right: 42px; }
+        .input-group > i { left: 12px; font-size: 14px; width: 14px; }
+        .password-toggle { right: 12px; font-size: 14px; }
     }
 </style>
 
