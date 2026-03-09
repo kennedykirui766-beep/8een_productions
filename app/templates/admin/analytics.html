@@ -372,7 +372,7 @@
         // Parse tuple lists from Python into JS Arrays
         const monthlyData = {{ monthly_revenue | tojson }};
         const dailyData = {{ daily_revenue | tojson }};
-        const categoryData = {{ revenue_by_type | tojson }};
+        const categoryData = {{ category_data_js | tojson }};
 
         // ============================================
         // SIDEBAR LOGIC
