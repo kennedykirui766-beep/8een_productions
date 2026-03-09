@@ -4,8 +4,7 @@ from app import db
 from app.models.user_activity import UserActivity
 
 
-def log_activity(action, item_type=None, item_id=None, payment_type=None):
-
+def log_activity(action, item_type=None, item_id=None, payment_type=None, target_type=None):
     if not current_user.is_authenticated:
         return
 
@@ -16,6 +15,7 @@ def log_activity(action, item_type=None, item_id=None, payment_type=None):
         item_type=item_type,
         item_id=item_id,
         payment_type=payment_type,
+        target_type=target_type,   # <-- add this
         page=request.path,
         ip_address=request.remote_addr
     )

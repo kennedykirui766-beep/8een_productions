@@ -18,6 +18,8 @@ class UserActivity(db.Model):
     page = db.Column(db.String(200))
 
     payment_type = db.Column(db.String(50))
+    
+    target_type = db.Column(db.String(50))  # e.g., "auth", "page", etc.
 
     ip_address = db.Column(db.String(50))
 
