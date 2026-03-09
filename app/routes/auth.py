@@ -105,33 +105,27 @@ def forgot_password():
         email = request.form.get("email").strip().lower()
         user = User.query.filter_by(email=email).first()
 
-        if user and not user.is_admin:
+        if user:
             token = user.get_reset_token()
             reset_link = url_for("auth.reset_password", token=token, _external=True)
 
-            # Create the email message
-            msg = Message(
-                subject="Password Reset Request",
-                recipients=[user.email],
-                body=f"Hi {user.username},\n\nTo reset your password, click the link below:\n\n{reset_link}\n\nIf you didn't request this, ignore this email.",
-            )
-
-            # Send the email
             from app.utils.email import send_email
 
             send_email(
                 user.email,
                 "Password Reset",
                 f"""
+                <p>Hi {user.username},</p>
                 <p>Click the link below to reset your password:</p>
                 <a href="{reset_link}">{reset_link}</a>
+                <p>If you didn't request this, ignore this email.</p>
                 """
             )
 
             flash("Password reset link has been sent to your email.", "info")
             return redirect(url_for("auth.login"))
 
-        flash("Email not found or not allowed.", "danger")
+        flash("Email not found.", "danger")
 
     return render_template("forgot_password.html")
 
@@ -141,7 +135,7 @@ def forgot_password():
 def reset_password(token):
     user = User.verify_reset_token(token)
 
-    if not user or user.is_admin:
+    if not user:
         flash("Invalid or expired token.", "danger")
         return redirect(url_for("auth.login"))
 
