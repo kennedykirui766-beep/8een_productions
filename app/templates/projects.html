@@ -716,7 +716,7 @@
                     
                     <span class="type-badge badge-movie">Movie</span>
                     {% if movie.pricing_type in ['paid', 'rent'] %}
-                        <span class="price-badge">${{ movie.price or 0 }}</span>
+                        <span class="price-badge">Ksh{{ movie.price or 0 }}</span>
                     {% endif %}
 
                     {% if movie.poster_file %}
