@@ -158,38 +158,22 @@
         
         <nav class="sidebar-nav">
             <div class="nav-section">Main</div>
-            <a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}" href="{{ url_for('admin.dashboard') }}">
+            <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
                 <i class="fas fa-home"></i> Dashboard
             </a>
 
             <div class="nav-section">Management</div>
-            <a class="nav-link" href="{{ url_for('admin.projects') }}">
-                <i class="fas fa-film"></i> Projects
-            </a>
-            <a class="nav-link" href="{{ url_for('admin.payments') }}">
-                <i class="fas fa-credit-card"></i> Payments
-            </a>
-            <a class="nav-link" href="{{ url_for('admin.users') }}">
-                <i class="fas fa-users"></i> Users
-            </a>
-            <a class="nav-link" href="{{ url_for('admin.view_user_activities') }}">
-                <i class="fas fa-history"></i> Activity Log
-            </a>
+            <a class="nav-link" href="{{ url_for('admin.projects') }}"><i class="fas fa-film"></i> Projects</a>
+            <a class="nav-link" href="{{ url_for('admin.payments') }}"><i class="fas fa-credit-card"></i> Payments</a>
+            <a class="nav-link" href="{{ url_for('admin.users') }}"><i class="fas fa-users"></i> Users</a>
+            <a class="nav-link active" href="{{ url_for('admin.view_user_activities') }}"><i class="fas fa-history"></i> Activity Log</a>
 
             <div class="nav-section">Insights</div>
-            <a class="nav-link" href="{{ url_for('admin.analytics') }}">
-                <i class="fas fa-chart-line"></i> Analytics
-            </a>
+            <a class="nav-link" href="{{ url_for('admin.analytics') }}"><i class="fas fa-chart-line"></i> Analytics</a>
 
             <div class="nav-section">System</div>
-            <!-- Added Messages Link Here -->
-            <a class="nav-link {% if request.endpoint == 'admin.view_contacts' %}active{% endif %}" href="{{ url_for('admin.view_contacts') }}">
-                <i class="fas fa-envelope"></i> Messages
-            </a>
-            <!-- Updated Settings Link with active logic -->
-            <a class="nav-link {% if request.endpoint == 'admin.settings' %}active{% endif %}" href="{{ url_for('admin.settings') }}">
-                <i class="fas fa-cog"></i> Settings
-            </a>
+            <a class="nav-link" href="{{ url_for('admin.view_contacts') }}"><i class="fas fa-envelope"></i> Messages</a>
+            <a class="nav-link" href="{{ url_for('admin.settings') }}"><i class="fas fa-cog"></i> Settings</a>
         </nav>
     </aside>
 
@@ -230,7 +214,7 @@
                             <tr>
                                 <th>User</th>
                                 <th>Action</th>
-                                <th>Description</th>
+                                <th>Page Accessed</th> <!-- Changed from Description -->
                                 <th>IP Address</th>
                                 <th>Time</th>
                             </tr>
@@ -242,22 +226,12 @@
                                     <td>
                                         <div class="user-cell">
                                             <div class="user-avatar-sm">
-                                                {% if activity.user %}
-                                                    {{ activity.user.username[:1]|upper }}
-                                                {% else %}
-                                                    <i class="fas fa-user-slash" style="font-size: 0.8rem; color: var(--admin-danger);"></i>
-                                                {% endif %}
+                                                <!-- Display first letter of username directly -->
+                                                {{ activity.username[:1]|upper if activity.username else 'N' }}
                                             </div>
                                             <div>
                                                 <div style="font-weight:500">
-                                                    {% if activity.user %}
-                                                        {{ activity.user.username }}
-                                                    {% else %}
-                                                        <span style="color: var(--admin-danger)">Deleted User</span>
-                                                    {% endif %}
-                                                </div>
-                                                <div style="font-size:0.8rem; color:var(--admin-text-muted)">
-                                                    ID: {{ activity.user_id }}
+                                                    {{ activity.username or 'Unknown' }}
                                                 </div>
                                             </div>
                                         </div>
@@ -273,7 +247,7 @@
                                             {{ activity.action }}
                                         </span>
                                     </td>
-                                    <td>{{ activity.description }}</td>
+                                    <td>{{ activity.page or 'N/A' }}</td> <!-- Changed from description -->
                                     <td><code style="color: var(--admin-text-muted); background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px;">{{ activity.ip_address or 'N/A' }}</code></td>
                                     <td>{{ activity.created_at.strftime('%b %d, %Y %H:%M') }}</td>
                                 </tr>
@@ -321,7 +295,7 @@
             const tr = table.getElementsByTagName('tr');
 
             for (let i = 0; i < tr.length; i++) {
-                // Search in User, Action, Description
+                // Search in User, Action, Page
                 const txtValue = tr[i].textContent || tr[i].innerText;
                 if (txtValue.toLowerCase().indexOf(filter) > -1) {
                     tr[i].style.display = "";
