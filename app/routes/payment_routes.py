@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, current_app
 from app import db
-from app.models import Movie, Payment
+from app.models import Movie, Payment, project
 from datetime import datetime
 import base64
 import requests
@@ -46,10 +46,9 @@ def initiate_payment():
     # ACTIVITY LOG (payment started)
     log_activity(
         action="start_payment",
-        target_type="movie",
-        target_id=movie.id,
-        payment_type="mpesa",
-        page="/pay"
+        item_type="project",
+        item_id=project.id,
+        payment_type="mpesa"
     )
 
     access_token = get_mpesa_access_token()
