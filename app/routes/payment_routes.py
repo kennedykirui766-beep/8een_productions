@@ -5,6 +5,7 @@ from datetime import datetime
 import base64
 import requests
 
+
 # ACTIVITY LOGGER
 from app.utils.activity_logger import log_activity
 
@@ -44,10 +45,11 @@ def initiate_payment():
     amount = movie.price
 
     # ACTIVITY LOG (payment started)
+    # ACTIVITY LOG (payment started)
     log_activity(
         action="start_payment",
-        item_type="project",
-        item_id=project.id,
+        item_type="movie",
+        item_id=movie.id,
         payment_type="mpesa"
     )
 
